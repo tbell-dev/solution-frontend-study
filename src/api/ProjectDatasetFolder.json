@@ -1,0 +1,92 @@
+[
+    {
+        "datasetName": "공원001",
+        "projectType": "데이터 정제",
+        "progressCount": "20",
+        "allCount": "500",
+        "projectTypeLink": "/project_cleaning",
+        "workingCount": "485",
+        "inspectionCount": "127",
+        "completeCount": "20"
+    },
+    {
+        "datasetName": "지하철 탑승구001",
+        "projectType": "데이터 가공",
+        "progressCount": "154",
+        "allCount": "220",
+        "projectTypeLink": "/project_labeling",
+        "workingCount": "140",
+        "inspectionCount": "53",
+        "completeCount": "38"
+    },
+    {
+        "datasetName": "버스정류장001",
+        "projectType": "데이터 수집",
+        "progressCount": "34",
+        "allCount": "200",
+        "projectTypeLink": "/project_collect",
+        "workingCount": "127",
+        "inspectionCount": "51",
+        "completeCount": "34"
+    },
+    {
+        "datasetName": "버스정류장002",
+        "projectType": "데이터 가공",
+        "progressCount": "102",
+        "allCount": "120",
+        "projectTypeLink": "/project_labeling",
+        "workingCount": "120",
+        "inspectionCount": "120",
+        "completeCount": "102"
+    },
+    {
+        "datasetName": "인도001",
+        "projectType": "데이터 가공",
+        "progressCount": "18",
+        "allCount": "200",
+        "projectTypeLink": "/project_labeling",
+        "workingCount": "131",
+        "inspectionCount": "120",
+        "completeCount": "18"
+    },
+    {
+        "datasetName": "스쿨존001",
+        "projectType": "데이터 수집",
+        "progressCount": "203",
+        "allCount": "280",
+        "projectTypeLink": "/project_collect",
+        "workingCount": "275",
+        "inspectionCount": "214",
+        "completeCount": "203"
+    },
+    {
+        "datasetName": "횡단보도001",
+        "projectType": "데이터 정제",
+        "progressCount": "400",
+        "allCount": "500",
+        "projectTypeLink": "/project_cleaning",
+        "workingCount": "475",
+        "inspectionCount": "154",
+        "completeCount": "400"
+    },
+    {
+        "datasetName": "공원002",
+        "projectType": "데이터 수집",
+        "progressCount": "4",
+        "allCount": "160",
+        "projectTypeLink": "/project_collect",
+        "workingCount": "160",
+        "inspectionCount": "160",
+        "completeCount": "4"
+    },
+    {
+        "datasetName": "횡단보도002",
+        "projectType": "데이터 가공",
+        "progressCount": "37",
+        "allCount": "100",
+        "projectTypeLink": "/project_cleaning",
+        "workingCount": "84",
+        "inspectionCount": "52",
+        "completeCount": "37"
+    }
+]

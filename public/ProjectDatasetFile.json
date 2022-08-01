@@ -1,0 +1,46 @@
+[
+    {
+        "id": 1,
+        "fileName": "person_0001.png",
+        "fileSize": "5.21KB",
+        "img": "file-list1.png",
+        "workStep": "전체",
+        "workStatus": "완료",
+        "updateDate": "2022.02.08",
+        "inspectionOptions": [
+            {
+                "text": "김진경"
+            },
+            {
+                "text": "박수아"
+            }
+        ],
+        "finalOptions": [
+            {
+                "text": "강경은"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "fileName": "person_0002.png",
+        "fileSize": "3.82KB",
+        "img": "file-list2.png",
+        "workStep": "전체",
+        "workStatus": "완료",
+        "updateDate": "2022.02.08",
+        "inspectionOptions": [
+            {
+                "text": "이지은"
+            }
+        ],
+        "finalOptions": [
+            {
+                "text": "은상현"
+            },
+            {
+                "text": "송현주"
+            }
+        ]
+    }
+]

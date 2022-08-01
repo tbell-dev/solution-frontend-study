@@ -1,0 +1,65 @@
+[
+    {
+        "projectName": "이상행동(폭력) 이미지 정제",
+        "projectType": "데이터 정제",
+        "projectTypeLink": "/project_cleaning",
+        "projectWorker": "2",
+        "date": "2021.10.07"
+    },
+    {
+        "projectName": "이상행동(주취행동) 이미지 가공",
+        "projectType": "데이터 가공",
+        "projectTypeLink": "/project_labeling",
+        "projectWorker": "8",
+        "date": "2021.10.22"
+    },
+    {
+        "projectName": "인스타 이상행동 수집",
+        "projectType": "데이터 수집",
+        "projectTypeLink": "/project_collect",
+        "projectWorker": "1",
+        "date": "2021.11.10"
+    },
+    {
+        "projectName": "이상행동(싸움) 이미지 가공",
+        "projectType": "데이터 가공",
+        "projectTypeLink": "/project_labeling",
+        "projectWorker": "15",
+        "date": "2021.12.14"
+    },
+    {
+        "projectName": "이상행동(폭력) 이미지 가공",
+        "projectType": "데이터 가공",
+        "projectTypeLink": "/project_labeling",
+        "projectWorker": "12",
+        "date": "2021.12.30"
+    },
+    {
+        "projectName": "네이버 이상행동 수집",
+        "projectType": "데이터 수집",
+        "projectTypeLink": "/project_collect",
+        "projectWorker": "2",
+        "date": "2022.01.09"
+    },
+    {
+        "projectName": "이상행동(절도) 이미지 정제",
+        "projectType": "데이터 정제",
+        "projectTypeLink": "/project_cleaning",
+        "projectWorker": "3",
+        "date": "2022.01.21"
+    },
+    {
+        "projectName": "다음 이상행동 수집",
+        "projectType": "데이터 수집",
+        "projectTypeLink": "/project_collect",
+        "projectWorker": "1",
+        "date": "2022.02.16"
+    },
+    {
+        "projectName": "이상행동(실신) 이미지 정제",
+        "projectType": "데이터 가공",
+        "projectTypeLink": "/project_labeling",
+        "projectWorker": "4",
+        "date": "2022.03.15"
+    }
+]

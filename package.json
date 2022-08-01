@@ -1,0 +1,43 @@
+{
+  "name": "front-user",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "json-server --watch ProjectData.json",
+    "serve": "vue-cli-service serve --port 3000",
+    "build": "vue-cli-service build",
+    "test:unit": "vue-cli-service test:unit",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@vuepic/vue-datepicker": "^3.2.1",
+    "axios": "^0.27.2",
+    "core-js": "^3.6.5",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
+    "mitt": "^3.0.0",
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.0-0",
+    "vuex": "^4.0.0-0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.15",
+    "@vue/cli-plugin-eslint": "~4.5.15",
+    "@vue/cli-plugin-router": "~4.5.15",
+    "@vue/cli-plugin-unit-jest": "~4.5.15",
+    "@vue/cli-plugin-vuex": "~4.5.15",
+    "@vue/cli-service": "~4.5.15",
+    "@vue/compiler-sfc": "^3.0.0",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "@vue/test-utils": "^2.0.0-0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-vue": "^7.0.0",
+    "json-server": "^0.17.0",
+    "prettier": "^2.2.1",
+    "typescript": "~3.9.3",
+    "vue-jest": "^5.0.0-0"
+  }
+}
