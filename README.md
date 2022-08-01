@@ -18,18 +18,12 @@ npm run serve
 npm run build
 ```
 
-### Run your unit tests
+### Dev Environment
 
 ```
-npm run test:unit
+- javascript(ES6)
+- node.js
+- npm
+- Vue.js
+- Vue CLI
 ```
-
-### Lints and fixes files
-
-```
-npm run lint
-```
-
-### Customize configuration
-
-See [Configuration Reference](https://cli.vuejs.org/config/).
