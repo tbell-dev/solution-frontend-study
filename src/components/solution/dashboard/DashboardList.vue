@@ -79,175 +79,34 @@
             <th>등록일</th>
             <th>마지막 작업일</th>
           </tr>
-          <tr>
-            <td><p>50</p></td>
-            <td><p>데이터 수집</p></td>
+          <tr v-for="project in projects" :key="project.id" class="card mt-2">
             <td>
-              <router-link to="/dashboard/detail/collect"
-                >인간 자세 수집</router-link
-              >
+              <p>{{ project.id }}</p>
+            </td>
+            <td>
+              <p>{{ project.type }}</p>
+            </td>
+            <td>
+              <router-link to="/dashboard/detail/collect">{{
+                project.projectName
+              }}</router-link>
             </td>
             <td>
               <div class="progress-wrap">
-                <progress min="0" max="100" value="10"></progress>
-                <p>10%</p>
+                <progress
+                  min="0"
+                  max="100"
+                  v-bind:value="project.progress"
+                ></progress>
+                <p>{{ project.progress }}%</p>
               </div>
             </td>
-            <td><p>등록일</p></td>
-            <td><p>2021.10.22</p></td>
-          </tr>
-          <tr>
-            <td><p>50</p></td>
-            <td><p>데이터 수집</p></td>
             <td>
-              <router-link to="/dashboard/detail/collect"
-                >인간 자세 수집</router-link
-              >
+              <p>{{ project.startDate }}</p>
             </td>
             <td>
-              <div class="progress-wrap">
-                <progress min="0" max="100" value="10"></progress>
-                <p>10%</p>
-              </div>
+              <p>{{ project.lastSession }}</p>
             </td>
-            <td><p>등록일</p></td>
-            <td><p>2021.10.22</p></td>
-          </tr>
-          <tr>
-            <td><p>50</p></td>
-            <td><p>데이터 수집</p></td>
-            <td>
-              <router-link to="/dashboard/detail/collect"
-                >인간 자세 수집</router-link
-              >
-            </td>
-            <td>
-              <div class="progress-wrap">
-                <progress min="0" max="100" value="10"></progress>
-                <p>10%</p>
-              </div>
-            </td>
-            <td><p>등록일</p></td>
-            <td><p>2021.10.22</p></td>
-          </tr>
-          <tr>
-            <td><p>50</p></td>
-            <td><p>데이터 수집</p></td>
-            <td>
-              <router-link to="/dashboard/detail/collect"
-                >인간 자세 수집</router-link
-              >
-            </td>
-            <td>
-              <div class="progress-wrap">
-                <progress min="0" max="100" value="10"></progress>
-                <p>10%</p>
-              </div>
-            </td>
-            <td><p>등록일</p></td>
-            <td><p>2021.10.22</p></td>
-          </tr>
-          <tr>
-            <td><p>50</p></td>
-            <td><p>데이터 수집</p></td>
-            <td>
-              <router-link to="/dashboard/detail/collect"
-                >인간 자세 수집</router-link
-              >
-            </td>
-            <td>
-              <div class="progress-wrap">
-                <progress min="0" max="100" value="10"></progress>
-                <p>10%</p>
-              </div>
-            </td>
-            <td><p>등록일</p></td>
-            <td><p>2021.10.22</p></td>
-          </tr>
-          <tr>
-            <td><p>50</p></td>
-            <td><p>데이터 수집</p></td>
-            <td>
-              <router-link to="/dashboard/detail/collect"
-                >인간 자세 수집</router-link
-              >
-            </td>
-            <td>
-              <div class="progress-wrap">
-                <progress min="0" max="100" value="10"></progress>
-                <p>10%</p>
-              </div>
-            </td>
-            <td><p>등록일</p></td>
-            <td><p>2021.10.22</p></td>
-          </tr>
-          <tr>
-            <td><p>50</p></td>
-            <td><p>데이터 수집</p></td>
-            <td>
-              <router-link to="/dashboard/detail/collect"
-                >인간 자세 수집</router-link
-              >
-            </td>
-            <td>
-              <div class="progress-wrap">
-                <progress min="0" max="100" value="10"></progress>
-                <p>10%</p>
-              </div>
-            </td>
-            <td><p>등록일</p></td>
-            <td><p>2021.10.22</p></td>
-          </tr>
-          <tr>
-            <td><p>50</p></td>
-            <td><p>데이터 수집</p></td>
-            <td>
-              <router-link to="/dashboard/detail/collect"
-                >인간 자세 수집</router-link
-              >
-            </td>
-            <td>
-              <div class="progress-wrap">
-                <progress min="0" max="100" value="10"></progress>
-                <p>10%</p>
-              </div>
-            </td>
-            <td><p>등록일</p></td>
-            <td><p>2021.10.22</p></td>
-          </tr>
-          <tr>
-            <td><p>50</p></td>
-            <td><p>데이터 수집</p></td>
-            <td>
-              <router-link to="/dashboard/detail/collect"
-                >인간 자세 수집</router-link
-              >
-            </td>
-            <td>
-              <div class="progress-wrap">
-                <progress min="0" max="100" value="10"></progress>
-                <p>10%</p>
-              </div>
-            </td>
-            <td><p>등록일</p></td>
-            <td><p>2021.10.22</p></td>
-          </tr>
-          <tr>
-            <td><p>50</p></td>
-            <td><p>데이터 수집</p></td>
-            <td>
-              <router-link to="/dashboard/detail/collect"
-                >인간 자세 수집</router-link
-              >
-            </td>
-            <td>
-              <div class="progress-wrap">
-                <progress min="0" max="100" value="10"></progress>
-                <p>10%</p>
-              </div>
-            </td>
-            <td><p>등록일</p></td>
-            <td><p>2021.10.22</p></td>
           </tr>
         </table>
       </article>
@@ -287,9 +146,30 @@
 </template>
 
 <script>
+import { ref } from 'vue';
+import axios from 'axios';
 // import html2canvas from 'html2canvas';
 // import jsPDF from 'jspdf';
 export default {
+  setup() {
+    const projects = ref([]);
+    const numberOfProjects = ref(0);
+    const loadProjects = async () => {
+      try {
+        const res = await axios.get('http://localhost:3000/dashboard');
+        numberOfProjects.value = res.headers['x-total-count'];
+        projects.value = res.data;
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    loadProjects();
+
+    return {
+      projects,
+      loadProjects,
+    };
+  },
   data: function () {
     return { timer: null, nowWeek: '', nowDate: '', nowTime: '' };
   },
