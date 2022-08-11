@@ -208,6 +208,13 @@ const routes = [
     meta: { auth: false },
   },
   {
+    path: '/dashboard/detail/collect/:id',
+    name: '',
+    component: () =>
+      import('../views/solution/dashboard/DashboardDetailCollectPage.vue'),
+    meta: { auth: false },
+  },
+  {
     path: '/dashboard/detail/cleaning',
     name: '',
     component: () =>

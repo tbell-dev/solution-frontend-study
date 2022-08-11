@@ -87,9 +87,12 @@
               <p>{{ project.type }}</p>
             </td>
             <td>
-              <router-link to="/dashboard/detail/collect">{{
-                project.projectName
-              }}</router-link>
+              <button
+                @click="moveToProjectDetail(project.id)"
+                style="cursor: pointer; color: blue"
+              >
+                {{ project.projectName }}
+              </button>
             </td>
             <td>
               <div class="progress-wrap">
@@ -148,8 +151,8 @@
 <script>
 import { ref } from 'vue';
 import axios from 'axios';
-// import html2canvas from 'html2canvas';
-// import jsPDF from 'jspdf';
+import router from '@/router';
+
 export default {
   setup() {
     const projects = ref([]);
@@ -165,9 +168,13 @@ export default {
     };
     loadProjects();
 
+    const moveToProjectDetail = projectId => {
+      router.push('/dashboard/detail/collect/' + projectId);
+    };
     return {
       projects,
       loadProjects,
+      moveToProjectDetail,
     };
   },
   data: function () {

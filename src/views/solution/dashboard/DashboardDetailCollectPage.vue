@@ -12,17 +12,28 @@
               </li>
               <li class="search-contents">
                 <input type="date" />
-                <button class="btn1-1 btn1-active"><span>7일</span></button>
-                <button class="btn1-1"><span>14일</span></button>
-                <button class="btn1-1"><span>1개월</span></button>
-                <button class="btn1-1"><span>3개월</span></button>
-                <button class="btn1-1"><span>6개월</span></button>
+                <label>
+                  7일 <input type="radio" v-model="period" value="7일" />
+                </label>
+                <label>
+                  14일 <input type="radio" v-model="period" value="14일" />
+                </label>
+                <label>
+                  1개월 <input type="radio" v-model="period" value="1개월" />
+                </label>
+                <label>
+                  3개월 <input type="radio" v-model="period" value="3개월" />
+                </label>
+                <label>
+                  6개월 <input type="radio" v-model="period" value="6개월" />
+                </label>
+                <p v-if="period !== ''">현재 선택 : {{ period }}</p>
               </li>
             </ul>
           </article>
         </section>
         <section>
-          <ProjectDetail />
+          <ProjectDetail :project-id="projectId" />
           <article>
             <ul class="current-bar">
               <li>
@@ -105,8 +116,19 @@ import MainMenu from '../../../components/solution/common/MenuMain.vue';
 import Header from '../../../components/solution/common/Header.vue';
 // 프로젝트 세부 현황
 import ProjectDetail from '../../../components/solution/dashboard/dashboard_component/DashboardDetailCollect.vue';
+import { ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 export default {
+  setup() {
+    const route = useRoute();
+    const projectId = route.params.id;
+    const period = ref('');
+    return {
+      period,
+      projectId,
+    };
+  },
   components: { MainMenu, Header, ProjectDetail },
 };
 </script>
