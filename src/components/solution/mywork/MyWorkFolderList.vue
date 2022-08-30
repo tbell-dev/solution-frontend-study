@@ -101,9 +101,6 @@
       </article>
     </section>
   </main>
-  <div v-for="project in myProjects" :key="project.id" class="card mt-2">
-    {{ project.projectName }}
-  </div>
 </template>
 
 <script>

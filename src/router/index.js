@@ -1,10 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
-  {
-    path: '/',
-    redirect: '/sslo/main',
-  },
   // 회원가입/로그인
   {
     path: '/login',
@@ -100,6 +96,7 @@ const routes = [
         path: 'main',
         component: () => import('../components/main_sslo/SsloMain.vue'),
         meta: { auth: false },
+        alias: '/',
       },
       {
         path: 'setting/mypage',
