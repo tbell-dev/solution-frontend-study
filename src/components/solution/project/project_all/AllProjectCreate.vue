@@ -128,7 +128,7 @@
               <td>
                 <input
                   type="checkbox"
-                  :value="checkedCollectOwn"
+                  :value="'id' + index"
                   v-model="checkedCollectOwn"
                   @change="clickFunc"
                 />
@@ -1466,7 +1466,7 @@ export default {
       isCollectOfflineOn: false, // 오프라인 데이터 수집
 
       //1-1-1.자체 제공 데이터셋
-      checkedCollectOwn: '', //목록 선택 체크박스
+      checkedCollectOwn: [], //목록 선택 체크박스
       collectOwnListItem: [
         //데이터셋 목록
         {
@@ -1755,6 +1755,9 @@ export default {
       this.inputString2 = '';
       this.workStep1 = '';
       this.workStep2 = '';
+    },
+    clickFunc() {
+      console.log(this.checkedCollectOwn);
     },
   },
 };
