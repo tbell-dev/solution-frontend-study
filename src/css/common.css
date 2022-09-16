@@ -664,7 +664,7 @@ footer::-webkit-scrollbar-track {
 .st-title3 span.bar { display: inline-block; height: 14px; border-right: 1px solid var(--grey50); margin: 0 10px;  }
 .studio-title3 .file-filter { display: flex; font-size: 12px; }
 
-.studio-contents { padding: 10px 20px 10px; font-size: 15px; }
+.studio-contents { align-items: center; padding: 10px 20px 10px; font-size: 15px; }
 
 .studio-contents .img-wrap img{ width: 60px; max-height: 60px; }
 .studio-contents .img-wrap3{ width: 90px; }
