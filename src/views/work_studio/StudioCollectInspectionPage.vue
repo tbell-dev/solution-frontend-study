@@ -117,6 +117,11 @@
               <span class="bar-left"></span>
               <p>김철수</p>
             </li>
+            <li class="studio-contents">
+              <b>최종 담당자</b>
+              <span class="bar-left"></span>
+              <p>신상호</p>
+            </li>
           </ul>
           <ul class="studio-file-info">
             <li class="studio-title3" @click="isFileInfoOnOff">
