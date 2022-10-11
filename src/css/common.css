@@ -543,6 +543,36 @@ h4 { font-size: 13px; font-weight: 800; }
 .studio-left .tool-list4 img { width: 100px; } 
 
 .select-tool { background: var(--grey40); align-items: center; }
+.select-tooltip .tooltip {
+    /*display: none;*/
+    visibility: hidden;
+    position: absolute;
+    max-width: 200px;
+    left: 60px;
+    border: 1px solid var(--grey70);
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 0.8em;
+    color: white;
+    background: var(--grey70);
+    z-index: 1;
+}
+
+.select-tooltip:hover .tooltip {
+    /*display: block;*/
+    visibility: visible;
+}
+.select-tooltip .tooltip::after {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    right: 100%; /* To the left of the tooltip */
+    margin-top: -5px;
+    color: white;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent var(--grey70) transparent transparent;
+}
 
 /* 중앙 작업화면 */
 #studio-wrap .studio-center { position: relative; display: flex; align-items: center; justify-content: center; flex-grow: 1; min-width: 900px; padding-right: 250px; box-sizing: border-box; background: var(--grey40); }
@@ -565,10 +595,16 @@ h4 { font-size: 13px; font-weight: 800; }
   max-width: 960px;
   max-height: 540px;
 }
+#studio-wrap .studio-center .studio-img{
+    width: 960px;
+    height: 540px;
+}
 #studio-wrap .studio-center .out-canvas {
-    position: absolute;
+    /*position: absolute;*/
     width: auto;
     height: auto;
+    max-width: 100%;
+    max-height: 540px;
 }
 
 .class-contents-gender:active { background: var(--blue70); }
@@ -889,6 +925,10 @@ footer .file-list-detail3 { display: flex; justify-content: space-between;}
 .studio-instance .top-wrap .left { width: 140px; } 
 
 .studio-instance .top-wrap .left img { width: 100%; }
+
+.studio-instance .instance-pic { display: block; justify-content: center; align-content: center; max-width: 100%; max-height: 150px; }
+
+.studio-instance .instance-pic .data-canvas { justify-content: center; max-width: 100%; max-height: 150px; }
 
 .studio-file-info .studio-contents { padding: 0; }
 
