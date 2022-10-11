@@ -375,13 +375,7 @@
               <div class="studio-contents-assignee">
                 <b>수집 담당자</b>
                 <span class="bar-left"></span>
-                <p v-show="isHosted">
-                  {{
-                    DataListItem[currentImageIndex].task_worker
-                      .user_display_name
-                  }}
-                </p>
-                <p v-show="!isHosted">{{ selectCollectAssignee }}</p>
+                <p>{{ selectCollectAssignee }}</p>
               </div>
               <img
                 v-show="isCollectAssigneeOn"
@@ -403,7 +397,9 @@
               >
                 <div class="file-list-detail">
                   <div class="left-wrap">
-                    <p>{{ item.user_display_name }}</p>
+                    <p v-if="item.user_display_name != null">
+                      {{ item.user_display_name }}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -417,13 +413,7 @@
               <div class="studio-contents-assignee">
                 <b>검수 담당자</b>
                 <span class="bar-left"></span>
-                <p v-show="isHosted">
-                  {{
-                    DataListItem[currentImageIndex].task_validator
-                      .user_display_name
-                  }}
-                </p>
-                <p v-show="!isHosted">{{ selectInspectAssignee }}</p>
+                <p>{{ selectInspectAssignee }}</p>
               </div>
               <img
                 v-show="isInspectAssigneeOn"
@@ -445,7 +435,9 @@
               >
                 <div class="file-list-detail">
                   <div class="left-wrap">
-                    <p>{{ item.user_display_name }}</p>
+                    <p v-if="item.user_display_name != null">
+                      {{ item.user_display_name }}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -589,6 +581,9 @@ export default {
         } else {
           this.isHosted = false;
         }
+        console.log(response.data.datas);
+        this.openImage();
+        this.openAssignee(this.currentImageIndex);
       });
     axios.get(HOST + '/rest/api/1/auth/user/search').then(response => {
       if (response.data.datas.length > 0) {
@@ -1103,15 +1098,8 @@ export default {
       this.selectImgStatus =
         this.DataListItem[index].task_status.task_status_progress;
       this.currentImageIndex = index;
-      this.selectCollectAssignee =
-        this.DataListItem[index].task_worker.user_display_name;
-      this.selectInspectAssignee =
-        this.DataListItem[index].task_validator.user_display_name;
-      this.imgOriginWidth = this.DataListItem[index].task_detail.image_width;
-      this.imgOriginHeight = this.DataListItem[index].task_detail.image_height;
-      let img = document.getElementById('main-img');
-      img.width = this.imgOriginWidth;
-      img.height = this.imgOriginHeight;
+      this.openImage();
+      this.openAssignee(this.currentImageIndex);
     },
     imageStatusComplete() {
       let item = this.DataListItem[this.currentImageIndex];
@@ -1188,6 +1176,57 @@ export default {
         this.isInspectAssigneeOn = !this.isInspectAssigneeOn;
       }
     },
+    openImage() {
+      let img = document.getElementById('main-img');
+      let width =
+        this.DataListItem[this.currentImageIndex].task_detail.image_width;
+      let height =
+        this.DataListItem[this.currentImageIndex].task_detail.image_height;
+      if (width > height) {
+        if (width > 960) {
+          height *= 960 / width;
+          width = 960;
+          if (height > 540) {
+            width *= 540 / height;
+            height = 540;
+          }
+        }
+      } else {
+        if (height > 540) {
+          width *= 540 / height;
+          height = 540;
+          if (width > 960) {
+            height *= 960 / width;
+            width = 960;
+          }
+        }
+      }
+      console.log(width + ', ' + height);
+      this.imgOriginWidth = width;
+      this.imgOriginHeight = height;
+      img.width = this.imgOriginWidth;
+      img.height = this.imgOriginHeight;
+    },
+    openAssignee(index) {
+      if (
+        this.DataListItem[index].task_worker != null &&
+        this.DataListItem[index].task_worker.user_display_name != null
+      ) {
+        this.selectCollectAssignee =
+          this.DataListItem[index].task_worker.user_display_name;
+      } else {
+        this.selectCollectAssignee = '없음';
+      }
+      if (
+        this.DataListItem[index].task_validator != null &&
+        this.DataListItem[index].task_validator.user_display_name != null
+      ) {
+        this.selectInspectAssignee =
+          this.DataListItem[index].task_validator.user_display_name;
+      } else {
+        this.selectInspectAssignee = '없음';
+      }
+    },
     itemLength() {
       let cnt = 0;
       for (let i = 0; i < this.DataListItem.length; i++) {
@@ -1200,7 +1239,6 @@ export default {
           cnt++;
         }
       }
-      console.log('filter : ' + this.filters);
       return cnt;
     },
     taskStatus(progress) {
