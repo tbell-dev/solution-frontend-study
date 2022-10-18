@@ -156,7 +156,7 @@
     </header>
     <main id="main">
       <div class="studio-left">
-        <div class="tool-top" @click="scrollUp">
+        <div class="tool-top">
           <img
             src="../../assets/images/studio/icon/icon-scroll-up-dark.svg"
             alt=""
@@ -201,6 +201,7 @@
                 />
                 <img
                   v-show="isToolTagOn"
+                  @click="isToolTagOnOff"
                   src="../../assets/images/studio/icon/icon-tag02.svg"
                   alt="태그"
                 />
@@ -557,7 +558,7 @@
             </li>-->
           </ul>
         </div>
-        <div class="tool-bottom" @click="scrollDown">
+        <div class="tool-bottom">
           <img
             src="../../assets/images/studio/icon/icon-scroll-down-dark.svg"
             alt=""
@@ -565,9 +566,8 @@
         </div>
       </div>
       <div class="studio-center">
-        <div class="studio-pic">
-          <canvas id="outCanvas" class="out-canvas" v-show="isHosted"></canvas>
-          <canvas id="fabCanvas" class="out-canvas" ref="fabCvs"></canvas>
+        <div class="studio-pic-label">
+          <canvas id="fabCanvas" class="out-canvas"></canvas>
         </div>
         <div class="class-setting" v-show="isClassSettingOn">
           <ul class="class-setting-contents">
@@ -932,48 +932,45 @@
             </li>
             <li class="studio-contents" v-if="isFileInfoOn">
               <div class="top-wrap">
-                <div class="top">
-                  <table class="file-info-table">
-                    <tr>
-                      <th><b>파일명</b></th>
-                      <td>
-                        <p>
-                          {{
+                <table class="file-info-table">
+                  <tr>
+                    <th><b>파일명</b></th>
+                    <td>
+                      <p>
+                        {{
+                          DataListItem[currentImageIndex].task_detail.image_name
+                        }}
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th><b>파일크기</b></th>
+                    <td>
+                      <p>
+                        {{
+                          DataListItem[currentImageIndex].task_detail
+                            .image_width
+                        }}px*{{
+                          DataListItem[currentImageIndex].task_detail
+                            .image_height
+                        }}px
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th><b>용량</b></th>
+                    <td>
+                      <p>
+                        {{
+                          imgSize(
                             DataListItem[currentImageIndex].task_detail
-                              .image_name
-                          }}
-                        </p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th><b>파일크기</b></th>
-                      <td>
-                        <p>
-                          {{
-                            DataListItem[currentImageIndex].task_detail
-                              .image_width
-                          }}px*{{
-                            DataListItem[currentImageIndex].task_detail
-                              .image_height
-                          }}px
-                        </p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th><b>용량</b></th>
-                      <td>
-                        <p>
-                          {{
-                            imgSize(
-                              DataListItem[currentImageIndex].task_detail
-                                .image_size,
-                            )
-                          }}
-                        </p>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
+                              .image_size,
+                          )
+                        }}
+                      </p>
+                    </td>
+                  </tr>
+                </table>
               </div>
             </li>
           </ul>
@@ -993,14 +990,12 @@
               <h2>Instance</h2>
             </li>
             <li class="studio-contents" v-if="isInstanceOn">
-              <div class="top-wrap">
+              <div class="top-wrap" v-show="isObjectSelectOn">
                 <div class="top">
                   <div class="instance-pic">
-                    <canvas
-                      v-show="isLabelingOn"
-                      id="dataCanvas"
-                      class="data-canvas"
-                    ></canvas>
+                    <!--<canvas
+                      v-show="isLabelingOn && isObjectSelectOn"-->
+                    <canvas id="dataCanvas" class="data-canvas"></canvas>
                   </div>
                   <table class="instance-table1" v-show="isObjectSelectOn">
                     <tr>
@@ -1089,7 +1084,7 @@
                     v-for="(item, index) in InstanceListItem"
                     :key="index"
                   >
-                    <li class="instance-detail select-file-list">
+                    <li class="instance-detail">
                       <div
                         class="left-wrap"
                         @click="isClassSettingOnOff(index)"
@@ -1131,9 +1126,19 @@
             </li>
           </ul>
           <ul class="studio-history">
-            <li class="studio-title" @click="isHistoryOnOff">
+            <li class="studio-title3" @click="isHistoryOnOff">
+              <img
+                v-show="isHistoryOn"
+                src="../../assets/images/studio/icon/icon-up-dark.svg"
+                alt=""
+              />
+              <img
+                v-show="!isHistoryOn"
+                src="../../assets/images/studio/icon/icon-down-dark.svg"
+                alt=""
+              />
+              <span class="blank"></span>
               <h2>History</h2>
-              <img src="../../assets/images/studio/icon/icon-up.svg" alt="" />
             </li>
             <li class="studio-contents" v-if="isHistoryOn">
               <div class="studio-contents-element">
@@ -1197,15 +1202,21 @@ import { HOST } from '@/main';
 import { fabric } from 'fabric';
 
 export default {
-  mounted: function () {
+  mounted: async function () {
     const _this = this;
     this.hostUrl = HOST;
-    this.outCanvas = document.getElementById('outCanvas');
-    this.outCtx = this.outCanvas.getContext('2d');
-    this.dataCanvas = document.getElementById('dataCanvas');
+    //this.dataCanvas = document.getElementById('dataCanvas');
+    this.dataCanvas = new fabric.Canvas('dataCanvas', {
+      left: 0,
+      top: 0,
+      width: 200,
+      height: 150,
+      hoverCursor: 'default',
+      selection: false,
+    });
     this.dataCtx = this.dataCanvas.getContext('2d');
-    this.fCanvas = new fabric.Canvas('fabCanvas', {
-      //defaultCursor: 'default',
+    //this.dataCtx = this.dataCanvas.getContext();
+    this.fCanvas = window._canvas = new fabric.Canvas('fabCanvas', {
       hoverCursor: 'default',
       selection: false,
     });
@@ -1213,31 +1224,49 @@ export default {
     this.fCanvas.on('mouse:move', this.moveCanvas);
     this.fCanvas.on('mouse:up', this.upCanvas);
     this.fCanvas.on('object:moving', this.movingObject);
+    this.fCanvas.on('selection:created', this.createSelection);
+    this.fCanvas.on('selection:updated', this.updateSelection);
+    this.fCanvas.on('before:selection:cleared', this.beforeClearSelection);
+    this.fCanvas.on('selection:cleared', this.clearSelection);
     this.fCtx = this.fCanvas.getContext();
-    axios
+    /*fabric.Object.prototype.transparentCorners = false;
+    fabric.Object.prototype.borderColor = 'transparent';
+    fabric.Object.prototype.cornerStyle = 'circle';
+    fabric.Object.prototype.cornerColor = 'rgba(0,0,0,0.5)';
+    fabric.Object.prototype.cornerSize = 10;*/
+    //'/rest/api/1/task/search?project_id=15&task_name&task_worker&task_validator&task_worker_or_validator&task_status_step&task_status_process',
+    await axios
       .get(
         this.hostUrl +
-          '/rest/api/1/task/search?project_id=15&task_name&task_worker&task_validator&task_worker_or_validator&task_status_step&task_status_process',
+          '/rest/api/1/task/search?project_id=4&task_name&task_worker&task_validator&task_worker_or_validator&task_status_step&task_status_process',
       )
       .then(response => {
         if (response.data.datas.length > 0) {
-          //this.isHosted = true;
-          //this.DataListItem = response.data.datas;
-          //console.log(response.data.datas);
+          this.isHosted = true;
+          this.DataListItem = response.data.datas;
+          console.log(response.data.datas);
         } else {
           this.isHosted = false;
         }
-        this.openFabImage();
-        this.openAssignee(this.currentImageIndex);
+        //this.openFabImage();
+        //this.openAssignee(this.currentImageIndex);
+      })
+      .catch(error => {
+        console.log(error);
       });
-    axios.get(this.hostUrl + '/rest/api/1/auth/user/search').then(response => {
-      if (response.data.datas.length > 0) {
-        //this.isWorkers = true;
-        //this.DataListAssignee = response.data.datas;
-      } else {
-        this.isWorkers = false;
-      }
-    });
+    await axios
+      .get(this.hostUrl + '/rest/api/1/auth/user/search')
+      .then(response => {
+        if (response.data.datas.length > 0) {
+          //this.isWorkers = true;
+          //this.DataListAssignee = response.data.datas;
+        } else {
+          this.isWorkers = false;
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
     document.onkeydown = function (e) {
       if (_this.objSelected) {
         let key = e.key || e.keyCode;
@@ -1246,16 +1275,28 @@ export default {
             for (let i = 0; i < _this.InstanceListItem.length; i++) {
               if (_this.InstanceListItem[i].id === _this.objSelected.id) {
                 _this.InstanceListItem.splice(i, 1);
-                break;
+              }
+            }
+            for (let i = 0; i < _this.ObjectListItem.length; i++) {
+              if (_this.ObjectListItem[i].id === _this.objSelected.id) {
+                _this.ObjectListItem.splice(i, 1);
+              }
+            }
+            for (let i = 0; i < _this.AnnotationListItem.length; i++) {
+              if (_this.AnnotationListItem[i].id === _this.objSelected.id) {
+                _this.AnnotationListItem.splice(i, 1);
               }
             }
             _this.fCanvas.remove(_this.objSelected);
+            _this.isLabelingOn = false;
             break;
         }
         _this.fCanvas.renderAll();
       }
     };
-    this.customFabric();
+    //this.customFabric();
+    this.openFabImage();
+    this.openAssignee(this.currentImageIndex);
   },
   data: function () {
     return {
@@ -1292,10 +1333,14 @@ export default {
       isGuideOn: true,
       isFileListOn: false,
       isInstanceOn: true,
-      isHistoryOn: true,
+      isHistoryOn: false,
       isFileInfoOn: false,
       isObjectSelectOn: false,
       isObjectMoveOn: false,
+      isOD: false,
+      isMove: false,
+      isEndPolyline: true,
+      isEndPolygon: true,
 
       isClassSettingOn: false,
 
@@ -1658,8 +1703,11 @@ export default {
       ],
       //클래스 데이터 저장 배열
       InstanceListItem: [],
+      AnnotationItem: {},
       AnnotationListItem: [],
-      RectListItem: [],
+      ObjectListItem: [],
+      DragRectListItem: [],
+      ODListItem: [],
       isToolMoveOn: false,
       isToolTagOn: false,
       isToolClassOn: false,
@@ -1718,17 +1766,30 @@ export default {
       endX: 0,
       endY: 0,
       line: '',
-      imgData: '',
+      imgData: ImageData,
       imgDatas: [],
       boxingPoints: [],
       polygonPoints: [],
       polylinePoints: [],
+      polygonItems: [],
+      polylineItems: [],
       fItemCnt: 0,
       objId: 0,
+      instanceImageData: ImageData,
+      dataX: 0,
+      dataY: 0,
+      originImage: Image,
+      originImageData: ImageData,
+      tempRect: fabric.Rect,
+      tmpLine: fabric.Line,
+      tempLine: fabric.Polyline,
+
+      tempArr: [],
+      tempSubArr: [],
     };
   },
   methods: {
-    customFabric() {
+    /*customFabric() {
       //override prototype.toObject and add your custom properties here
       fabric.Object.prototype.toObject = (function (toObject) {
         return function () {
@@ -1737,7 +1798,7 @@ export default {
           });
         };
       })(fabric.Object.prototype.toObject);
-    },
+    },*/
     FullScreenOnOff() {
       const documentElement = document.documentElement;
       if (document.fullscreenElement === null) {
@@ -1749,10 +1810,6 @@ export default {
         document.exitFullscreen();
         this.isfullPageOn = false;
       }
-    },
-    ShortcutKeysOnOff() {
-      //단축키 팝업 on/off
-      this.isShortcutKeysOn = !this.isShortcutKeysOn;
     },
     isLabelingAssigneeOnOff() {
       this.isLabelingAssigneeOn = !this.isLabelingAssigneeOn;
@@ -1778,15 +1835,28 @@ export default {
     isHistoryOnOff() {
       this.isHistoryOn = !this.isHistoryOn;
     },
+    isTagSettingOnOff() {
+      // tag on/off
+      //this.objSelected
+    },
     isClassSettingOnOff(index) {
-      this.instanceIndex = index;
-      this.isObjectSelectOn = !this.isObjectSelectOn;
-      this.isClassSettingOn = !this.isClassSettingOn;
-      if (
-        (!this.isClassSettingOn && this.isToolClassOn) ||
-        (this.isClassSettingOn && !this.isToolClassOn)
-      )
-        this.isToolClassOn = !this.isToolClassOn;
+      //console.log(index);
+      if (index === null || index === undefined) {
+        index = this.instanceIndex;
+      }
+      if (this.instanceIndex === index) {
+        this.isClassSettingOn = !this.isClassSettingOn;
+        if (
+          (!this.isClassSettingOn && this.isToolClassOn) ||
+          (this.isClassSettingOn && !this.isToolClassOn)
+        ) {
+          this.isToolClassOn = !this.isToolClassOn;
+        }
+        this.isObjectSelectOn = this.isClassSettingOn;
+      } else {
+        this.instanceIndex = index;
+        this.setAnnotation();
+      }
     },
     isToolMoveOnOff() {
       document.body.style.cursor = 'Move';
@@ -1830,6 +1900,7 @@ export default {
       this.isToolKeypointOn = false;
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
+      this.isTagSettingOnOff();
     },
     isToolClassOnOff() {
       document.body.style.cursor = 'default';
@@ -1873,7 +1944,7 @@ export default {
       this.isToolSegmentOn = false;
       if (confirm('작업 내용이 초기화 됩니다. 초기화 하시겠습니까?')) {
         this.isToolResetOn = false;
-        this.outCtx.restore();
+        this.fCtx.restore();
       }
     },
 
@@ -1896,6 +1967,9 @@ export default {
       this.isToolKeypointOn = false;
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
+      if (this.isToolODOn && !this.isOD) {
+        this.getOD();
+      }
     },
     isToolISOnOff() {
       document.body.style.cursor = 'default';
@@ -2141,7 +2215,38 @@ export default {
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = !this.isToolSegmentOn;
     },
+    clearDatas() {
+      this.ObjectListItem = [];
+      this.InstanceListItem = [];
+      this.AnnotationListItem = [];
+    },
+    resetTools() {
+      document.body.style.cursor = 'default';
+      this.isToolMoveOn = false;
+      this.isToolTagOn = false;
+      this.isToolClassOn = false;
+      this.isToolResetOn = false;
+      this.isToolODOn = false;
+      this.isToolISOn = false;
+      this.isToolSESOn = false;
+      this.isToolBoxingOn = false;
+      this.isToolPolylineOn = false;
+      this.isToolPolygonOn = false;
+      this.isToolPointOn = false;
+      this.isToolDrawpenOn = false;
+      this.isTool3DCubeOn = false;
+      this.isToolMagicwandOn = false;
+      this.isToolKeypointOn = false;
+      this.isToolAutopointOn = false;
+      this.isToolSegmentOn = false;
+      this.isOD = false;
+    },
     selectImgFunction(index) {
+      // save status
+      // clear instance, annotation
+      this.clearDatas();
+      // reset tools
+      this.resetTools();
       let idCnt = 0;
       if (this.filters === '0') {
         if (index < 0) {
@@ -2253,6 +2358,9 @@ export default {
         case 4:
           task = '반려';
           break;
+        default:
+          task = '미작업';
+          break;
       }
       return task;
     },
@@ -2343,13 +2451,23 @@ export default {
       this.fCanvas.setHeight(this.inHeight);
       this.fCanvas.setZoom(1);
     },
+    /* 가공스튜디오 이미지 저장?? 라벨링 데이터 저장??*/
     imgDownload() {
       let download = document.getElementById('download');
       let image = document
-        .getElementById('outCanvas')
+        .getElementById('fabCanvas')
         .toDataURL('image/png')
         .replace('image/png', 'image/octet-stream');
       download.setAttribute('href', image);
+      download.setAttribute(
+        'download',
+        this.DataListItem[this.currentImageIndex].task_name,
+      );
+    },
+    workDataDownload() {
+      let download = document.getElementById('download');
+      let workData = this.AnnotationListItem;
+      download.setAttribute('href', workData);
       download.setAttribute(
         'download',
         this.DataListItem[this.currentImageIndex].task_name,
@@ -2359,10 +2477,73 @@ export default {
       let item = this.DataListItem[this.currentImageIndex];
       let projectId = item.task_project.project_id;
       let taskId = item.task_id;
+      //let annotation = this.InstanceListItem;
       axios
+        .get(
+          HOST +
+            '/rest/api/1/task/annotation?project_id=' +
+            projectId +
+            '&task_id=' +
+            taskId,
+        )
+        .then(response => {
+          console.log(response.status);
+          if (response.data.datas.length > 0) {
+            console.log('update');
+            //update
+            /*axios
+              .post(
+                HOST +
+                  '/rest/api/1/task/annotation/update?project_id=' +
+                  projectId +
+                  '&task_id=' +
+                  taskId,
+                {
+                  annotation_id: '',
+                  annotation_type: {
+                    annotation_type_id: '',
+                  },
+                  annotation_category: {
+                    annotation_category_id: '',
+                  },
+                  annotation_data: [],
+                },
+              )
+              .then(response => {
+                console.log('save' + response.data);
+              });*/
+          } else {
+            console.log('create');
+            //create
+            /*axios
+              .post(
+                HOST +
+                  '/rest/api/1/task/annotation/create?project_id=' +
+                  projectId +
+                  '&task_id=' +
+                  taskId,
+                {
+                  annotation_type: {
+                      annotation_type_id : 1,
+                      annotation_type_name : 'bbox',
+                      annotation_type_desc : 'bbox desc',
+                  },
+                  annotation_category: {
+                      annotation_category_id : 1,
+                  },
+                  annotation_data: [99.0,10.0,200.0,200.0],
+                },
+              )
+              .then(response => {
+                console.log('save' + response.data);
+              });*/
+          }
+          console.log(response.data.datas);
+        });
+      /*axios
         .post(
           HOST +
-            '/rest/api/1/task/status/update?project_id=' +
+            '/rest/api/1/task/annotation/create?project_id=' +
             projectId +
             '&task_id=' +
             taskId,
@@ -2373,7 +2554,7 @@ export default {
         )
         .then(response => {
           console.log('save' + response.data);
-        });
+        });*/
       this.DataListItem[
         this.currentImageIndex
       ].task_status.task_status_progress = 2;
@@ -2382,6 +2563,7 @@ export default {
       this.fCanvas.clear();
       if (this.isHosted) {
         this.imgSrc =
+          //'https://cors-anywhere.herokuapp.com/' +
           this.hostUrl +
           '/rest/api/1/task/data?project_id=' +
           this.DataListItem[this.currentImageIndex].task_project.project_id +
@@ -2391,32 +2573,17 @@ export default {
         this.imgSrc = require(`@/assets/images/studio/${this.selectImg}`);
       }
       const _this = this;
-      fabric.Image.fromURL(this.imgSrc, function (oImg) {
-        let width = oImg.width;
-        let height = oImg.height;
-        if (width > height) {
-          if (width > 960) {
+      fabric.Image.fromURL(
+        this.imgSrc,
+        function (oImg) {
+          let width = oImg.width;
+          let height = oImg.height;
+          if (width > height) {
             height *= 960 / width;
             width = 960;
             if (height > 540) {
               width *= 540 / height;
               height = 540;
-            }
-          } else {
-            height *= 960 / width;
-            width = 960;
-            if (height > 540) {
-              width *= 540 / height;
-              height = 540;
-            }
-          }
-        } else {
-          if (height > 540) {
-            width *= 540 / height;
-            height = 540;
-            if (width > 960) {
-              height *= 960 / width;
-              width = 960;
             }
           } else {
             width *= 540 / height;
@@ -2426,20 +2593,24 @@ export default {
               width = 960;
             }
           }
-        }
-        _this.inWidth = width;
-        _this.inHeight = height;
-        oImg.scaleToWidth(width);
-        oImg.scaleToHeight(height);
-        _this.fCanvas.setWidth(width);
-        _this.fCanvas.setHeight(height);
-        oImg.selectable = false;
-        _this.fCanvas.add(oImg);
-        /*_this.fCanvas.setBackgroundImage(
-          oImg,
-          _this.fCanvas.renderAll.bind(_this.fCanvas),
-        );*/
-      });
+          _this.inWidth = width;
+          _this.inHeight = height;
+          oImg.scaleToWidth(width);
+          oImg.scaleToHeight(height);
+          _this.fCanvas.setWidth(width);
+          _this.fCanvas.setHeight(height);
+          //_this.fCanvas.setDimensions({width: width, height: height});
+          oImg.selectable = false;
+          _this.fCanvas.add(oImg);
+          //_this.originImage = oImg;
+          //_this.originImageData = _this.fCtx.getImageData(0, 0, width, height);
+          /*_this.fCanvas.setBackgroundImage(
+            oImg,
+            _this.fCanvas.renderAll.bind(_this.fCanvas),
+          );*/
+        },
+        { crossOrigin: 'anonymous' },
+      );
     },
     openAssignee(index) {
       if (
@@ -2473,6 +2644,10 @@ export default {
           setName = '인간';
           break;
       }
+      this.InstanceListItem[this.instanceIndex].id = 1;
+      this.AnnotationListItem[
+        this.instanceIndex
+      ].annotation.annotation_category.annotation_category_id = 1;
       this.instanceClass = setName;
     },
     setGender(gender) {
@@ -2493,6 +2668,11 @@ export default {
           setGender = '알 수 없음';
           break;
       }
+      this.InstanceListItem[this.instanceIndex].attrs.push({
+        attr_id: 1,
+        attr_type: 1,
+        attr_val: gender,
+      });
       this.instanceGender = setGender;
     },
     setAge(age) {
@@ -2525,24 +2705,53 @@ export default {
           setAge = '알 수 없음';
           break;
       }
+      this.InstanceListItem[this.instanceIndex].attrs.push({
+        attr_id: 2,
+        attr_type: 1,
+        attr_val: age,
+      });
       this.instanceAge = setAge;
+    },
+    setAnnotation() {
+      for (let i = 0; i < this.AnnotationListItem.length; i++) {
+        if (
+          this.AnnotationListItem[i].id ===
+          this.InstanceListItem[this.instanceIndex].pId
+        ) {
+          this.AnnotationListItem[
+            i
+          ].annotation.annotation_category.annotation_category_attributes =
+            this.InstanceListItem[this.instanceIndex].attrs;
+        }
+      }
+      for (let i = 0; i < this.ObjectListItem.length; i++) {
+        if (
+          this.ObjectListItem[i].id ===
+          this.InstanceListItem[this.instanceIndex].pId
+        ) {
+          this.ObjectListItem[i].strokeDashArray = [0, 0];
+          this.fCanvas.setActiveObject(this.ObjectListItem[i]);
+        } else {
+          this.ObjectListItem[i].strokeDashArray = [5, 5];
+        }
+      }
+      this.fCanvas.renderAll();
     },
     scrollUp() {},
     scrollDown() {
       //select-tool
     },
     downCanvas(options) {
+      console.log('down');
       if (this.isObjectSelectOn) {
         return;
       }
       //let event = options.e;
       let pointer = this.fCanvas.getPointer(options);
-      //this.startX = event.offsetX;
-      //this.startY = event.offsetY;
       this.startX = pointer.x;
       this.startY = pointer.y;
-      this.stX = pointer.x;
-      this.stY = pointer.y;
+      //this.stX = pointer.x;
+      //this.stY = pointer.y;
       if (this.isToolMoveOn) {
         this.isDown = true;
         console.log('move');
@@ -2553,12 +2762,63 @@ export default {
       } else if (this.isToolISOn) {
       } else if (this.isToolSESOn) {
       }*/ else if (this.isToolBoxingOn) {
+        this.tempRect = new fabric.Rect({
+          left: pointer.x,
+          top: pointer.y,
+          width: 0,
+          height: 0,
+        });
+        this.fCanvas.add(this.tempRect);
         this.isDown = true;
       } else if (this.isToolPolylineOn) {
         this.isDown = true;
-      } /*else if (this.isToolPolygonOn) {
+        if (this.isEndPolyline) {
+          this.tempLine = new fabric.Polyline(this.polylinePoints, {
+            fill: 'transparent',
+            selectable: true,
+            strokeWidth: 2,
+            stroke: 'rgba(0,0,0,0.5)',
+            objectCaching: false,
+            hoverCursor: 'pointer',
+          });
+          this.tmpLine = new fabric.Line(
+            [this.startX, this.startY, this.startX, this.startY],
+            {
+              strokeWidth: 2,
+              stroke: 'rgba(0,0,0,0.5)',
+            },
+          );
+          this.fCanvas.add(this.tempLine);
+          this.fCanvas.add(this.tmpLine);
+          this.isEndPolyline = false;
+        }
+      } else if (this.isToolPolygonOn) {
+        this.isDown = true;
+        if (this.isEndPolygon) {
+          this.tempLine = new fabric.Polyline(this.polygonPoints, {
+            fill: 'transparent',
+            selectable: true,
+            strokeWidth: 2,
+            stroke: 'rgba(0,0,0,0.5)',
+            objectCaching: false,
+            hoverCursor: 'pointer',
+          });
+          this.tmpLine = new fabric.Line(
+            [this.startX, this.startY, this.startX, this.startY],
+            {
+              strokeWidth: 2,
+              stroke: 'rgba(0,0,0,0.5)',
+            },
+          );
+          this.fCanvas.add(this.tempLine);
+          this.fCanvas.add(this.tmpLine);
+          this.isEndPolygon = false;
+        }
+      } /*else if (this.isToolPointOn) {
       } else if (this.isToolPointOn) {
       } else if (this.isToolDrawpenOn) {
+        this.fCanvas.isDrawingMode= 1;
+        this.fCanvas.freeDrawingBrush.width = 20;
       } else if (this.isTool3DCubeOn) {
       } else if (this.isToolMagicwandOn) {
       } else if (this.isToolKeypointOn) {
@@ -2573,10 +2833,7 @@ export default {
       if (this.isObjectSelectOn || this.isObjectMoveOn) {
         return;
       }
-      if (!this.isDown) {
-        return;
-      }
-      if (this.isToolMoveOn) {
+      if (this.isToolMoveOn && this.isDown) {
         let moveX = event.clientX;
         let moveY = event.clientY;
         let orgX = this.fCanvas.offset().left;
@@ -2592,56 +2849,27 @@ export default {
       let nowX = pointer.x;
       let nowY = pointer.y;
       //this.canvasDraw(nowX, nowY);
-      this.stX = nowX;
-      this.stY = nowY;
+      //this.stX = nowX;
+      //this.stY = nowY;
       /*this.line.set({ x2: event.screenX, y2: event.screenY });
       this.fCanvas.renderAll();*/
       //const _this = this;
-      if (this.isToolBoxingOn) {
-        for (let i = 0; i < this.RectListItem.length; i++) {
-          this.fCanvas.getObjects();
-          this.fCanvas.remove(this.RectListItem.pop());
-        }
-
-        let rTop, rLeft, rBottom, rRight;
-        if (this.startX > nowX) {
-          rLeft = nowX;
-          rRight = this.startX;
-        } else {
-          rLeft = this.startX;
-          rRight = nowX;
-        }
-        if (this.startY > nowY) {
-          rTop = nowY;
-          rBottom = this.startY;
-        } else {
-          rTop = this.startY;
-          rBottom = nowY;
-        }
-        this.instanceWidth = rRight - rLeft;
-        this.instanceHeight = rBottom - rTop;
-        this.positionX = rLeft;
-        this.positionY = rTop;
-
-        let rect = new fabric.Rect({
-          left: rLeft,
-          top: rTop,
-          right: rRight,
-          bottom: rBottom,
-          //width: nowX - _this.startX,
-          //height: nowY - _this.startY,
-          strokeWidth: 3,
-          stroke: 'rgba(0,0,0,0.5)',
-          fill: 'transparent',
-        });
-        this.RectListItem.push(rect);
-        this.fCanvas.add(rect);
+      if (this.isToolBoxingOn && this.isDown) {
+        this.setDragBox(nowX, nowY);
+      } else if (this.isToolPolylineOn && this.isDown) {
+        this.setDragLine(nowX, nowY);
+      } else if (this.isToolPolygonOn && this.isDown) {
+        this.setDragLine(nowX, nowY);
       }
     },
     upCanvas(options) {
       //let event = options.e;
       let pointer = this.fCanvas.getPointer(options);
       if (this.isObjectSelectOn || this.isObjectMoveOn) {
+        return;
+      }
+      if (this.isMove) {
+        this.isMove = !this.isMove;
         return;
       }
       this.endX = pointer.x;
@@ -2659,26 +2887,23 @@ export default {
           Math.abs(this.endX - this.startX) <= 1 &&
           Math.abs(this.endY - this.startY) <= 1
         ) {
-          this.boxingPoints.push({ x: this.endX, y: this.endY });
-          this.drawPoints();
+          //this.boxingPoints.push({ x: this.endX, y: this.endY });
+          //this.drawPoints();
         } else {
-          this.drawBoxing();
+          this.setRect();
+          //this.drawBoxing();
         }
         this.isDown = false;
       } else if (this.isToolPolylineOn) {
-        this.polylinePoints.push({ x: this.endX, y: this.endY });
-        //종료라는 기준(이벤트) 필요
+        //this.polylinePoints.push({ x: this.endX, y: this.endY });
         this.drawPolyline();
         //this.drawPoints();
-        this.isDown = false;
       } else if (this.isToolPolygonOn) {
-        this.polygonPoints.push({ x: this.endX, y: this.endY });
-        //polyline에서 닫힌선일 경우 polygon?
+        //this.polygonPoints.push({ x: this.endX, y: this.endY });
         this.drawPolygon();
         //this.drawPoints();
-        this.isDown = false;
       } /*else if (this.isToolPointOn) {
-      } else if (this.isToolDrawpenOn) {
+      } /*else if (this.isToolDrawpenOn) {
       } else if (this.isTool3DCubeOn) {
       } else if (this.isToolMagicwandOn) {
       } else if (this.isToolKeypointOn) {
@@ -2687,42 +2912,179 @@ export default {
       } else {
       }*/
     },
+    createSelection() {
+      //
+      console.log('create');
+    },
+    updateSelection() {
+      //
+      console.log('update');
+    },
+    beforeClearSelection() {
+      //
+      console.log('before');
+    },
+    clearSelection() {
+      //
+      console.log('clear');
+    },
     // eslint-disable-next-line no-unused-vars
     movingObject(options) {
       //let event = options.e;
+      console.log('moving');
+      this.isMove = true;
       this.positionX = options.target.left;
       this.positionY = options.target.top;
     },
     selectObject(options) {
       //let event = options.e;
+      console.log('select');
       this.isObjectSelectOn = true;
       this.objSelected = options.target;
-      console.log('select' + options.target.id);
+      options.target.strokeDashArray = [0, 0];
+      if (options.target.type === 'polyline') {
+        options.target.fill = 'rgba(0,0,0,0)';
+      } else {
+        options.target.fill = 'rgba(0,0,0,0.3)';
+      }
+      this.setDataImage();
+      this.fCanvas.renderAll();
+      //this.setData();
+      console.log('select: ' + options.target.id);
     },
     deselectObject(options) {
-      //let event = options.e;
-      this.isObjectSelectOn = false;
-      this.objSelected = '';
       if (options.target != null) {
-        console.log('deselect' + options.target.id);
+        options.target.fill = 'rgba(0,0,0,0)';
+        options.target.strokeDashArray = [5, 5];
+        console.log('deselect: ' + options.target.id);
       }
-    },
-    setDataImage() {
       this.dataCtx.clearRect(
         0,
         0,
         this.dataCanvas.width,
         this.dataCanvas.height,
       );
+      this.isObjectSelectOn = false;
+      this.objSelected = '';
+    },
+    setDataImage() {
+      const _this = this;
+      //this.dataCanvas.clear();
       if (this.imgDatas.length > 0) {
-        this.dataCtx.putImageData(this.imgDatas.pop(), 0, 0);
+        this.resizeImageData(
+          this.imgDatas[this.objSelected.id],
+          this.dataCanvas.width,
+          this.dataCanvas.height,
+        ).then(value => {
+          _this.dataCtx.clearRect(
+            0,
+            0,
+            _this.dataCanvas.width,
+            _this.dataCanvas.height,
+          );
+          _this.dataCtx.putImageData(value, _this.dataX, _this.dataY);
+          //_this.setImage(value);
+        });
+        //_this.dataCtx.putImageData(this.imgDatas[this.objSelected.id], 0, 0);
+      } else {
+        this.isLabelingOn = false;
       }
     },
-    drawBoxing() {
+    setImage() {
       const _this = this;
-      for (let i = 0; i < this.RectListItem.length; i++) {
-        this.fCanvas.remove(this.RectListItem.pop());
+      let inImg = new Image();
+      inImg.src = this.imgSrc;
+      inImg.crossOrigin = 'Anonymous';
+      inImg.onload = function () {
+        let width = inImg.width;
+        let height = inImg.height;
+        if (width > height) {
+          if (width > 960) {
+            height *= 960 / width;
+            width = 960;
+            if (height > 540) {
+              width *= 540 / height;
+              height = 540;
+            }
+          }
+        } else {
+          if (height > 540) {
+            width *= 540 / height;
+            height = 540;
+            if (width > 960) {
+              height *= 960 / width;
+              width = 960;
+            }
+          }
+        }
+        inImg.width = width;
+        inImg.height = height;
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        console.log(_this.objSelected.left + ', ' + _this.objSelected.top);
+        ctx.drawImage(inImg, 0, 0);
+        //좌표 오차
+        let data = ctx.getImageData(
+          _this.objSelected.left,
+          _this.objSelected.top,
+          _this.objSelected.width,
+          _this.objSelected.height,
+        );
+        //_this.dataCtx.putImageData(data, 0, 0);
+        _this
+          .resizeImageData(
+            data,
+            _this.dataCanvas.width,
+            _this.dataCanvas.height,
+          )
+          .then(value => {
+            _this.dataCtx.clearRect(
+              0,
+              0,
+              _this.dataCanvas.width,
+              _this.dataCanvas.height,
+            );
+            _this.dataCtx.putImageData(value, _this.dataX, _this.dataY);
+          });
+      };
+    },
+    setDragBox(nowX, nowY) {
+      let rTop, rLeft, rBottom, rRight;
+      if (this.startX > nowX) {
+        rLeft = nowX;
+        rRight = this.startX;
+      } else {
+        rLeft = this.startX;
+        rRight = nowX;
       }
+      if (this.startY > nowY) {
+        rTop = nowY;
+        rBottom = this.startY;
+      } else {
+        rTop = this.startY;
+        rBottom = nowY;
+      }
+      this.instanceWidth = rRight - rLeft;
+      this.instanceHeight = rBottom - rTop;
+      this.positionX = rLeft;
+      this.positionY = rTop;
+
+      this.tempRect.set({
+        left: this.positionX,
+        top: this.positionY,
+        width: rRight - rLeft,
+        height: rBottom - rTop,
+        strokeWidth: 2,
+        stroke: 'rgba(0,0,0,0.3)',
+        strokeDashArray: [5, 5],
+        fill: 'transparent',
+      });
+      //this.DragRectListItem.push(rect);
+      this.fCanvas.renderAll();
+    },
+    setRect() {
       let rTop, rLeft, rBottom, rRight;
       if (this.startX > this.endX) {
         rLeft = this.endX;
@@ -2742,73 +3104,295 @@ export default {
       this.instanceHeight = rBottom - rTop;
       this.positionX = rLeft;
       this.positionY = rTop;
-      let rect = new fabric.Rect({
-        id: _this.objId,
-        left: rLeft,
-        top: rTop,
+      let coordinate = {
+        left: this.positionX,
+        top: this.positionY,
         width: rRight - rLeft,
         height: rBottom - rTop,
+      };
+      this.drawBoxing(coordinate);
+    },
+    drawBoxing(coordinate) {
+      //const _this = this;
+      this.fCanvas.remove(this.tempRect);
+      let rect = new fabric.Rect({
+        id: this.objId,
+        left: coordinate.left,
+        top: coordinate.top,
+        width: coordinate.width,
+        height: coordinate.height,
         strokeWidth: 2,
         stroke: 'rgba(0,0,0,0.5)',
         //fill: 'transparent',
         fill: 'rgba(0,0,0,0.3)',
-        strokeDashArray: [5, 5],
+        //strokeDashArray: [5, 5],
         hoverCursor: 'pointer',
-        hasBorders: false,
-        hasControls: false,
+        objectCaching: false,
+        lockScalingX: false,
+        lockScalingY: false,
+        lockUniScaling: false,
+        transparentCorners: false,
+        borderColor: 'transparent',
+        cornerStyle: 'circle',
+        cornerColor: 'rgba(0,0,0,0.5)',
+        cornerSize: 10,
+        //hasBorders: true,
+        //hasControls: true,
       });
+      rect.setControlsVisibility({
+        bl: true,
+        br: true,
+        tl: true,
+        tr: true,
+        mb: true,
+        ml: true,
+        mr: true,
+        mt: true,
+        mtr: false,
+      });
+      /*노트북에서 이미지 데이터 좌표 오류 문제 :
+      캔버스 사이즈와 이미지 사이즈가 달라지는 문제 발생
+      원인 조사 및 해결 필요*/
       this.imgData = this.fCtx.getImageData(
-        this.startX,
-        this.startY,
-        this.endX - this.startX,
-        this.endY - this.startY,
+        rect.left,
+        rect.top,
+        rect.width,
+        rect.height,
       );
-      if (this.imgData.data != null) {
-        this.imgDatas.push(this.imgData);
+      if (this.imgData != null) {
+        this.imgDatas[this.objId] = this.imgData;
         this.isLabelingOn = true;
       }
       //rect.hasControls = rect.hasBorders = false;
       rect.on('selected', this.selectObject);
       rect.on('deselected', this.deselectObject);
+      this.ObjectListItem.push(rect);
       this.fCanvas.add(rect);
-      this.InstanceListItem.push({ id: _this.objId, className: 'human' });
+      this.fCanvas.setActiveObject(rect);
+      this.InstanceListItem.push({
+        id: 0, //category id
+        pId: this.objId, //AnnotationListItem id
+        className: 'human',
+        gender: '',
+        age: '',
+        attrs: [],
+      });
+      //console.log(this.InstanceListItem);
+      this.AnnotationListItem.push({
+        id: this.objId,
+        annotation: {
+          annotation_type: {
+            annotation_type_id: 1,
+          },
+          annotation_category: {
+            annotation_category_id: 0,
+            annotation_category_attributes: [],
+          },
+          annotation_data: [rect.left, rect.top, rect.width, rect.height],
+        },
+      });
+      //console.log(this.AnnotationListItem);
+      //this.setDataImage();
       this.objId++;
-      this.setDataImage();
+    },
+    setDragLine(nowX, nowY) {
+      this.tmpLine.set({ x2: nowX, y2: nowY });
+      this.fCanvas.renderAll();
     },
     drawPolyline() {
-      let line = new fabric.Polyline(this.polylinePoints, {
+      this.polylinePoints.push(new fabric.Point(this.endX, this.endY));
+      this.fCanvas.renderAll();
+      this.tmpLine.set({ x1: this.endX, y1: this.endY });
+      if (this.polylinePoints.length >= 2) {
+        let prevX = this.polylinePoints[this.polylinePoints.length - 2].x;
+        let nextX = this.polylinePoints[this.polylinePoints.length - 1].x;
+        let prevY = this.polylinePoints[this.polylinePoints.length - 2].y;
+        let nextY = this.polylinePoints[this.polylinePoints.length - 1].y;
+        if (Math.abs(nextX - prevX) <= 1 && Math.abs(nextY - prevY) <= 1) {
+          this.isEndPolyline = true;
+          this.fCanvas.remove(this.tmpLine);
+          this.fCanvas.remove(this.tempLine);
+          this.polylineItems[this.objId] = {
+            points: this.polylinePoints,
+          };
+          this.polylinePoints = [];
+          let polyLine = new fabric.Polyline(
+            this.polylineItems[this.objId].points,
+            {
+              id: this.objId,
+              fill: 'transparent',
+              selectable: true,
+              strokeWidth: 2,
+              stroke: 'rgba(0,0,0,0.5)',
+              objectCaching: false,
+              hoverCursor: 'pointer',
+              //hasBorders: false,
+              //hasControls: false,
+            },
+          );
+          this.fCanvas.add(polyLine);
+          console.log('end');
+          console.log(this.polylinePoints);
+          polyLine.on('selected', this.selectObject);
+          polyLine.on('deselected', this.deselectObject);
+          this.ObjectListItem.push(polyLine);
+          this.fCanvas.setActiveObject(polyLine);
+          this.InstanceListItem.push({
+            id: 0, //category id
+            pId: this.objId, //AnnotationListItem id
+            className: 'human',
+            gender: '',
+            age: '',
+            attrs: [],
+          });
+          //console.log(this.InstanceListItem);
+          this.AnnotationListItem.push({
+            id: this.objId,
+            annotation: {
+              annotation_type: {
+                annotation_type_id: 1,
+              },
+              annotation_category: {
+                annotation_category_id: 0,
+                annotation_category_attributes: [],
+              },
+              annotation_data: this.polylineItems[this.objId].points,
+            },
+          });
+          this.objId++;
+          this.isDown = false;
+          //return;
+        }
+      }
+      //this.polyLine = new fabric.Polyline(this.polylinePoints, {});
+      /*let line = new fabric.Polyline(this.polylinePoints, {
+        id: this.objId,
         fill: 'transparent',
         selectable: true,
         strokeWidth: 2,
         stroke: 'rgba(0,0,0,0.5)',
-        hasBorders: false,
-        hasControls: false,
-        //originX: 'center',
-        //originY: 'center',
+        objectCaching: false,
+        hoverCursor: 'pointer',
+        //hasBorders: false,
+        //hasControls: false,
       });
       line.exactBoundingBox = false;
       this.fCanvas.add(line);
+      this.objId++;*/
     },
     drawPolygon() {
+      this.polygonPoints.push(new fabric.Point(this.endX, this.endY));
+      this.fCanvas.renderAll();
+      console.log(this.tmpLine);
+      this.tmpLine.set({ x1: this.endX, y1: this.endY });
+      if (this.polygonPoints.length >= 2) {
+        let firstX = this.polygonPoints[0].x;
+        let lastX = this.polygonPoints[this.polygonPoints.length - 1].x;
+        let firstY = this.polygonPoints[0].y;
+        let lastY = this.polygonPoints[this.polygonPoints.length - 1].y;
+        console.log(firstX + ', ' + firstY);
+        console.log(lastX + ', ' + lastY);
+        if (Math.abs(lastX - firstX) <= 3 && Math.abs(lastY - firstY) <= 3) {
+          this.polygonPoints[this.polygonPoints.length - 1].x = firstX;
+          this.polygonPoints[this.polygonPoints.length - 1].y = firstY;
+          this.isEndPolygon = true;
+          this.fCanvas.remove(this.tmpLine);
+          this.fCanvas.remove(this.tempLine);
+          this.polygonItems[this.objId] = {
+            points: this.polygonPoints,
+          };
+          this.polygonPoints = [];
+          let polygon = new fabric.Polygon(
+            this.polygonItems[this.objId].points,
+            {
+              id: this.objId,
+              fill: 'transparent',
+              selectable: true,
+              strokeWidth: 2,
+              stroke: 'rgba(0,0,0,0.5)',
+              objectCaching: false,
+              hoverCursor: 'pointer',
+              //hasBorders: false,
+              //hasControls: false,
+            },
+          );
+          this.fCanvas.add(polygon);
+          polygon.on('selected', this.selectObject);
+          polygon.on('deselected', this.deselectObject);
+          this.ObjectListItem.push(polygon);
+          this.fCanvas.setActiveObject(polygon);
+          this.InstanceListItem.push({
+            id: 0, //category id
+            pId: this.objId, //AnnotationListItem id
+            className: 'human',
+            gender: '',
+            age: '',
+            attrs: [],
+          });
+          //console.log(this.InstanceListItem);
+          this.AnnotationListItem.push({
+            id: this.objId,
+            annotation: {
+              annotation_type: {
+                annotation_type_id: 1,
+              },
+              annotation_category: {
+                annotation_category_id: 0,
+                annotation_category_attributes: [],
+              },
+              annotation_data: this.polygonItems[this.objId].points,
+            },
+          });
+          this.objId++;
+          this.isDown = false;
+          //return;
+        }
+      }
       //const _this = this;
-      let polygon = new fabric.Polygon(this.polygonPoints, {
-        //id: _this.objId++,
+      /*let polygon = new fabric.Polyline(this.polygonPoints, {
+        id: this.objId,
         fill: 'rgba(0,0,0,0.3)',
         selectable: true,
         strokeWidth: 2,
         stroke: 'rgba(0,0,0,0.5)',
         opacity: 0.3,
-        hasBorders: false,
-        hasControls: false,
+        //hasBorders: false,
+        //hasControls: false,
         //originX: 'center',
         //originY: 'center',
         hoverCursor: 'pointer',
         //evented: false,
-        //objectCaching: false,
+        objectCaching: false,
       });
       this.fCanvas.add(polygon);
+      if (
+        this.polygonPoints[0] ===
+        this.polygonPoints[this.polygonPoints.length - 1]
+      ) {
+        this.fCanvas.remove(polygon);
+        polygon = new fabric.Polygon(this.polygonPoints, {
+          id: this.objId,
+          fill: 'rgba(0,0,0,0.3)',
+          selectable: true,
+          strokeWidth: 2,
+          stroke: 'rgba(0,0,0,0.5)',
+          opacity: 0.3,
+          //hasBorders: false,
+          //hasControls: false,
+          //originX: 'center',
+          //originY: 'center',
+          hoverCursor: 'pointer',
+          //evented: false,
+          objectCaching: false,
+        });
+        this.fCanvas.add(polygon);
+        this.objId++;
+      }*/
     },
     drawPoints() {
+      //polyline
+      //polygon
+      //autopoint
       for (let i = 0; i < this.boxingPoints.length; i++) {
         let boxingPoint = new fabric.Circle({
           radius: 3,
@@ -2818,8 +3402,8 @@ export default {
           //endAngle: 2,
           left: this.boxingPoints[i].x,
           top: this.boxingPoints[i].y,
-          hasBorders: false,
-          hasControls: false,
+          //hasBorders: false,
+          //hasControls: false,
           originX: 'center',
           originY: 'center',
           hoverCursor: 'pointer',
@@ -2827,7 +3411,7 @@ export default {
         });
         this.fCanvas.add(boxingPoint);
       }
-      if (this.boxingPoints.length === 2) {
+      /*if (this.boxingPoints.length === 2) {
         let ePoint = this.boxingPoints.pop();
         let sPoint = this.boxingPoints.pop();
         this.startX = sPoint.x;
@@ -2835,22 +3419,114 @@ export default {
         this.endX = ePoint.x;
         this.endY = ePoint.y;
         this.drawBoxing();
+      }*/
+    },
+    async resizeImageData(imageData, width, height) {
+      let resizeWidth = width >> 0;
+      let resizeHeight = height >> 0;
+      let iw = imageData.width;
+      let ih = imageData.height;
+      this.dataX = 0;
+      this.dataY = 0;
+      if (iw > ih) {
+        ih *= 200 / iw;
+        iw = 200;
+        if (ih > 150) {
+          iw *= 150 / ih;
+          ih = 150;
+          this.dataX = (200 - iw) / 2;
+        } else {
+          this.dataY = (150 - ih) / 2;
+        }
+      } else {
+        iw *= 150 / ih;
+        ih = 150;
+        if (iw > 200) {
+          ih *= 200 / iw;
+          iw = 200;
+          this.dataY = (150 - ih) / 2;
+        } else {
+          this.dataX = (200 - iw) / 2;
+        }
       }
+      resizeWidth = iw;
+      resizeHeight = ih;
+      const iBitmap = await window.createImageBitmap(
+        imageData,
+        0,
+        0,
+        imageData.width,
+        imageData.height,
+        {
+          resizeWidth,
+          resizeHeight,
+        },
+      );
+      const canvas = document.createElement('canvas');
+      canvas.width = resizeWidth;
+      canvas.height = resizeHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(iBitmap, 0, 0);
+      return ctx.getImageData(0, 0, resizeWidth, resizeHeight);
+    },
+    getOD() {
+      console.log('od');
+      axios
+        .get(
+          this.hostUrl +
+            '/rest/api/1/ai/autolabeling?project_id=' +
+            this.DataListItem[this.currentImageIndex].task_project.project_id +
+            '&task_id=' +
+            this.DataListItem[this.currentImageIndex].task_id +
+            '&labeling_type=1',
+        )
+        .then(response => {
+          if (response.data.length > 0) {
+            this.ODListItem = response.data;
+            for (let i = 0; i < this.ODListItem.length; i++) {
+              this.setOdData(i);
+            }
+            this.isOD = true;
+          } else {
+            //???
+          }
+          //this.openFabImage();
+          //this.openAssignee(this.currentImageIndex);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    setOdData(index) {
+      //const this = this;
+      let item = this.ODListItem[index];
+      let oLeft = item.annotation_data[0];
+      let oTop = item.annotation_data[1];
+      let oRight = item.annotation_data[2];
+      let oBottom = item.annotation_data[3];
+      let oWidth = oRight - oLeft;
+      let oHeight = oBottom - oTop;
+      let wRatio =
+        this.inWidth /
+        this.DataListItem[this.currentImageIndex].task_detail.image_width;
+      let hRatio =
+        this.inHeight /
+        this.DataListItem[this.currentImageIndex].task_detail.image_height;
+
+      let coordinate = {
+        left: oLeft * wRatio,
+        top: oTop * hRatio,
+        width: oWidth * wRatio,
+        height: oHeight * hRatio,
+      };
+      this.drawBoxing(coordinate);
     },
   },
   computed: {},
-  // components: {
-  //   HeaderTop,
-  //   HeaderBottom,
-  //   LeftArea,
-  //   CenterArea,
-  //   RightFileList,
-  //   QnA,
-  // },
 };
 </script>
 
 <style scoped>
 @import '../../css/reset.css';
-@import '../../css/common.css';
+@import '../../css/studiolabel.css';
 </style>
