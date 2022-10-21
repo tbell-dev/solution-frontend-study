@@ -12,7 +12,7 @@
             </router-link>
           </div>
           <a id="download">
-            <button @click="imgDownload()">
+            <button @click="isDownload = true">
               <img
                 src="../../assets/images/studio/header/icon-down-dark.svg"
                 alt="Down"
@@ -164,16 +164,16 @@
         </div>
         <div class="tool-list-wrap">
           <ul class="tool-list">
-            <li>
-              <button
-                class="select-tooltip"
-                v-bind:class="{
-                  'select-tool': this.isToolMoveOn,
-                }"
-              >
+            <li
+              class="select-tooltip"
+              v-bind:class="{
+                'select-tool': this.isToolMoveOn,
+              }"
+              @click="isToolMoveOnOff"
+            >
+              <button>
                 <img
                   v-show="!isToolMoveOn"
-                  @click="isToolMoveOnOff"
                   src="../../assets/images/studio/icon/icon-move01.svg"
                   alt="이동"
                 />
@@ -186,22 +186,21 @@
               </button>
               <p>이동</p>
             </li>
-            <li>
-              <button
-                class="select-tooltip"
-                v-bind:class="{
-                  'select-tool': this.isToolTagOn,
-                }"
-              >
+            <li
+              class="select-tooltip"
+              v-bind:class="{
+                'select-tool': this.isToolTagOn,
+              }"
+              @click="isToolTagOnOff"
+            >
+              <button>
                 <img
                   v-show="!isToolTagOn"
-                  @click="isToolTagOnOff"
                   src="../../assets/images/studio/icon/icon-tag01.svg"
                   alt="태그"
                 />
                 <img
                   v-show="isToolTagOn"
-                  @click="isToolTagOnOff"
                   src="../../assets/images/studio/icon/icon-tag02.svg"
                   alt="태그"
                 />
@@ -209,22 +208,21 @@
               </button>
               <p>태그</p>
             </li>
-            <li>
-              <button
-                class="select-tooltip"
-                v-bind:class="{
-                  'select-tool': this.isToolClassOn,
-                }"
-              >
+            <li
+              class="select-tooltip"
+              v-bind:class="{
+                'select-tool': this.isToolClassOn,
+              }"
+              @click="isToolClassOnOff"
+            >
+              <button>
                 <img
                   v-show="!isToolClassOn"
-                  @click="isToolClassOnOff"
                   src="../../assets/images/studio/icon/icon-class-off.svg"
                   alt="클래스"
                 />
                 <img
                   v-show="isToolClassOn"
-                  @click="isToolClassOnOff"
                   src="../../assets/images/studio/icon/icon-class-on.svg"
                   alt="클래스"
                 />
@@ -232,16 +230,16 @@
               </button>
               <p>클래스</p>
             </li>
-            <li>
-              <button
-                class="select-tooltip"
-                v-bind:class="{
-                  'select-tool': this.isToolResetOn,
-                }"
-              >
+            <li
+              class="select-tooltip"
+              v-bind:class="{
+                'select-tool': this.isToolResetOn,
+              }"
+              @click="isToolResetOnOff"
+            >
+              <button>
                 <img
                   v-show="!isToolResetOn"
-                  @click="isToolResetOnOff"
                   src="../../assets/images/studio/icon/icon-reset01.svg"
                   alt="리셋"
                 />
@@ -267,16 +265,16 @@
                         <li><button><img src="../../assets/images/studio/icon/icon-magicwand01.svg" alt="매직완드"title="매직완드"></button></li>
                         <li><button><img src="../../assets/images/studio/icon/icon-autopoint01.svg" alt="오토포인트"title="오토포인트"></button></li>
                         <li><button><img src="../../assets/images/studio/icon/icon-keypoint01.svg" alt="키포인트"title="키포인트"></button></li> -->
-            <li>
-              <button
-                class="select-tooltip"
-                v-bind:class="{
-                  'select-tool': this.isToolODOn,
-                }"
-              >
+            <li
+              class="select-tooltip"
+              v-bind:class="{
+                'select-tool': this.isToolODOn,
+              }"
+              @click="isToolODOnOff"
+            >
+              <button>
                 <img
                   v-show="!isToolODOn"
-                  @click="isToolODOnOff"
                   src="../../assets/images/studio/icon/icon-OD.svg"
                   alt="OD"
                 />
@@ -289,16 +287,16 @@
               </button>
               <p>OD</p>
             </li>
-            <li>
-              <button
-                class="select-tooltip"
-                v-bind:class="{
-                  'select-tool': this.isToolISOn,
-                }"
-              >
+            <li
+              class="select-tooltip"
+              v-bind:class="{
+                'select-tool': this.isToolISOn,
+              }"
+              @click="isToolISOnOff"
+            >
+              <button>
                 <img
                   v-show="!isToolISOn"
-                  @click="isToolISOnOff"
                   src="../../assets/images/studio/icon/icon-IS.svg"
                   alt="IS"
                 />
@@ -311,16 +309,16 @@
               </button>
               <p>IS</p>
             </li>
-            <li>
-              <button
-                class="select-tooltip"
-                v-bind:class="{
-                  'select-tool': this.isToolSESOn,
-                }"
-              >
+            <li
+              class="select-tooltip"
+              v-bind:class="{
+                'select-tool': this.isToolSESOn,
+              }"
+              @click="isToolSESOnOff"
+            >
+              <button>
                 <img
                   v-show="!isToolSESOn"
-                  @click="isToolSESOnOff"
                   src="../../assets/images/studio/icon/icon-SES.svg"
                   alt="SES"
                 />
@@ -333,16 +331,16 @@
               </button>
               <p>SES</p>
             </li>
-            <li>
-              <button
-                class="select-tooltip"
-                v-bind:class="{
-                  'select-tool': this.isToolMagicwandOn,
-                }"
-              >
+            <li
+              class="select-tooltip"
+              v-bind:class="{
+                'select-tool': this.isToolMagicwandOn,
+              }"
+              @click="isToolMagicwandOnOff"
+            >
+              <button>
                 <img
                   v-show="!isToolMagicwandOn"
-                  @click="isToolMagicwandOnOff"
                   src="../../assets/images/studio/icon/icon-magicwand01.svg"
                   alt="매직완드"
                 />
@@ -355,16 +353,16 @@
               </button>
               <p>매직완드</p>
             </li>
-            <li>
-              <button
-                class="select-tooltip"
-                v-bind:class="{
-                  'select-tool': this.isToolAutopointOn,
-                }"
-              >
+            <li
+              class="select-tooltip"
+              v-bind:class="{
+                'select-tool': this.isToolAutopointOn,
+              }"
+              @click="isToolAutopointOnOff"
+            >
+              <button>
                 <img
                   v-show="!isToolAutopointOn"
-                  @click="isToolAutopointOnOff"
                   src="../../assets/images/studio/icon/icon-autopoint01.svg"
                   alt="오토포인트"
                 />
@@ -380,16 +378,16 @@
             <li>
               <span class="under-bar"></span>
             </li>
-            <li>
-              <button
-                class="select-tooltip"
-                v-bind:class="{
-                  'select-tool': this.isToolBoxingOn,
-                }"
-              >
+            <li
+              class="select-tooltip"
+              v-bind:class="{
+                'select-tool': this.isToolBoxingOn,
+              }"
+              @click="isToolBoxingOnOff"
+            >
+              <button>
                 <img
                   v-show="!isToolBoxingOn"
-                  @click="isToolBoxingOnOff"
                   src="../../assets/images/studio/icon/icon-boxing01.svg"
                   alt="박싱"
                 />
@@ -402,16 +400,16 @@
               </button>
               <p>박싱</p>
             </li>
-            <li>
-              <button
-                class="select-tooltip"
-                v-bind:class="{
-                  'select-tool': this.isToolPolylineOn,
-                }"
-              >
+            <li
+              class="select-tooltip"
+              v-bind:class="{
+                'select-tool': this.isToolPolylineOn,
+              }"
+              @click="isToolPolylineOnOff"
+            >
+              <button>
                 <img
                   v-show="!isToolPolylineOn"
-                  @click="isToolPolylineOnOff"
                   src="../../assets/images/studio/icon/icon-polyline01.svg"
                   alt="폴리라인"
                 />
@@ -424,16 +422,16 @@
               </button>
               <p>폴리라인</p>
             </li>
-            <li>
-              <button
-                class="select-tooltip"
-                v-bind:class="{
-                  'select-tool': this.isToolPolygonOn,
-                }"
-              >
+            <li
+              class="select-tooltip"
+              v-bind:class="{
+                'select-tool': this.isToolPolygonOn,
+              }"
+              @click="isToolPolygonOnOff"
+            >
+              <button>
                 <img
                   v-show="!isToolPolygonOn"
-                  @click="isToolPolygonOnOff"
                   src="../../assets/images/studio/icon/icon-polygon01.svg"
                   alt="폴리곤"
                 />
@@ -446,19 +444,20 @@
               </button>
               <p>폴리곤</p>
             </li>
-            <li>
-              <button
-                class="select-tooltip"
-                v-bind:class="{
-                  'select-tool': this.isToolPointOn,
-                }"
-              >
+            <li
+              class="select-tooltip"
+              v-bind:class="{
+                'select-tool': this.isToolPointOn,
+              }"
+              @click="isToolPointOnOff"
+            >
+              <button>
                 <img
                   v-show="!isToolPointOn"
-                  @click="isToolPointOnOff"
                   src="../../assets/images/studio/icon/icon-point01.svg"
                   alt="포인트"
-                /><img
+                />
+                <img
                   v-show="isToolPointOn"
                   src="../../assets/images/studio/icon/icon-point02.svg"
                   alt="포인트"
@@ -467,16 +466,16 @@
               </button>
               <p>포인트</p>
             </li>
-            <li>
-              <button
-                class="select-tooltip"
-                v-bind:class="{
-                  'select-tool': this.isToolDrawpenOn,
-                }"
-              >
+            <li
+              class="select-tooltip"
+              v-bind:class="{
+                'select-tool': this.isToolDrawpenOn,
+              }"
+              @click="isToolDrawpenOnOff"
+            >
+              <button>
                 <img
                   v-show="!isToolDrawpenOn"
-                  @click="isToolDrawpenOnOff"
                   src="../../assets/images/studio/icon/icon-brush01.svg"
                   alt="브러쉬"
                 />
@@ -489,16 +488,16 @@
               </button>
               <p>브러쉬</p>
             </li>
-            <li>
-              <button
-                class="select-tooltip"
-                v-bind:class="{
-                  'select-tool': this.isTool3DCubeOn,
-                }"
-              >
+            <li
+              class="select-tooltip"
+              v-bind:class="{
+                'select-tool': this.isTool3DCubeOn,
+              }"
+              @click="isTool3DCubeOnOff"
+            >
+              <button>
                 <img
                   v-show="!isTool3DCubeOn"
-                  @click="isTool3DCubeOnOff"
                   src="../../assets/images/studio/icon/icon-3dcube01.svg"
                   alt="3D 큐브"
                 />
@@ -511,16 +510,16 @@
               </button>
               <p>3D 큐브</p>
             </li>
-            <li>
-              <button
-                class="select-tooltip"
-                v-bind:class="{
-                  'select-tool': this.isToolSegmentOn,
-                }"
-              >
+            <li
+              class="select-tooltip"
+              v-bind:class="{
+                'select-tool': this.isToolSegmentOn,
+              }"
+              @click="isToolSegmentOnOff"
+            >
+              <button>
                 <img
                   v-show="!isToolSegmentOn"
-                  @click="isToolSegmentOnOff"
                   src="../../assets/images/studio/icon/icon-segment01.svg"
                   alt="세그먼트"
                 />
@@ -533,15 +532,16 @@
               </button>
               <p>세그먼트</p>
             </li>
-            <!--<li>
-              <button
-                v-bind:class="{
-                  'select-tool': this.isToolKeypointOn,
-                }"
-              >
+            <li
+              class="select-tooltip"
+              v-bind:class="{
+                'select-tool': this.isToolKeypointOn,
+              }"
+              @click="isToolKeypointOnOff"
+            >
+              <button>
                 <img
                   v-show="!isToolKeypointOn"
-                  @click="isToolKeypointOnOff"
                   src="../../assets/images/studio/icon/icon-keypoint01.svg"
                   alt="키포인트"
                   title="키포인트"
@@ -555,7 +555,7 @@
               </button>
               <span class="tooltip">키포인트</span>
               <p>키포인트</p>
-            </li>-->
+            </li>
           </ul>
         </div>
         <div class="tool-bottom">
@@ -575,7 +575,11 @@
               <h3>클래스 설정</h3>
             </li>
             <li>
-              <button class="class-contents-obj" @click="setClass('human')">
+              <button
+                id="human"
+                class="class-contents-obj"
+                @click="setClass($event)"
+              >
                 인간
               </button>
             </li>
@@ -586,17 +590,23 @@
             </li>
             <li>
               <button
+                id="female"
                 class="class-contents-gender"
-                @click="setGender('female')"
+                @click="setGender($event)"
               >
                 여자
               </button>
-              <button class="class-contents-gender" @click="setGender('male')">
+              <button
+                id="male"
+                class="class-contents-gender"
+                @click="setGender($event)"
+              >
                 남자
               </button>
               <button
+                id="unknown"
                 class="class-contents-gender"
-                @click="setGender('unknown')"
+                @click="setGender($event)"
               >
                 알 수 없음
               </button>
@@ -607,27 +617,55 @@
               <h3>연령</h3>
             </li>
             <li>
-              <button class="class-contents-age" @click="setAge('baby')">
+              <button
+                id="baby"
+                class="class-contents-age"
+                @click="setAge($event)"
+              >
                 아기
               </button>
-              <button class="class-contents-age" @click="setAge('children')">
+              <button
+                id="children"
+                class="class-contents-age"
+                @click="setAge($event)"
+              >
                 어린이
               </button>
-              <button class="class-contents-age" @click="setAge('teenager')">
+              <button
+                id="teenager"
+                class="class-contents-age"
+                @click="setAge($event)"
+              >
                 청소년
               </button>
-              <button class="class-contents-age" @click="setAge('youth')">
+              <button
+                id="youth"
+                class="class-contents-age"
+                @click="setAge($event)"
+              >
                 청년
               </button>
             </li>
             <li>
-              <button class="class-contents-age" @click="setAge('middle')">
+              <button
+                id="middle"
+                class="class-contents-age"
+                @click="setAge($event)"
+              >
                 중년
               </button>
-              <button class="class-contents-age" @click="setAge('old')">
+              <button
+                id="old"
+                class="class-contents-age"
+                @click="setAge($event)"
+              >
                 노년
               </button>
-              <button class="class-contents-age" @click="setAge('unknown')">
+              <button
+                id="unknown"
+                class="class-contents-age"
+                @click="setAge($event)"
+              >
                 알 수 없음
               </button>
             </li>
@@ -680,6 +718,7 @@
                 <div class="img-wrap3">
                   <img
                     v-if="isHosted"
+                    class="img-list"
                     :src="
                       hostUrl +
                       '/rest/api/1/task/data?project_id=' +
@@ -691,6 +730,7 @@
                   />
                   <img
                     v-else
+                    class="img-list"
                     :src="require(`@/assets/images/studio/${selectImg}`)"
                     alt=""
                   />
@@ -1021,7 +1061,7 @@
                 </div>
               </div>
               <div class="bottom-wrap">
-                <div class="top" v-show="isToolBoxingOn || isToolDrawpenOn">
+                <div class="top" v-show="isToolBoxingOn || isToolODOn">
                   <table class="instance-table2">
                     <tr>
                       <th><b>높이</b></th>
@@ -1053,7 +1093,8 @@
                                   Math.pow(instanceHeight, 2),
                               ) /
                                 Math.sqrt(
-                                  Math.pow(960, 2) + Math.pow(540, 2),
+                                  Math.pow(canvasWidth, 2) +
+                                    Math.pow(canvasHeight, 2),
                                 )) *
                               100
                             ).toFixed(2)
@@ -1166,6 +1207,33 @@
           <button class="finish1" @click="imageStatusComplete()">완료</button>
         </div>
       </div>
+      <ul class="studio-popup" v-show="isDownload">
+        <li class="studio-popup-title">
+          <h3>산출물 내보내기</h3>
+          <button class="studio-popup-close" @click="isDownload = false">
+            <img src="../../assets/images/studio/icon/icon-close.svg" alt="" />
+          </button>
+        </li>
+        <li class="studio-popup-contents">
+          <p>다운로드 파일 형식 *</p>
+          <select class="drop-down-option" v-model="downloads">
+            <option value="" hidden>
+              다운로드할 파일 형식을 선택해주세요.
+            </option>
+            <option value="coco">COCO Dataset Format</option>
+            <option value="yolo">YOLO Dataset Format</option>
+            <option value="img">Images</option>
+          </select>
+        </li>
+        <li class="studio-popup-button">
+          <button class="btn-cancle" @click="isDownload = false">
+            <span>취소</span>
+          </button>
+          <button class="btn-submit" id="btnDownload" @click="downloadData()">
+            <span>내보내기</span>
+          </button>
+        </li>
+      </ul>
       <!-- 반려하기 팝업 -->
       <!-- <ul class="studio-popup">
                 <li class="studio-popup-title">
@@ -1200,6 +1268,7 @@
 import axios from 'axios';
 import { HOST } from '@/main';
 import { fabric } from 'fabric';
+import { isProxy, toRaw } from 'vue';
 
 export default {
   mounted: async function () {
@@ -1217,29 +1286,61 @@ export default {
     this.dataCtx = this.dataCanvas.getContext('2d');
     //this.dataCtx = this.dataCanvas.getContext();
     this.fCanvas = window._canvas = new fabric.Canvas('fabCanvas', {
-      hoverCursor: 'default',
       selection: false,
+    });
+    if (isProxy(new fabric.Canvas('fabCanvas', { selection: false }))) {
+      this.fCanvas = toRaw(
+        new fabric.Canvas('fabCanvas', { selection: false }),
+      );
+    }
+    this.fCanvas.discardActiveObject();
+    const helperObj = new fabric.Object({}); //abstract invisible object
+    helperObj.set('selectable', false); //so the user is not able to select and modify it manually
+    this.fCanvas.add(helperObj);
+
+    this.fCanvas.on('object:added', () => {
+      //workaround - selecting all objects to enable object controls
+
+      let objects = this.fCanvas.getObjects();
+      let selection = new fabric.ActiveSelection(objects, {
+        canvas: this.fCanvas,
+      });
+      this.fCanvas.setActiveObject(selection); //selecting all objects...
+      this.fCanvas.discardActiveObject(); //...and deselecting them
+      this.fCanvas.requestRenderAll();
     });
     this.fCanvas.on('mouse:down', this.downCanvas);
     this.fCanvas.on('mouse:move', this.moveCanvas);
     this.fCanvas.on('mouse:up', this.upCanvas);
     this.fCanvas.on('object:moving', this.movingObject);
+    this.fCanvas.on('object:scaling', this.scalingObject);
     this.fCanvas.on('selection:created', this.createSelection);
     this.fCanvas.on('selection:updated', this.updateSelection);
     this.fCanvas.on('before:selection:cleared', this.beforeClearSelection);
     this.fCanvas.on('selection:cleared', this.clearSelection);
     this.fCtx = this.fCanvas.getContext();
+    fabric.Object.prototype.lockRotation = true;
+    fabric.Object.prototype.hasControls = true;
+    fabric.Object.prototype.hasBorders = true;
     /*fabric.Object.prototype.transparentCorners = false;
     fabric.Object.prototype.borderColor = 'transparent';
     fabric.Object.prototype.cornerStyle = 'circle';
     fabric.Object.prototype.cornerColor = 'rgba(0,0,0,0.5)';
-    fabric.Object.prototype.cornerSize = 10;*/
+    fabric.Object.prototype.cornerSize = 10;
+    fabric.Object.prototype.setControlsVisibility({
+      bl: true,
+      br: true,
+      tl: true,
+      tr: true,
+      mb: true,
+      ml: true,
+      mr: true,
+      mt: true,
+      mtr: false,
+    });*/
     //'/rest/api/1/task/search?project_id=15&task_name&task_worker&task_validator&task_worker_or_validator&task_status_step&task_status_process',
     await axios
-      .get(
-        this.hostUrl +
-          '/rest/api/1/task/search?project_id=4&task_name&task_worker&task_validator&task_worker_or_validator&task_status_step&task_status_process',
-      )
+      .get(this.hostUrl + '/rest/api/1/task/search?project_id=4&maxResults=500')
       .then(response => {
         if (response.data.datas.length > 0) {
           this.isHosted = true;
@@ -1294,7 +1395,6 @@ export default {
         _this.fCanvas.renderAll();
       }
     };
-    //this.customFabric();
     this.openFabImage();
     this.openAssignee(this.currentImageIndex);
   },
@@ -1309,6 +1409,7 @@ export default {
       isHosted: false,
       isWorkers: false,
       hostUrl: '',
+      isDownload: false,
 
       //중앙
       selectImg: 'file-list1.png',
@@ -1334,10 +1435,12 @@ export default {
       isFileListOn: false,
       isInstanceOn: true,
       isHistoryOn: false,
-      isFileInfoOn: false,
+      isFileInfoOn: true,
       isObjectSelectOn: false,
       isObjectMoveOn: false,
       isOD: false,
+      isIS: false,
+      isSES: false,
       isMove: false,
       isEndPolyline: true,
       isEndPolygon: true,
@@ -1346,6 +1449,7 @@ export default {
 
       currentImageIndex: 0,
       filters: '0',
+      downloads: '',
 
       DataListItem: [
         {
@@ -1757,6 +1861,9 @@ export default {
       isDown: false,
       maxWidth: 800,
       maxHeight: 500,
+      canvasWidth: 810,
+      canvasHeight: 540,
+      imgRatio: 1,
       pointX: 0,
       pointY: 0,
       startX: 0,
@@ -1949,7 +2056,11 @@ export default {
     },
 
     isToolODOnOff() {
+      if (!this.isHosted) {
+        return;
+      }
       document.body.style.cursor = 'default';
+      this.fCanvas.hoverCursor = 'default';
       this.isToolMoveOn = false;
       this.isToolTagOn = false;
       this.isToolClassOn = false;
@@ -1972,7 +2083,11 @@ export default {
       }
     },
     isToolISOnOff() {
+      if (!this.isHosted) {
+        return;
+      }
       document.body.style.cursor = 'default';
+      this.fCanvas.hoverCursor = 'default';
       this.isToolMoveOn = false;
       this.isToolTagOn = false;
       this.isToolClassOn = false;
@@ -1990,9 +2105,16 @@ export default {
       this.isToolKeypointOn = false;
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
+      if (this.isToolISOn && !this.isIS) {
+        this.getIS();
+      }
     },
     isToolSESOnOff() {
+      if (!this.isHosted) {
+        return;
+      }
       document.body.style.cursor = 'default';
+      this.fCanvas.hoverCursor = 'default';
       this.isToolMoveOn = false;
       this.isToolTagOn = false;
       this.isToolClassOn = false;
@@ -2010,6 +2132,9 @@ export default {
       this.isToolKeypointOn = false;
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
+      if (this.isToolSESOn && !this.isSES) {
+        this.getSES();
+      }
     },
 
     isToolMagicwandOnOff() {
@@ -2053,7 +2178,7 @@ export default {
       this.isToolSegmentOn = false;
     },
     isToolBoxingOnOff() {
-      document.body.style.cursor = 'Crosshair';
+      //document.body.style.cursor = 'Crosshair';
       this.isToolMoveOn = false;
       this.isToolTagOn = false;
       this.isToolClassOn = false;
@@ -2219,6 +2344,9 @@ export default {
       this.ObjectListItem = [];
       this.InstanceListItem = [];
       this.AnnotationListItem = [];
+      this.instanceClass = '';
+      this.instanceGender = '';
+      this.instanceAge = '';
     },
     resetTools() {
       document.body.style.cursor = 'default';
@@ -2240,6 +2368,8 @@ export default {
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
       this.isOD = false;
+      this.isIS = false;
+      this.isSES = false;
     },
     selectImgFunction(index) {
       // save status
@@ -2323,6 +2453,8 @@ export default {
       //this.openImage();
       this.openFabImage();
       this.openAssignee(this.currentImageIndex);
+      this.setZoomCenter();
+      console.log(this.DataListItem[this.currentImageIndex].task_id);
     },
     imageStatusComplete() {
       let item = this.DataListItem[this.currentImageIndex];
@@ -2421,7 +2553,13 @@ export default {
       }
     },
     imgSize(size) {
-      return size + 'KB';
+      let num = '';
+      if (size > 1000) {
+        num = Math.floor(size / 1000) + ',' + (size % 1000);
+      } else {
+        num = size;
+      }
+      return num + 'KB';
     },
     itemLength() {
       let cnt = 0;
@@ -2439,6 +2577,7 @@ export default {
     },
     zoomAdjustment() {
       let zoom = document.getElementById('zoom-range').value;
+      zoom *= this.imgRatio;
       let width = this.inWidth * (zoom / 100);
       let height = this.inHeight * (zoom / 100);
       this.fCanvas.setWidth(width);
@@ -2447,38 +2586,53 @@ export default {
     },
     setZoomCenter() {
       document.getElementById('zoom-range').value = 100;
-      this.fCanvas.setWidth(this.inWidth);
+      this.fCanvas.setWidth(this.inWidth * this.imgRatio);
+      this.fCanvas.setHeight(this.inHeight * this.imgRatio);
+      this.fCanvas.setZoom(this.imgRatio);
+    },
+    imgDownload(fileName) {
+      const _this = this;
+      //let download = document.getElementById('download');
+      let download = document.createElement('a');
+      /*this.fCanvas.setWidth(this.inWidth);
       this.fCanvas.setHeight(this.inHeight);
-      this.fCanvas.setZoom(1);
+      this.fCanvas.setZoom(1);*/
+      download.setAttribute(
+        'href',
+        this.fCanvas.toDataURL({
+          format: 'png',
+          quality: 1.0,
+          multiplier: 1 / _this.imgRatio,
+        }),
+      );
+      download.setAttribute('download', fileName);
+      download.click();
+      /*this.fCanvas.setWidth(this.inWidth * this.imgRatio);
+      this.fCanvas.setHeight(this.inHeight * this.imgRatio);
+      this.fCanvas.setZoom(this.imgRatio);*/
     },
-    /* 가공스튜디오 이미지 저장?? 라벨링 데이터 저장??*/
-    imgDownload() {
-      let download = document.getElementById('download');
-      let image = document
-        .getElementById('fabCanvas')
-        .toDataURL('image/png')
-        .replace('image/png', 'image/octet-stream');
-      download.setAttribute('href', image);
+    workDataDownload(data, fileName, contentType) {
+      let download = document.createElement('a');
+      /*download.setAttribute('href', data);
       download.setAttribute(
         'download',
         this.DataListItem[this.currentImageIndex].task_name,
-      );
+      );*/
+      let file = new Blob([data], { type: contentType });
+      download.href = URL.createObjectURL(file);
+      download.download = fileName;
+      download.click();
     },
-    workDataDownload() {
-      let download = document.getElementById('download');
-      let workData = this.AnnotationListItem;
-      download.setAttribute('href', workData);
-      download.setAttribute(
-        'download',
-        this.DataListItem[this.currentImageIndex].task_name,
-      );
-    },
-    workStateSave() {
+    async workStateSave() {
+      console.log(JSON.stringify(this.fCanvas));
       let item = this.DataListItem[this.currentImageIndex];
       let projectId = item.task_project.project_id;
       let taskId = item.task_id;
-      //let annotation = this.InstanceListItem;
-      axios
+      //const _this = this;
+      /*for (let i = 0; i < _this.AnnotationListItem.length; i++) {
+        console.log(_this.AnnotationListItem[i].annotation);
+      }*/
+      await axios
         .get(
           HOST +
             '/rest/api/1/task/annotation?project_id=' +
@@ -2488,10 +2642,12 @@ export default {
         )
         .then(response => {
           console.log(response.status);
+          console.log(response.data.datas);
+          //기존 annotation 정보 유무 확인? 업데이트할 id 확인 방법?
           if (response.data.datas.length > 0) {
             console.log('update');
             //update
-            /*axios
+            /*await axios
               .post(
                 HOST +
                   '/rest/api/1/task/annotation/update?project_id=' +
@@ -2499,14 +2655,8 @@ export default {
                   '&task_id=' +
                   taskId,
                 {
-                  annotation_id: '',
-                  annotation_type: {
-                    annotation_type_id: '',
-                  },
-                  annotation_category: {
-                    annotation_category_id: '',
-                  },
-                  annotation_data: [],
+                  annotation_id: ,
+                  this.AnnotationListItem[i].annotation,
                 },
               )
               .then(response => {
@@ -2515,32 +2665,21 @@ export default {
           } else {
             console.log('create');
             //create
-            /*axios
+            /*await axios
               .post(
                 HOST +
                   '/rest/api/1/task/annotation/create?project_id=' +
                   projectId +
                   '&task_id=' +
                   taskId,
-                {
-                  annotation_type: {
-                      annotation_type_id : 1,
-                      annotation_type_name : 'bbox',
-                      annotation_type_desc : 'bbox desc',
-                  },
-                  annotation_category: {
-                      annotation_category_id : 1,
-                  },
-                  annotation_data: [99.0,10.0,200.0,200.0],
-                },
+                this.AnnotationListItem[i].annotation,
               )
               .then(response => {
                 console.log('save' + response.data);
               });*/
           }
-          console.log(response.data.datas);
         });
-      /*axios
+      /*await axios
         .post(
           HOST +
             '/rest/api/1/task/annotation/create?project_id=' +
@@ -2579,35 +2718,25 @@ export default {
           let width = oImg.width;
           let height = oImg.height;
           if (width > height) {
-            height *= 960 / width;
-            width = 960;
-            if (height > 540) {
-              width *= 540 / height;
-              height = 540;
+            _this.imgRatio = 810 / width;
+            if (height * _this.imgRatio > 540) {
+              _this.imgRatio = 540 / height;
             }
           } else {
-            width *= 540 / height;
-            height = 540;
-            if (width > 960) {
-              height *= 960 / width;
-              width = 960;
+            _this.imgRatio = 540 / height;
+            if (width * _this.imgRatio > 810) {
+              _this.imgRatio = 810 / width;
             }
           }
           _this.inWidth = width;
           _this.inHeight = height;
-          oImg.scaleToWidth(width);
-          oImg.scaleToHeight(height);
-          _this.fCanvas.setWidth(width);
-          _this.fCanvas.setHeight(height);
-          //_this.fCanvas.setDimensions({width: width, height: height});
           oImg.selectable = false;
           _this.fCanvas.add(oImg);
-          //_this.originImage = oImg;
-          //_this.originImageData = _this.fCtx.getImageData(0, 0, width, height);
-          /*_this.fCanvas.setBackgroundImage(
-            oImg,
-            _this.fCanvas.renderAll.bind(_this.fCanvas),
-          );*/
+          _this.fCanvas.setWidth(width * _this.imgRatio);
+          _this.fCanvas.setHeight(height * _this.imgRatio);
+          _this.canvasWidth = width * _this.imgRatio;
+          _this.canvasHeight = height * _this.imgRatio;
+          _this.fCanvas.setZoom(_this.imgRatio);
         },
         { crossOrigin: 'anonymous' },
       );
@@ -2632,26 +2761,32 @@ export default {
         this.selectInspectAssignee = '없음';
       }
     },
-    setClass(className) {
+    setClass(event) {
+      let className = event.target.id;
+      let cId = 0;
+      console.log(className);
       console.log('class: ' + className);
       this.InstanceListItem[this.instanceIndex].className = className;
       let setName;
       switch (className) {
         case 'human':
           setName = '인간';
+          cId = 0;
           break;
         default:
           setName = '인간';
+          cId = 0;
           break;
       }
-      this.InstanceListItem[this.instanceIndex].id = 1;
+      this.InstanceListItem[this.instanceIndex].cId = cId;
       this.AnnotationListItem[
         this.instanceIndex
-      ].annotation.annotation_category.annotation_category_id = 1;
+      ].annotation.annotation_category.annotation_category_id = cId;
       this.instanceClass = setName;
     },
-    setGender(gender) {
-      console.log('gender: ' + gender);
+    setGender(event) {
+      let gender = event.target.id;
+      console.log(gender);
       this.InstanceListItem[this.instanceIndex].gender = gender;
       let setGender;
       switch (gender) {
@@ -2675,7 +2810,9 @@ export default {
       });
       this.instanceGender = setGender;
     },
-    setAge(age) {
+    setAge(event) {
+      let age = event.target.id;
+      console.log(age);
       console.log('age: ' + age);
       this.InstanceListItem[this.instanceIndex].age = age;
       let setAge;
@@ -2716,7 +2853,7 @@ export default {
       for (let i = 0; i < this.AnnotationListItem.length; i++) {
         if (
           this.AnnotationListItem[i].id ===
-          this.InstanceListItem[this.instanceIndex].pId
+          this.InstanceListItem[this.instanceIndex].id
         ) {
           this.AnnotationListItem[
             i
@@ -2727,7 +2864,7 @@ export default {
       for (let i = 0; i < this.ObjectListItem.length; i++) {
         if (
           this.ObjectListItem[i].id ===
-          this.InstanceListItem[this.instanceIndex].pId
+          this.InstanceListItem[this.instanceIndex].id
         ) {
           this.ObjectListItem[i].strokeDashArray = [0, 0];
           this.fCanvas.setActiveObject(this.ObjectListItem[i]);
@@ -2743,7 +2880,8 @@ export default {
     },
     downCanvas(options) {
       console.log('down');
-      if (this.isObjectSelectOn) {
+      console.log(this.isMove);
+      if (this.isObjectSelectOn || this.isMove) {
         return;
       }
       //let event = options.e;
@@ -2758,19 +2896,24 @@ export default {
       } /*else if (this.isToolTagOn) {
       } else if (this.isToolClassOn) {
       } else if (this.isToolResetOn) {
-      } else if (this.isToolODOn) {
-      } else if (this.isToolISOn) {
-      } else if (this.isToolSESOn) {
       }*/ else if (this.isToolBoxingOn) {
         this.tempRect = new fabric.Rect({
           left: pointer.x,
           top: pointer.y,
           width: 0,
           height: 0,
+          strokeWidth: 2 * (1 / this.imgRatio),
+          stroke: 'rgba(0,0,0,0.3)',
+          strokeDashArray: [5 * (1 / this.imgRatio), 5 * (1 / this.imgRatio)],
+          fill: 'transparent',
         });
         this.fCanvas.add(this.tempRect);
         this.isDown = true;
-      } else if (this.isToolPolylineOn) {
+      } else if (
+        this.isToolPolylineOn ||
+        this.isToolPolygonOn ||
+        this.isToolSegmentOn
+      ) {
         this.isDown = true;
         if (this.isEndPolyline) {
           this.tempLine = new fabric.Polyline(this.polylinePoints, {
@@ -2792,28 +2935,6 @@ export default {
           this.fCanvas.add(this.tmpLine);
           this.isEndPolyline = false;
         }
-      } else if (this.isToolPolygonOn) {
-        this.isDown = true;
-        if (this.isEndPolygon) {
-          this.tempLine = new fabric.Polyline(this.polygonPoints, {
-            fill: 'transparent',
-            selectable: true,
-            strokeWidth: 2,
-            stroke: 'rgba(0,0,0,0.5)',
-            objectCaching: false,
-            hoverCursor: 'pointer',
-          });
-          this.tmpLine = new fabric.Line(
-            [this.startX, this.startY, this.startX, this.startY],
-            {
-              strokeWidth: 2,
-              stroke: 'rgba(0,0,0,0.5)',
-            },
-          );
-          this.fCanvas.add(this.tempLine);
-          this.fCanvas.add(this.tmpLine);
-          this.isEndPolygon = false;
-        }
       } /*else if (this.isToolPointOn) {
       } else if (this.isToolPointOn) {
       } else if (this.isToolDrawpenOn) {
@@ -2823,14 +2944,13 @@ export default {
       } else if (this.isToolMagicwandOn) {
       } else if (this.isToolKeypointOn) {
       } else if (this.isToolAutopointOn) {
-      } else if (this.isToolSegmentOn) {
       } else {
       }*/
     },
     // eslint-disable-next-line no-unused-vars
     moveCanvas(options) {
       let event = options.e;
-      if (this.isObjectSelectOn || this.isObjectMoveOn) {
+      if (this.isObjectSelectOn || this.isObjectMoveOn || this.isMove) {
         return;
       }
       if (this.isToolMoveOn && this.isDown) {
@@ -2848,6 +2968,7 @@ export default {
       let pointer = this.fCanvas.getPointer(options);
       let nowX = pointer.x;
       let nowY = pointer.y;
+      //console.log(nowX + ', ' + nowY);
       //this.canvasDraw(nowX, nowY);
       //this.stX = nowX;
       //this.stY = nowY;
@@ -2856,9 +2977,12 @@ export default {
       //const _this = this;
       if (this.isToolBoxingOn && this.isDown) {
         this.setDragBox(nowX, nowY);
-      } else if (this.isToolPolylineOn && this.isDown) {
-        this.setDragLine(nowX, nowY);
-      } else if (this.isToolPolygonOn && this.isDown) {
+      } else if (
+        (this.isToolPolylineOn ||
+          this.isToolPolygonOn ||
+          this.isToolSegmentOn) &&
+        this.isDown
+      ) {
         this.setDragLine(nowX, nowY);
       }
     },
@@ -2868,8 +2992,10 @@ export default {
       if (this.isObjectSelectOn || this.isObjectMoveOn) {
         return;
       }
+      console.log(this.isMove);
       if (this.isMove) {
         this.isMove = !this.isMove;
+        console.log(this.isMove);
         return;
       }
       this.endX = pointer.x;
@@ -2887,20 +3013,21 @@ export default {
           Math.abs(this.endX - this.startX) <= 1 &&
           Math.abs(this.endY - this.startY) <= 1
         ) {
-          //this.boxingPoints.push({ x: this.endX, y: this.endY });
-          //this.drawPoints();
+          this.boxingPoints.push({ x: this.endX, y: this.endY });
+          this.drawPoints();
         } else {
           this.setRect();
           //this.drawBoxing();
         }
         this.isDown = false;
-      } else if (this.isToolPolylineOn) {
+      } else if (
+        this.isToolPolylineOn ||
+        this.isToolPolygonOn ||
+        this.isToolSegmentOn
+      ) {
         //this.polylinePoints.push({ x: this.endX, y: this.endY });
-        this.drawPolyline();
-        //this.drawPoints();
-      } else if (this.isToolPolygonOn) {
-        //this.polygonPoints.push({ x: this.endX, y: this.endY });
-        this.drawPolygon();
+        //this.drawPolyline();
+        this.setPolyLine();
         //this.drawPoints();
       } /*else if (this.isToolPointOn) {
       } /*else if (this.isToolDrawpenOn) {
@@ -2908,7 +3035,6 @@ export default {
       } else if (this.isToolMagicwandOn) {
       } else if (this.isToolKeypointOn) {
       } else if (this.isToolAutopointOn) {
-      } else if (this.isToolSegmentOn) {
       } else {
       }*/
     },
@@ -2935,6 +3061,18 @@ export default {
       this.isMove = true;
       this.positionX = options.target.left;
       this.positionY = options.target.top;
+      this.setDataImage(options.target);
+      this.fCanvas.renderAll();
+      this.isMove = false;
+    },
+    scalingObject(options) {
+      console.log('scaling');
+      this.positionX = options.target.left;
+      this.positionY = options.target.top;
+      console.log(options.target);
+      this.instanceWidth = options.target.width;
+      this.instanceHeight = options.target.height;
+      this.setDataImage(options.target);
     },
     selectObject(options) {
       //let event = options.e;
@@ -2943,19 +3081,34 @@ export default {
       this.objSelected = options.target;
       options.target.strokeDashArray = [0, 0];
       if (options.target.type === 'polyline') {
-        options.target.fill = 'rgba(0,0,0,0)';
+        options.target.fill = 'transparent';
       } else {
-        options.target.fill = 'rgba(0,0,0,0.3)';
+        let color = options.target.color;
+        options.target.stroke = color;
+        options.target.fill = color + '4D';
       }
-      this.setDataImage();
+      if (this.isToolBoxingOn || this.isToolODOn) {
+        this.setDataImage(options.target);
+      }
       this.fCanvas.renderAll();
       //this.setData();
       console.log('select: ' + options.target.id);
     },
     deselectObject(options) {
       if (options.target != null) {
-        options.target.fill = 'rgba(0,0,0,0)';
-        options.target.strokeDashArray = [5, 5];
+        //options.target.fill = 'rgba(0,0,0,0)';
+        //options.target.strokeOpacity = '.5';
+        let color = options.target.color;
+        options.target.stroke = color + '80';
+        options.target.fill = 'transparent';
+        if (options.target.type === 'segment') {
+          options.target.stroke = color;
+          options.target.fill = color;
+        }
+        options.target.strokeDashArray = [
+          5 * (1 / this.imgRatio),
+          5 * (1 / this.imgRatio),
+        ];
         console.log('deselect: ' + options.target.id);
       }
       this.dataCtx.clearRect(
@@ -2967,30 +3120,7 @@ export default {
       this.isObjectSelectOn = false;
       this.objSelected = '';
     },
-    setDataImage() {
-      const _this = this;
-      //this.dataCanvas.clear();
-      if (this.imgDatas.length > 0) {
-        this.resizeImageData(
-          this.imgDatas[this.objSelected.id],
-          this.dataCanvas.width,
-          this.dataCanvas.height,
-        ).then(value => {
-          _this.dataCtx.clearRect(
-            0,
-            0,
-            _this.dataCanvas.width,
-            _this.dataCanvas.height,
-          );
-          _this.dataCtx.putImageData(value, _this.dataX, _this.dataY);
-          //_this.setImage(value);
-        });
-        //_this.dataCtx.putImageData(this.imgDatas[this.objSelected.id], 0, 0);
-      } else {
-        this.isLabelingOn = false;
-      }
-    },
-    setImage() {
+    setDataImage(dataObject) {
       const _this = this;
       let inImg = new Image();
       inImg.src = this.imgSrc;
@@ -2998,41 +3128,19 @@ export default {
       inImg.onload = function () {
         let width = inImg.width;
         let height = inImg.height;
-        if (width > height) {
-          if (width > 960) {
-            height *= 960 / width;
-            width = 960;
-            if (height > 540) {
-              width *= 540 / height;
-              height = 540;
-            }
-          }
-        } else {
-          if (height > 540) {
-            width *= 540 / height;
-            height = 540;
-            if (width > 960) {
-              height *= 960 / width;
-              width = 960;
-            }
-          }
-        }
-        inImg.width = width;
-        inImg.height = height;
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
-        console.log(_this.objSelected.left + ', ' + _this.objSelected.top);
         ctx.drawImage(inImg, 0, 0);
-        //좌표 오차
+        console.log(_this.objSelected);
+        console.log(dataObject);
         let data = ctx.getImageData(
           _this.objSelected.left,
           _this.objSelected.top,
           _this.objSelected.width,
           _this.objSelected.height,
         );
-        //_this.dataCtx.putImageData(data, 0, 0);
         _this
           .resizeImageData(
             data,
@@ -3040,12 +3148,12 @@ export default {
             _this.dataCanvas.height,
           )
           .then(value => {
-            _this.dataCtx.clearRect(
+            /*_this.dataCtx.clearRect(
               0,
               0,
               _this.dataCanvas.width,
               _this.dataCanvas.height,
-            );
+            );*/
             _this.dataCtx.putImageData(value, _this.dataX, _this.dataY);
           });
       };
@@ -3076,10 +3184,6 @@ export default {
         top: this.positionY,
         width: rRight - rLeft,
         height: rBottom - rTop,
-        strokeWidth: 2,
-        stroke: 'rgba(0,0,0,0.3)',
-        strokeDashArray: [5, 5],
-        fill: 'transparent',
       });
       //this.DragRectListItem.push(rect);
       this.fCanvas.renderAll();
@@ -3110,36 +3214,41 @@ export default {
         width: rRight - rLeft,
         height: rBottom - rTop,
       };
-      this.drawBoxing(coordinate);
+      this.drawBoxing(coordinate, '#000000');
     },
-    drawBoxing(coordinate) {
+    drawBoxing(coordinate, color) {
       //const _this = this;
       this.fCanvas.remove(this.tempRect);
       let rect = new fabric.Rect({
         id: this.objId,
+        color: color,
         left: coordinate.left,
         top: coordinate.top,
         width: coordinate.width,
         height: coordinate.height,
-        strokeWidth: 2,
-        stroke: 'rgba(0,0,0,0.5)',
-        //fill: 'transparent',
-        fill: 'rgba(0,0,0,0.3)',
+        strokeWidth: 2 * (1 / this.imgRatio),
+        //stroke: 'rgba(0,0,0,0.5)',
+        stroke: color,
+        //strokeOpacity: '.5',
+        fill: 'transparent',
+        //fill: 'rgba(0,0,0,0.3)',
+        //fill: color,
+        //fillOpacity: '.3',
         //strokeDashArray: [5, 5],
         hoverCursor: 'pointer',
         objectCaching: false,
-        lockScalingX: false,
+        /*lockScalingX: false,
         lockScalingY: false,
         lockUniScaling: false,
         transparentCorners: false,
         borderColor: 'transparent',
         cornerStyle: 'circle',
         cornerColor: 'rgba(0,0,0,0.5)',
-        cornerSize: 10,
+        cornerSize: 10,*/
         //hasBorders: true,
         //hasControls: true,
       });
-      rect.setControlsVisibility({
+      /*rect.setControlsVisibility({
         bl: true,
         br: true,
         tl: true,
@@ -3149,7 +3258,7 @@ export default {
         mr: true,
         mt: true,
         mtr: false,
-      });
+      });*/
       /*노트북에서 이미지 데이터 좌표 오류 문제 :
       캔버스 사이즈와 이미지 사이즈가 달라지는 문제 발생
       원인 조사 및 해결 필요*/
@@ -3164,14 +3273,15 @@ export default {
         this.isLabelingOn = true;
       }
       //rect.hasControls = rect.hasBorders = false;
+      console.log(rect.controls);
       rect.on('selected', this.selectObject);
       rect.on('deselected', this.deselectObject);
       this.ObjectListItem.push(rect);
       this.fCanvas.add(rect);
       this.fCanvas.setActiveObject(rect);
       this.InstanceListItem.push({
-        id: 0, //category id
-        pId: this.objId, //AnnotationListItem id
+        id: this.objId, //category id
+        cId: 0, //AnnotationListItem id
         className: 'human',
         gender: '',
         age: '',
@@ -3199,155 +3309,107 @@ export default {
       this.tmpLine.set({ x2: nowX, y2: nowY });
       this.fCanvas.renderAll();
     },
-    drawPolyline() {
+    setPolyLine() {
+      let type = '';
+      if (this.isToolPolylineOn) {
+        type = 'polyline';
+      } else if (this.isToolPolygonOn) {
+        type = 'polygon';
+      } else if (this.isToolSegmentOn) {
+        type = 'segment';
+      }
       this.polylinePoints.push(new fabric.Point(this.endX, this.endY));
       this.fCanvas.renderAll();
       this.tmpLine.set({ x1: this.endX, y1: this.endY });
       if (this.polylinePoints.length >= 2) {
-        let prevX = this.polylinePoints[this.polylinePoints.length - 2].x;
-        let nextX = this.polylinePoints[this.polylinePoints.length - 1].x;
-        let prevY = this.polylinePoints[this.polylinePoints.length - 2].y;
-        let nextY = this.polylinePoints[this.polylinePoints.length - 1].y;
-        if (Math.abs(nextX - prevX) <= 1 && Math.abs(nextY - prevY) <= 1) {
+        let firstX = this.polylinePoints[0].x;
+        let lastX = this.polylinePoints[this.polylinePoints.length - 1].x;
+        let firstY = this.polylinePoints[0].y;
+        let lastY = this.polylinePoints[this.polylinePoints.length - 1].y;
+        if (this.isToolPolylineOn) {
+          firstX = this.polylinePoints[this.polylinePoints.length - 2].x;
+          lastX = this.polylinePoints[this.polylinePoints.length - 1].x;
+          firstY = this.polylinePoints[this.polylinePoints.length - 2].y;
+          lastY = this.polylinePoints[this.polylinePoints.length - 1].y;
+        }
+        if (
+          Math.abs(lastX - firstX) <= 5 * (1 / this.imgRatio) &&
+          Math.abs(lastY - firstY) <= 5 * (1 / this.imgRatio)
+        ) {
+          if (this.isToolPolygonOn || this.isToolSegmentOn) {
+            this.polylinePoints[this.polylinePoints.length - 1].x = firstX;
+            this.polylinePoints[this.polylinePoints.length - 1].y = firstY;
+          }
           this.isEndPolyline = true;
           this.fCanvas.remove(this.tmpLine);
           this.fCanvas.remove(this.tempLine);
-          this.polylineItems[this.objId] = {
+          this.polygonItems[this.objId] = {
             points: this.polylinePoints,
           };
+          console.log(this.polygonItems);
           this.polylinePoints = [];
-          let polyLine = new fabric.Polyline(
-            this.polylineItems[this.objId].points,
-            {
-              id: this.objId,
-              fill: 'transparent',
-              selectable: true,
-              strokeWidth: 2,
-              stroke: 'rgba(0,0,0,0.5)',
-              objectCaching: false,
-              hoverCursor: 'pointer',
-              //hasBorders: false,
-              //hasControls: false,
-            },
+          this.drawPolyItem(
+            this.polygonItems[this.objId].points,
+            type,
+            '#000000',
           );
-          this.fCanvas.add(polyLine);
-          console.log('end');
-          console.log(this.polylinePoints);
-          polyLine.on('selected', this.selectObject);
-          polyLine.on('deselected', this.deselectObject);
-          this.ObjectListItem.push(polyLine);
-          this.fCanvas.setActiveObject(polyLine);
-          this.InstanceListItem.push({
-            id: 0, //category id
-            pId: this.objId, //AnnotationListItem id
-            className: 'human',
-            gender: '',
-            age: '',
-            attrs: [],
-          });
-          //console.log(this.InstanceListItem);
-          this.AnnotationListItem.push({
-            id: this.objId,
-            annotation: {
-              annotation_type: {
-                annotation_type_id: 1,
-              },
-              annotation_category: {
-                annotation_category_id: 0,
-                annotation_category_attributes: [],
-              },
-              annotation_data: this.polylineItems[this.objId].points,
-            },
-          });
-          this.objId++;
-          this.isDown = false;
-          //return;
         }
       }
-      //this.polyLine = new fabric.Polyline(this.polylinePoints, {});
-      /*let line = new fabric.Polyline(this.polylinePoints, {
+    },
+    drawPolyItem(coordinate, type, color) {
+      console.log(coordinate);
+      let fill = 'transparent';
+      if (type === 'segment') {
+        fill = color;
+      }
+      let option = {
         id: this.objId,
-        fill: 'transparent',
+        type: type,
+        color: color,
+        fill: fill,
         selectable: true,
-        strokeWidth: 2,
-        stroke: 'rgba(0,0,0,0.5)',
+        strokeWidth: 2 * (1 / this.imgRatio),
+        //stroke: 'rgba(0,0,0,0.5)',
+        stroke: color,
         objectCaching: false,
         hoverCursor: 'pointer',
         //hasBorders: false,
         //hasControls: false,
-      });
-      line.exactBoundingBox = false;
-      this.fCanvas.add(line);
-      this.objId++;*/
-    },
-    drawPolygon() {
-      this.polygonPoints.push(new fabric.Point(this.endX, this.endY));
-      this.fCanvas.renderAll();
-      console.log(this.tmpLine);
-      this.tmpLine.set({ x1: this.endX, y1: this.endY });
-      if (this.polygonPoints.length >= 2) {
-        let firstX = this.polygonPoints[0].x;
-        let lastX = this.polygonPoints[this.polygonPoints.length - 1].x;
-        let firstY = this.polygonPoints[0].y;
-        let lastY = this.polygonPoints[this.polygonPoints.length - 1].y;
-        console.log(firstX + ', ' + firstY);
-        console.log(lastX + ', ' + lastY);
-        if (Math.abs(lastX - firstX) <= 3 && Math.abs(lastY - firstY) <= 3) {
-          this.polygonPoints[this.polygonPoints.length - 1].x = firstX;
-          this.polygonPoints[this.polygonPoints.length - 1].y = firstY;
-          this.isEndPolygon = true;
-          this.fCanvas.remove(this.tmpLine);
-          this.fCanvas.remove(this.tempLine);
-          this.polygonItems[this.objId] = {
-            points: this.polygonPoints,
-          };
-          this.polygonPoints = [];
-          let polygon = new fabric.Polygon(
-            this.polygonItems[this.objId].points,
-            {
-              id: this.objId,
-              fill: 'transparent',
-              selectable: true,
-              strokeWidth: 2,
-              stroke: 'rgba(0,0,0,0.5)',
-              objectCaching: false,
-              hoverCursor: 'pointer',
-              //hasBorders: false,
-              //hasControls: false,
-            },
-          );
-          this.fCanvas.add(polygon);
-          polygon.on('selected', this.selectObject);
-          polygon.on('deselected', this.deselectObject);
-          this.ObjectListItem.push(polygon);
-          this.fCanvas.setActiveObject(polygon);
-          this.InstanceListItem.push({
-            id: 0, //category id
-            pId: this.objId, //AnnotationListItem id
-            className: 'human',
-            gender: '',
-            age: '',
-            attrs: [],
-          });
-          //console.log(this.InstanceListItem);
-          this.AnnotationListItem.push({
-            id: this.objId,
-            annotation: {
-              annotation_type: {
-                annotation_type_id: 1,
-              },
-              annotation_category: {
-                annotation_category_id: 0,
-                annotation_category_attributes: [],
-              },
-              annotation_data: this.polygonItems[this.objId].points,
-            },
-          });
-          this.objId++;
-          this.isDown = false;
-          //return;
-        }
+      };
+      let polyItem = new fabric.Polygon(coordinate, option);
+      if (this.isToolPolylineOn) {
+        polyItem = new fabric.Polyline(coordinate, option);
       }
+      this.fCanvas.add(polyItem);
+      polyItem.on('selected', this.selectObject);
+      polyItem.on('deselected', this.deselectObject);
+      this.ObjectListItem.push(polyItem);
+      this.fCanvas.setActiveObject(polyItem);
+      this.InstanceListItem.push({
+        id: this.objId, //category id
+        cId: 0, //AnnotationListItem id
+        className: 'human',
+        gender: '',
+        age: '',
+        attrs: [],
+      });
+      //console.log(this.InstanceListItem);
+      this.AnnotationListItem.push({
+        id: this.objId,
+        annotation: {
+          annotation_type: {
+            annotation_type_id: 1,
+          },
+          annotation_category: {
+            annotation_category_id: 0,
+            annotation_category_attributes: [],
+          },
+          annotation_data: coordinate,
+        },
+      });
+      this.objId++;
+      this.isDown = false;
+      //return;
       //const _this = this;
       /*let polygon = new fabric.Polyline(this.polygonPoints, {
         id: this.objId,
@@ -3393,7 +3455,7 @@ export default {
       //polyline
       //polygon
       //autopoint
-      for (let i = 0; i < this.boxingPoints.length; i++) {
+      /*for (let i = 0; i < this.boxingPoints.length; i++) {
         let boxingPoint = new fabric.Circle({
           radius: 3,
           stroke: 'black',
@@ -3410,16 +3472,16 @@ export default {
           selectable: true,
         });
         this.fCanvas.add(boxingPoint);
-      }
-      /*if (this.boxingPoints.length === 2) {
+      }*/
+      if (this.boxingPoints.length === 2) {
         let ePoint = this.boxingPoints.pop();
         let sPoint = this.boxingPoints.pop();
         this.startX = sPoint.x;
         this.startY = sPoint.y;
         this.endX = ePoint.x;
         this.endY = ePoint.y;
-        this.drawBoxing();
-      }*/
+        this.setRect();
+      }
     },
     async resizeImageData(imageData, width, height) {
       let resizeWidth = width >> 0;
@@ -3484,7 +3546,21 @@ export default {
           if (response.data.length > 0) {
             this.ODListItem = response.data;
             for (let i = 0; i < this.ODListItem.length; i++) {
-              this.setOdData(i);
+              let item = this.ODListItem[i];
+              let color = item.annotation_category.annotation_category_color;
+              let coordinate = {
+                left: item.annotation_data[0],
+                top: item.annotation_data[1],
+                width: item.annotation_data[2] - item.annotation_data[0],
+                height: item.annotation_data[3] - item.annotation_data[1],
+              };
+              this.positionX = item.annotation_data[0];
+              this.positionY = item.annotation_data[1];
+              this.instanceWidth =
+                item.annotation_data[2] - item.annotation_data[0];
+              this.instanceHeight =
+                item.annotation_data[3] - item.annotation_data[1];
+              this.drawBoxing(coordinate, color);
             }
             this.isOD = true;
           } else {
@@ -3497,29 +3573,110 @@ export default {
           console.log(error);
         });
     },
-    setOdData(index) {
-      //const this = this;
-      let item = this.ODListItem[index];
-      let oLeft = item.annotation_data[0];
-      let oTop = item.annotation_data[1];
-      let oRight = item.annotation_data[2];
-      let oBottom = item.annotation_data[3];
-      let oWidth = oRight - oLeft;
-      let oHeight = oBottom - oTop;
-      let wRatio =
-        this.inWidth /
-        this.DataListItem[this.currentImageIndex].task_detail.image_width;
-      let hRatio =
-        this.inHeight /
-        this.DataListItem[this.currentImageIndex].task_detail.image_height;
-
-      let coordinate = {
-        left: oLeft * wRatio,
-        top: oTop * hRatio,
-        width: oWidth * wRatio,
-        height: oHeight * hRatio,
-      };
-      this.drawBoxing(coordinate);
+    getIS() {
+      console.log('od');
+      axios
+        .get(
+          this.hostUrl +
+            '/rest/api/1/ai/autolabeling?project_id=' +
+            this.DataListItem[this.currentImageIndex].task_project.project_id +
+            '&task_id=' +
+            this.DataListItem[this.currentImageIndex].task_id +
+            '&labeling_type=2',
+        )
+        .then(response => {
+          if (response.data.length > 0) {
+            this.ISListItem = response.data;
+            for (let i = 0; i < this.ISListItem.length; i++) {
+              let item = this.ISListItem[i];
+              let color = item.annotation_category.annotation_category_color;
+              let items = item.annotation_data;
+              let coordinates = [];
+              for (let i = 0; i < items.length; i++) {
+                for (let j = 0; j < items[i].length; j = j + 2) {
+                  coordinates.push(
+                    new fabric.Point(items[i][j], items[i][j + 1]),
+                  );
+                }
+              }
+              this.drawPolyItem(coordinates, 'polygon', color);
+            }
+            this.isIS = true;
+          } else {
+            //???
+          }
+          //this.openFabImage();
+          //this.openAssignee(this.currentImageIndex);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getSES() {
+      console.log('od');
+      axios
+        .get(
+          this.hostUrl +
+            '/rest/api/1/ai/autolabeling?project_id=' +
+            this.DataListItem[this.currentImageIndex].task_project.project_id +
+            '&task_id=' +
+            this.DataListItem[this.currentImageIndex].task_id +
+            '&labeling_type=3',
+        )
+        .then(response => {
+          if (response.data.length > 0) {
+            this.SESListItem = response.data;
+            for (let i = 0; i < this.SESListItem.length; i++) {
+              let item = this.SESListItem[i];
+              let color = item.annotation_category.annotation_category_color;
+              let items = item.annotation_data;
+              let coordinates = [];
+              for (let i = 0; i < items.length; i++) {
+                for (let j = 0; j < items[i].length; j = j + 2) {
+                  coordinates.push(
+                    new fabric.Point(items[i][j], items[i][j + 1]),
+                  );
+                }
+              }
+              this.drawPolyItem(coordinates, 'segment', color);
+            }
+            this.isIS = true;
+          } else {
+            //???
+          }
+          //this.openFabImage();
+          //this.openAssignee(this.currentImageIndex);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    downloadData() {
+      console.log(this.downloads);
+      if (this.downloads === '') {
+        return;
+      }
+      let workDatas = [];
+      for (let i = 0; i < this.AnnotationListItem.length; i++) {
+        workDatas.push(this.AnnotationListItem[i].annotation);
+      }
+      console.log(workDatas);
+      let workData = JSON.stringify(workDatas);
+      let fileName = this.DataListItem[this.currentImageIndex].task_name;
+      switch (this.downloads) {
+        case 'coco':
+          this.workDataDownload(workData, fileName + '.json', 'text/plain');
+          break;
+        case 'yolo':
+          break;
+        case 'img':
+          this.imgDownload(fileName + '.png');
+          break;
+        default:
+          break;
+      }
+      this.isDownload = false;
+      this.downloads = '';
     },
   },
   computed: {},
