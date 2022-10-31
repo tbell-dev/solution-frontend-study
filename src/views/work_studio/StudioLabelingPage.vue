@@ -1128,11 +1128,12 @@
                     v-for="(item, index) in InstanceListItem"
                     :key="index"
                   >
-                    <li class="instance-detail">
-                      <div
-                        class="left-wrap"
-                        @click="isClassSettingOnOff(index)"
-                      >
+                    <button
+                      :id="'instance' + index"
+                      class="instance-detail"
+                      @click="isClassSettingOnOff(index)"
+                    >
+                      <div class="left-wrap">
                         <div class="img-wrap">
                           <img
                             src="../../assets/images/studio/icon/icon-boxing02.svg"
@@ -1163,7 +1164,7 @@
                           </button>
                         </div>
                       </div>
-                    </li>
+                    </button>
                   </template>
                 </ul>
               </div>
@@ -1953,6 +1954,18 @@ export default {
         index = this.instanceIndex;
       }
       console.log(this.InstanceListItem[this.instanceIndex].tool);
+
+      let thisBtn = document.getElementById('instance' + index);
+      let elseBtn = document.getElementsByClassName('instance-detail');
+      if (!this.isClassSettingOn || !this.isToolClassOn) {
+        for (let i = 0; i < elseBtn.length; i++) {
+          elseBtn.item(i).classList.remove('active');
+        }
+        thisBtn.classList.add('active');
+      } else {
+        thisBtn.classList.remove('active');
+      }
+
       if (this.instanceIndex === index) {
         this.isClassSettingOn = !this.isClassSettingOn;
         if (
@@ -1964,10 +1977,14 @@ export default {
         } else {
           console.log('else');
         }
+        if (this.isClassSettingOn) {
+          document.getElementById('human').click();
+        }
         this.setAnnotation();
         this.isObjectSelectOn = this.isClassSettingOn;
       } else {
         this.isClassSettingOn = true;
+        document.getElementById('human').click();
         this.instanceIndex = index;
         this.setAnnotation();
       }
@@ -1978,63 +1995,15 @@ export default {
       if (this.isToolMoveOn) {
         this.fCanvas.hoverCursor = 'move';
       }
-      this.isToolTagOn = false;
-      this.isToolClassOn = false;
-      this.isToolResetOn = false;
-      this.isToolODOn = false;
-      this.isToolISOn = false;
-      this.isToolSESOn = false;
-      this.isToolBoxingOn = false;
-      this.isToolPolylineOn = false;
-      this.isToolPolygonOn = false;
-      this.isToolPointOn = false;
-      this.isToolDrawpenOn = false;
-      this.isTool3DCubeOn = false;
-      this.isToolMagicwandOn = false;
-      this.isToolKeypointOn = false;
-      this.isToolAutopointOn = false;
-      this.isToolSegmentOn = false;
     },
     isToolTagOnOff() {
       document.body.style.cursor = 'default';
-      this.isToolMoveOn = false;
       this.isToolTagOn = !this.isToolTagOn;
-      this.isToolClassOn = false;
-      this.isToolResetOn = false;
-      this.isToolODOn = false;
-      this.isToolISOn = false;
-      this.isToolSESOn = false;
-      this.isToolBoxingOn = false;
-      this.isToolPolylineOn = false;
-      this.isToolPolygonOn = false;
-      this.isToolPointOn = false;
-      this.isToolDrawpenOn = false;
-      this.isTool3DCubeOn = false;
-      this.isToolMagicwandOn = false;
-      this.isToolKeypointOn = false;
-      this.isToolAutopointOn = false;
-      this.isToolSegmentOn = false;
       this.isTagSettingOnOff();
     },
     isToolClassOnOff() {
       document.body.style.cursor = 'default';
-      this.isToolMoveOn = false;
-      this.isToolTagOn = false;
       this.isToolClassOn = !this.isToolClassOn;
-      this.isToolResetOn = false;
-      this.isToolODOn = false;
-      this.isToolISOn = false;
-      this.isToolSESOn = false;
-      this.isToolBoxingOn = false;
-      this.isToolPolylineOn = false;
-      this.isToolPolygonOn = false;
-      this.isToolPointOn = false;
-      this.isToolDrawpenOn = false;
-      this.isTool3DCubeOn = false;
-      this.isToolMagicwandOn = false;
-      this.isToolKeypointOn = false;
-      this.isToolAutopointOn = false;
-      this.isToolSegmentOn = false;
       this.isClassSettingOnOff();
     },
     isToolResetOnOff() {
@@ -2073,10 +2042,6 @@ export default {
       }
       document.body.style.cursor = 'default';
       this.fCanvas.hoverCursor = 'default';
-      this.isToolMoveOn = false;
-      this.isToolTagOn = false;
-      this.isToolClassOn = false;
-      this.isToolResetOn = false;
       this.isToolODOn = !this.isToolODOn;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2100,10 +2065,6 @@ export default {
       }
       document.body.style.cursor = 'default';
       this.fCanvas.hoverCursor = 'default';
-      this.isToolMoveOn = false;
-      this.isToolTagOn = false;
-      this.isToolClassOn = false;
-      this.isToolResetOn = false;
       this.isToolODOn = false;
       this.isToolISOn = !this.isToolISOn;
       this.isToolSESOn = false;
@@ -2127,10 +2088,6 @@ export default {
       }
       document.body.style.cursor = 'default';
       this.fCanvas.hoverCursor = 'default';
-      this.isToolMoveOn = false;
-      this.isToolTagOn = false;
-      this.isToolClassOn = false;
-      this.isToolResetOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = !this.isToolSESOn;
@@ -2151,10 +2108,6 @@ export default {
 
     isToolMagicwandOnOff() {
       document.body.style.cursor = 'default';
-      this.isToolMoveOn = false;
-      this.isToolTagOn = false;
-      this.isToolClassOn = false;
-      this.isToolResetOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2171,10 +2124,6 @@ export default {
     },
     isToolAutopointOnOff() {
       document.body.style.cursor = 'default';
-      this.isToolMoveOn = false;
-      this.isToolTagOn = false;
-      this.isToolClassOn = false;
-      this.isToolResetOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2191,10 +2140,6 @@ export default {
     },
     isToolBoxingOnOff() {
       //document.body.style.cursor = 'Crosshair';
-      this.isToolMoveOn = false;
-      this.isToolTagOn = false;
-      this.isToolClassOn = false;
-      this.isToolResetOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2214,10 +2159,6 @@ export default {
     },
     isToolPolylineOnOff() {
       document.body.style.cursor = 'Crosshair';
-      this.isToolMoveOn = false;
-      this.isToolTagOn = false;
-      this.isToolClassOn = false;
-      this.isToolResetOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2234,10 +2175,6 @@ export default {
     },
     isToolPolygonOnOff() {
       document.body.style.cursor = 'Crosshair';
-      this.isToolMoveOn = false;
-      this.isToolTagOn = false;
-      this.isToolClassOn = false;
-      this.isToolResetOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2254,10 +2191,6 @@ export default {
     },
     isToolPointOnOff() {
       document.body.style.cursor = 'Crosshair';
-      this.isToolMoveOn = false;
-      this.isToolTagOn = false;
-      this.isToolClassOn = false;
-      this.isToolResetOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2274,10 +2207,6 @@ export default {
     },
     isToolDrawpenOnOff() {
       document.body.style.cursor = 'default';
-      this.isToolMoveOn = false;
-      this.isToolTagOn = false;
-      this.isToolClassOn = false;
-      this.isToolResetOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2294,10 +2223,6 @@ export default {
     },
     isTool3DCubeOnOff() {
       document.body.style.cursor = 'default';
-      this.isToolMoveOn = false;
-      this.isToolTagOn = false;
-      this.isToolClassOn = false;
-      this.isToolResetOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2314,10 +2239,6 @@ export default {
     },
     isToolKeypointOnOff() {
       document.body.style.cursor = 'default';
-      this.isToolMoveOn = false;
-      this.isToolTagOn = false;
-      this.isToolClassOn = false;
-      this.isToolResetOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2334,10 +2255,6 @@ export default {
     },
     isToolSegmentOnOff() {
       document.body.style.cursor = 'default';
-      this.isToolMoveOn = false;
-      this.isToolTagOn = false;
-      this.isToolClassOn = false;
-      this.isToolResetOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2715,7 +2632,6 @@ export default {
       this.fCanvas.clear();
       if (this.isHosted) {
         this.imgSrc =
-          //'https://cors-anywhere.herokuapp.com/' +
           this.hostUrl +
           '/rest/api/1/task/data?project_id=' +
           this.DataListItem[this.currentImageIndex].task_project.project_id +
@@ -2744,7 +2660,8 @@ export default {
           _this.inWidth = width;
           _this.inHeight = height;
           oImg.selectable = false;
-          _this.fCanvas.add(oImg);
+          //_this.fCanvas.add(oImg);
+          _this.fCanvas.setBackgroundImage(oImg);
           _this.fCanvas.setWidth(width * _this.imgRatio);
           _this.fCanvas.setHeight(height * _this.imgRatio);
           _this.canvasWidth = width * _this.imgRatio;
@@ -2775,6 +2692,12 @@ export default {
       }
     },
     setClass(event) {
+      let thisBtn = document.getElementById(event.target.id);
+      let elseBtn = document.getElementsByClassName('class-contents-obj');
+      for (let i = 0; i < elseBtn.length; i++) {
+        elseBtn.item(i).classList.remove('active');
+      }
+      thisBtn.classList.add('active');
       let className = event.target.id;
       let cId = 0;
       //console.log(className);
@@ -2798,6 +2721,12 @@ export default {
       this.instanceClass = setName;
     },
     setGender(event) {
+      let thisBtn = document.getElementById(event.target.id);
+      let elseBtn = document.getElementsByClassName('class-contents-gender');
+      for (let i = 0; i < elseBtn.length; i++) {
+        elseBtn.item(i).classList.remove('active');
+      }
+      thisBtn.classList.add('active');
       let gender = event.target.id;
       //console.log(gender);
       this.InstanceListItem[this.instanceIndex].gender = gender;
@@ -2824,6 +2753,12 @@ export default {
       this.instanceGender = setGender;
     },
     setAge(event) {
+      let thisBtn = document.getElementById(event.target.id);
+      let elseBtn = document.getElementsByClassName('class-contents-age');
+      for (let i = 0; i < elseBtn.length; i++) {
+        elseBtn.item(i).classList.remove('active');
+      }
+      thisBtn.classList.add('active');
       let age = event.target.id;
       //console.log(age);
       //console.log('age: ' + age);
@@ -3261,7 +3196,7 @@ export default {
               _this.dataCanvas.width,
               _this.dataCanvas.height,
             );*/
-            _this.dataCtx.putImageData(value, _this.dataX, _this.dataY);
+            _this.dataCtx.putImageData(value.data, value.dx, value.dy);
           });
       };
     },
@@ -3602,17 +3537,17 @@ export default {
       let resizeHeight = height >> 0;
       let iw = imageData.width;
       let ih = imageData.height;
-      this.dataX = 0;
-      this.dataY = 0;
+      let dX = 0;
+      let dY = 0;
       if (iw > ih) {
         ih *= 200 / iw;
         iw = 200;
         if (ih > 150) {
           iw *= 150 / ih;
           ih = 150;
-          this.dataX = (200 - iw) / 2;
+          dX = (200 - iw) / 2;
         } else {
-          this.dataY = (150 - ih) / 2;
+          dY = (150 - ih) / 2;
         }
       } else {
         iw *= 150 / ih;
@@ -3620,9 +3555,9 @@ export default {
         if (iw > 200) {
           ih *= 200 / iw;
           iw = 200;
-          this.dataY = (150 - ih) / 2;
+          dY = (150 - ih) / 2;
         } else {
-          this.dataX = (200 - iw) / 2;
+          dX = (200 - iw) / 2;
         }
       }
       resizeWidth = iw;
@@ -3643,7 +3578,11 @@ export default {
       canvas.height = resizeHeight;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(iBitmap, 0, 0);
-      return ctx.getImageData(0, 0, resizeWidth, resizeHeight);
+      return {
+        data: ctx.getImageData(0, 0, resizeWidth, resizeHeight),
+        dx: dX,
+        dy: dY,
+      };
     },
     getOD() {
       //console.log('od');
