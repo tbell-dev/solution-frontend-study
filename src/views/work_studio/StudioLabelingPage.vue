@@ -532,7 +532,7 @@
               </button>
               <p>세그먼트</p>
             </li>
-            <!--<li
+            <li
               class="select-tooltip"
               v-bind:class="{
                 'select-tool': this.isToolKeypointOn,
@@ -555,7 +555,7 @@
               </button>
               <span class="tooltip">키포인트</span>
               <p>키포인트</p>
-            </li>-->
+            </li>
           </ul>
         </div>
         <div class="tool-bottom">
@@ -1274,6 +1274,7 @@ import { HOST } from '@/main';
 import { fabric } from 'fabric';
 //import { isProxy, toRaw } from 'vue';
 import LoadingSpinner from '@/components/work_studio/common/center_area/LoadingSpinner.vue';
+import keyPoint from '@/components/work_studio/common/center_area/toolKeypoint';
 
 export default {
   components: {
@@ -1281,6 +1282,21 @@ export default {
   },
   mounted: async function () {
     const _this = this;
+    console.log(location.href); // 전체 url
+    console.log(location.pathname); // 파라미터 값
+    const urlParams = new URLSearchParams(location.search);
+    const para = document.location.pathname.split('/');
+    for (let p = 0; p < para.length; p++) {
+      if (para[p] === 'project') {
+        this.prjId = para[p + 1];
+      }
+    }
+    /*if (urlParams.has('project_id')) {
+      this.prjId = urlParams.get('project_id');
+    }*/
+    if (urlParams.has('searchTaskId')) {
+      this.taskId = urlParams.get('task_id');
+    }
     this.hostUrl = HOST;
     //this.dataCanvas = document.getElementById('dataCanvas');
     this.dataCanvas = new fabric.Canvas('dataCanvas', {
@@ -1325,12 +1341,15 @@ export default {
     this.fCanvas.on('mouse:down', this.downCanvas);
     this.fCanvas.on('mouse:move', this.moveCanvas);
     this.fCanvas.on('mouse:up', this.upCanvas);
+    //this.fCanvas.on('mouse:out', this.outCanvas);
     this.fCanvas.on('object:moving', this.movingObject);
     this.fCanvas.on('object:scaling', this.scalingObject);
     this.fCanvas.on('selection:created', this.createSelection);
     this.fCanvas.on('selection:updated', this.updateSelection);
     this.fCanvas.on('before:selection:cleared', this.beforeClearSelection);
     this.fCanvas.on('selection:cleared', this.clearSelection);
+    this.fCanvas.on('event:mousewheel', this.onMouseWheel);
+    this.fCanvas.on('path:created', this.createPath);
     this.fCtx = this.fCanvas.getContext();
     /*fabric.Object.prototype.lockRotation = true;
     fabric.Object.prototype.hasControls = true;
@@ -1353,12 +1372,16 @@ export default {
     });
     //'/rest/api/1/task/search?project_id=15&task_name&task_worker&task_validator&task_worker_or_validator&task_status_step&task_status_process',
     await axios
-      .get(this.hostUrl + '/rest/api/1/task/search?project_id=5&maxResults=500')
+      .get(
+        this.hostUrl +
+          '/rest/api/1/task/search?project_id=' +
+          this.prjId +
+          '&maxResults=500',
+      )
       .then(response => {
         if (response.data.datas.length > 0) {
           this.isHosted = true;
           this.DataListItem = response.data.datas;
-          //console.log(response.data.datas);
         } else {
           this.isHosted = false;
         }
@@ -1392,6 +1415,11 @@ export default {
       }
     };
     this.openFabImage();
+    for (let i = 0; i < this.DataListItem.length; i++) {
+      if (this.taskId === this.DataListItem[i].task_id) {
+        this.selectImgFunction(i);
+      }
+    }
     this.openAssignee(this.currentImageIndex);
   },
   data: function () {
@@ -1408,6 +1436,8 @@ export default {
       isDownload: false,
 
       //중앙
+      prjId: 5,
+      taskId: 1,
       selectImg: 'file-list1.png',
       selectImgName: 'person_0001.png',
       selectImgStatus: 1,
@@ -1442,6 +1472,7 @@ export default {
       isMove: false,
       isEndPolyline: true,
       isEndPolygon: true,
+      isBbox: false,
 
       isClassSettingOn: false,
 
@@ -1805,11 +1836,12 @@ export default {
       ],
       //클래스 데이터 저장 배열
       InstanceListItem: [],
-      AnnotationItem: {},
       AnnotationListItem: [],
+      TagListItem: [],
       ObjectListItem: [],
       DragRectListItem: [],
       ODListItem: [],
+      DeleteIDList: [],
       isToolMoveOn: false,
       isToolTagOn: false,
       isToolClassOn: false,
@@ -1834,7 +1866,6 @@ export default {
       isLabelingOn: false,
 
       //캔버스
-      outCanvas: '',
       outCtx: '',
       drawCtx: '',
       inFile: '',
@@ -1891,10 +1922,13 @@ export default {
 
       activeLine: '',
       activeShape: '',
-      canvas: '',
       lineArray: [],
       pointArray: [],
       drawMode: false,
+      isDragging: false,
+      selection: false,
+      paintPointList: [],
+      paintPathList: [],
     };
   },
   methods: {
@@ -1947,13 +1981,34 @@ export default {
     isTagSettingOnOff() {
       // tag on/off
       //this.objSelected
+      if (!this.isToolTagOn) {
+        /*let items = this.fCanvas.getObjects();
+        for (let i = 0; i < items.length; i++) {
+          this.fCanvas.remove(this.TagListItem[i]);
+        }*/
+        for (let i = 0; i < this.TagListItem.length; i++) {
+          this.TagListItem[i].visible = false;
+        }
+      } else {
+        for (let i = 0; i < this.TagListItem.length; i++) {
+          //this.fCanvas.add(this.TagListItem[i]);
+          this.TagListItem[i].visible = true;
+        }
+      }
+      this.fCanvas.renderAll();
     },
     isClassSettingOnOff(index) {
-      console.log(index);
+      let prevIndex = this.instanceIndex;
       if (index === null || index === undefined) {
         index = this.instanceIndex;
+      } else {
+        this.instanceIndex = index;
       }
-      console.log(this.InstanceListItem[this.instanceIndex].tool);
+      for (let i = 0; i < this.ObjectListItem.length; i++) {
+        if (this.InstanceListItem[index].id === this.ObjectListItem[i].id) {
+          this.fCanvas.setActiveObject(this.ObjectListItem[i]);
+        }
+      }
 
       let thisBtn = document.getElementById('instance' + index);
       let elseBtn = document.getElementsByClassName('instance-detail');
@@ -1966,13 +2021,12 @@ export default {
         thisBtn.classList.remove('active');
       }
 
-      if (this.instanceIndex === index) {
+      if (prevIndex === index) {
         this.isClassSettingOn = !this.isClassSettingOn;
         if (
           (!this.isClassSettingOn && this.isToolClassOn) ||
           (this.isClassSettingOn && !this.isToolClassOn)
         ) {
-          console.log('???');
           this.isToolClassOn = !this.isToolClassOn;
         } else {
           console.log('else');
@@ -1995,19 +2049,22 @@ export default {
       if (this.isToolMoveOn) {
         this.fCanvas.hoverCursor = 'move';
       }
+      this.fCanvas.isDrawingMode = false;
     },
     isToolTagOnOff() {
-      document.body.style.cursor = 'default';
+      //document.body.style.cursor = 'default';
       this.isToolTagOn = !this.isToolTagOn;
+      this.fCanvas.isDrawingMode = false;
       this.isTagSettingOnOff();
     },
     isToolClassOnOff() {
-      document.body.style.cursor = 'default';
+      //document.body.style.cursor = 'default';
       this.isToolClassOn = !this.isToolClassOn;
+      this.fCanvas.isDrawingMode = false;
       this.isClassSettingOnOff();
     },
     isToolResetOnOff() {
-      document.body.style.cursor = 'default';
+      //document.body.style.cursor = 'default';
       this.isToolMoveOn = false;
       this.isToolTagOn = false;
       this.isToolClassOn = false;
@@ -2025,6 +2082,7 @@ export default {
       this.isToolKeypointOn = false;
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
+      this.fCanvas.isDrawingMode = false;
       if (confirm('작업 내용이 초기화 됩니다. 초기화 하시겠습니까?')) {
         this.isToolResetOn = false;
         // clear instance, annotation
@@ -2055,9 +2113,45 @@ export default {
       this.isToolKeypointOn = false;
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
+      this.fCanvas.isDrawingMode = false;
       if (this.isToolODOn && !this.isOD) {
         this.getOD();
+      } /*else if (this.isToolODOn) {
+        for (let i = 0; i < _this.TagListItem.length; i++) {
+        let tag = _this.TagListItem[i];
+        if (tag.id === _this.objSelected.id) {
+          _this.fCanvas.remove(tag);
+          _this.TagListItem.splice(i, 1);
+        }
       }
+      for (let i = 0; i < _this.InstanceListItem.length; i++) {
+        if (_this.InstanceListItem[i].id === _this.objSelected.id) {
+          _this.InstanceListItem.splice(i, 1);
+        }
+      }
+      for (let i = 0; i < _this.AnnotationListItem.length; i++) {
+        if (_this.AnnotationListItem[i].id === _this.objSelected.id) {
+          if (_this.AnnotationListItem[i].annotation.annotation_id) {
+            _this.DeleteIDList.push(
+              _this.AnnotationListItem[i].annotation.annotation_id,
+            );
+            console.log(_this.AnnotationListItem[i].annotation.annotation_id);
+          } else {
+            console.log('no id');
+          }
+          _this.AnnotationListItem.splice(i, 1);
+        }
+      }
+      for (let i = 0; i < _this.ObjectListItem.length; i++) {
+        if (_this.ObjectListItem[i].id === _this.objSelected.id) {
+          _this.fCanvas.remove(_this.objSelected);
+          _this.ObjectListItem.splice(i, 1);
+        }
+      }
+      _this.isLabelingOn = false;
+      _this.isClassSettingOn = false;
+      _this.isToolClassOn = false;
+      }*/
     },
     isToolISOnOff() {
       if (!this.isHosted) {
@@ -2078,8 +2172,11 @@ export default {
       this.isToolKeypointOn = false;
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
+      this.fCanvas.isDrawingMode = false;
       if (this.isToolISOn && !this.isIS) {
         this.getIS();
+      } else if (!this.isToolISOn) {
+        //
       }
     },
     isToolSESOnOff() {
@@ -2101,6 +2198,7 @@ export default {
       this.isToolKeypointOn = false;
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
+      this.fCanvas.isDrawingMode = false;
       if (this.isToolSESOn && !this.isSES) {
         this.getSES();
       }
@@ -2117,10 +2215,15 @@ export default {
       this.isToolPointOn = false;
       this.isToolDrawpenOn = false;
       this.isTool3DCubeOn = false;
-      this.isToolMagicwandOn = !this.isToolMagicwandOn;
+      //this.isToolMagicwandOn = !this.isToolMagicwandOn;
+      this.isToolMagicwandOn = true;
+      if (this.isToolMagicwandOn) {
+        this.fCanvas.hoverCursor = 'pointer';
+      }
       this.isToolKeypointOn = false;
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
+      this.fCanvas.isDrawingMode = false;
     },
     isToolAutopointOnOff() {
       document.body.style.cursor = 'default';
@@ -2135,15 +2238,26 @@ export default {
       this.isTool3DCubeOn = false;
       this.isToolMagicwandOn = false;
       this.isToolKeypointOn = false;
-      this.isToolAutopointOn = !this.isToolAutopointOn;
+      //this.isToolAutopointOn = !this.isToolAutopointOn;
+      this.isToolAutopointOn = true;
+      if (this.isToolAutopointOn) {
+        //this.fCanvas.hoverCursor = 'pointer';
+        if (confirm('준비중입니다.')) {
+          this.isToolAutopointOn = false;
+        } else {
+          this.isToolAutopointOn = false;
+        }
+      }
       this.isToolSegmentOn = false;
+      this.fCanvas.isDrawingMode = false;
     },
     isToolBoxingOnOff() {
       //document.body.style.cursor = 'Crosshair';
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
-      this.isToolBoxingOn = !this.isToolBoxingOn;
+      //this.isToolBoxingOn = !this.isToolBoxingOn;
+      this.isToolBoxingOn = true;
       if (this.isToolBoxingOn) {
         this.fCanvas.hoverCursor = 'crosshair';
       }
@@ -2156,6 +2270,7 @@ export default {
       this.isToolKeypointOn = false;
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
+      this.fCanvas.isDrawingMode = false;
     },
     isToolPolylineOnOff() {
       document.body.style.cursor = 'Crosshair';
@@ -2163,7 +2278,11 @@ export default {
       this.isToolISOn = false;
       this.isToolSESOn = false;
       this.isToolBoxingOn = false;
-      this.isToolPolylineOn = !this.isToolPolylineOn;
+      //this.isToolPolylineOn = !this.isToolPolylineOn;
+      this.isToolPolylineOn = true;
+      if (this.isToolPolylineOn) {
+        this.fCanvas.hoverCursor = 'crosshair';
+      }
       this.isToolPolygonOn = false;
       this.isToolPointOn = false;
       this.isToolDrawpenOn = false;
@@ -2172,6 +2291,7 @@ export default {
       this.isToolKeypointOn = false;
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
+      this.fCanvas.isDrawingMode = false;
     },
     isToolPolygonOnOff() {
       document.body.style.cursor = 'Crosshair';
@@ -2180,7 +2300,11 @@ export default {
       this.isToolSESOn = false;
       this.isToolBoxingOn = false;
       this.isToolPolylineOn = false;
-      this.isToolPolygonOn = !this.isToolPolygonOn;
+      //this.isToolPolygonOn = !this.isToolPolygonOn;
+      this.isToolPolygonOn = true;
+      if (this.isToolPolygonOn) {
+        this.fCanvas.hoverCursor = 'crosshair';
+      }
       this.isToolPointOn = false;
       this.isToolDrawpenOn = false;
       this.isTool3DCubeOn = false;
@@ -2188,6 +2312,11 @@ export default {
       this.isToolKeypointOn = false;
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
+      this.fCanvas.isDrawingMode = false;
+
+      if (this.isToolPolygonOn) {
+        this.toggleDrawPolygon();
+      }
     },
     isToolPointOnOff() {
       document.body.style.cursor = 'Crosshair';
@@ -2197,13 +2326,18 @@ export default {
       this.isToolBoxingOn = false;
       this.isToolPolylineOn = false;
       this.isToolPolygonOn = false;
-      this.isToolPointOn = !this.isToolPointOn;
+      //this.isToolPointOn = !this.isToolPointOn;
+      this.isToolPointOn = true;
+      if (this.isToolPointOn) {
+        this.fCanvas.hoverCursor = 'crosshair';
+      }
       this.isToolDrawpenOn = false;
       this.isTool3DCubeOn = false;
       this.isToolMagicwandOn = false;
       this.isToolKeypointOn = false;
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
+      this.fCanvas.isDrawingMode = false;
     },
     isToolDrawpenOnOff() {
       document.body.style.cursor = 'default';
@@ -2214,12 +2348,32 @@ export default {
       this.isToolPolylineOn = false;
       this.isToolPolygonOn = false;
       this.isToolPointOn = false;
-      this.isToolDrawpenOn = !this.isToolDrawpenOn;
+      //this.isToolDrawpenOn = !this.isToolDrawpenOn;
+      this.isToolDrawpenOn = true;
+      if (this.isToolDrawpenOn) {
+        //this.fCanvas.hoverCursor = 'brush';
+        this.fCanvas.freeDrawingCursor = new fabric.Circle({
+          left: -100,
+          top: -100,
+          radius: 10,
+          fill: '#ffcc004D',
+          stroke: 'black',
+          originX: 'center',
+          originY: 'center',
+        });
+      }
       this.isTool3DCubeOn = false;
       this.isToolMagicwandOn = false;
       this.isToolKeypointOn = false;
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
+      /*if (this.isToolDrawpenOn) {
+        //this.fCanvas.isDrawingMode = true; //1;
+      } else {
+        this.fCanvas.isDrawingMode = false;
+        this.fCanvas.item(0).selectable = false;
+      }*/
+      this.setDrawingMode();
     },
     isTool3DCubeOnOff() {
       document.body.style.cursor = 'default';
@@ -2231,13 +2385,24 @@ export default {
       this.isToolPolygonOn = false;
       this.isToolPointOn = false;
       this.isToolDrawpenOn = false;
-      this.isTool3DCubeOn = !this.isTool3DCubeOn;
+      //this.isTool3DCubeOn = !this.isTool3DCubeOn;
+      this.isTool3DCubeOn = true;
+      if (this.isTool3DCubeOn) {
+        //this.fCanvas.hoverCursor = 'crosshair';
+        if (confirm('준비중입니다.')) {
+          this.isTool3DCubeOn = false;
+        } else {
+          this.isTool3DCubeOn = false;
+        }
+      }
       this.isToolMagicwandOn = false;
       this.isToolKeypointOn = false;
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
+      this.fCanvas.isDrawingMode = false;
     },
     isToolKeypointOnOff() {
+      const _this = this;
       document.body.style.cursor = 'default';
       this.isToolODOn = false;
       this.isToolISOn = false;
@@ -2249,9 +2414,62 @@ export default {
       this.isToolDrawpenOn = false;
       this.isTool3DCubeOn = false;
       this.isToolMagicwandOn = false;
-      this.isToolKeypointOn = !this.isToolKeypointOn;
+      //this.isToolKeypointOn = !this.isToolKeypointOn;
+      this.isToolKeypointOn = true;
+      /*if (this.isToolKeypointOn) {
+        //this.fCanvas.hoverCursor = 'crosshair';
+        if (confirm('준비중입니다.')) {
+          this.isToolKeypointOn = false;
+        } else {
+          this.isToolKeypointOn = false;
+        }
+      }*/
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
+      this.fCanvas.isDrawingMode = false;
+      if (this.isToolKeypointOn) {
+        //동적으로 수정 필요
+        let line = keyPoint.makeLine([250, 125, 250, 175]),
+          line2 = keyPoint.makeLine([250, 175, 250, 250]),
+          line3 = keyPoint.makeLine([250, 250, 300, 350]),
+          line4 = keyPoint.makeLine([250, 250, 200, 350]),
+          line5 = keyPoint.makeLine([250, 175, 175, 225]),
+          line6 = keyPoint.makeLine([250, 175, 325, 225]);
+
+        this.fCanvas.add(line, line2, line3, line4, line5, line6);
+
+        this.fCanvas.add(
+          keyPoint.makeCircle(line.get('x1'), line.get('y1'), null, line),
+          keyPoint.makeCircle(
+            line.get('x2'),
+            line.get('y2'),
+            line,
+            line2,
+            line5,
+            line6,
+          ),
+          keyPoint.makeCircle(
+            line2.get('x2'),
+            line2.get('y2'),
+            line2,
+            line3,
+            line4,
+          ),
+          keyPoint.makeCircle(line3.get('x2'), line3.get('y2'), line3),
+          keyPoint.makeCircle(line4.get('x2'), line4.get('y2'), line4),
+          keyPoint.makeCircle(line5.get('x2'), line5.get('y2'), line5),
+          keyPoint.makeCircle(line6.get('x2'), line6.get('y2'), line6),
+        );
+
+        this.fCanvas.on('object:moving', function (e) {
+          let p = e.target;
+          p.line1 && p.line1.set({ x2: p.left, y2: p.top });
+          p.line2 && p.line2.set({ x1: p.left, y1: p.top });
+          p.line3 && p.line3.set({ x1: p.left, y1: p.top });
+          p.line4 && p.line4.set({ x1: p.left, y1: p.top });
+          _this.fCanvas.renderAll();
+        });
+      }
     },
     isToolSegmentOnOff() {
       document.body.style.cursor = 'default';
@@ -2267,7 +2485,12 @@ export default {
       this.isToolMagicwandOn = false;
       this.isToolKeypointOn = false;
       this.isToolAutopointOn = false;
-      this.isToolSegmentOn = !this.isToolSegmentOn;
+      //this.isToolSegmentOn = !this.isToolSegmentOn;
+      this.isToolSegmentOn = true;
+      if (this.isToolSegmentOn) {
+        this.fCanvas.hoverCursor = 'crosshair';
+      }
+      this.fCanvas.isDrawingMode = false;
     },
     clearDatas() {
       this.ObjectListItem = [];
@@ -2279,6 +2502,7 @@ export default {
     },
     resetTools() {
       document.body.style.cursor = 'default';
+      this.fCanvas.isDrawingMode = false;
       this.isToolMoveOn = false;
       this.isToolTagOn = false;
       this.isToolClassOn = false;
@@ -2304,6 +2528,7 @@ export default {
       // save status
       //this.workStateSave();
       // clear instance, annotation
+      console.log(index);
       this.clearDatas();
       // reset tools
       this.resetTools();
@@ -2386,21 +2611,51 @@ export default {
       this.setZoomCenter();
       //console.log(this.DataListItem[this.currentImageIndex].task_id);
     },
-    imageStatusComplete() {
+    async imageStatusWorking() {
       let item = this.DataListItem[this.currentImageIndex];
       let projectId = item.task_project.project_id;
       let taskId = item.task_id;
-      axios.post(
-        HOST +
-          '/rest/api/1/task/status/update?project_id=' +
-          projectId +
-          '&task_id=' +
-          taskId,
-        {
-          task_status_progress: 3,
-          comment_body: '',
-        },
-      );
+      await axios
+        .post(
+          HOST +
+            '/rest/api/1/task/status/update?project_id=' +
+            projectId +
+            '&task_id=' +
+            taskId,
+          {
+            task_status_progress: 2,
+            comment_body: '',
+          },
+        )
+        .then(response => {
+          console.log('working');
+          console.log(response.data);
+        });
+      this.DataListItem[
+        this.currentImageIndex
+      ].task_status.task_status_progress = 2;
+    },
+    async imageStatusComplete() {
+      let item = this.DataListItem[this.currentImageIndex];
+      let projectId = item.task_project.project_id;
+      let taskId = item.task_id;
+      await this.workStateSave();
+      await axios
+        .post(
+          HOST +
+            '/rest/api/1/task/status/update?project_id=' +
+            projectId +
+            '&task_id=' +
+            taskId,
+          {
+            task_status_progress: 3,
+            comment_body: '',
+          },
+        )
+        .then(response => {
+          console.log('complete');
+          console.log(response.data);
+        });
       this.DataListItem[
         this.currentImageIndex
       ].task_status.task_status_progress = 3;
@@ -2562,6 +2817,21 @@ export default {
       /*for (let i = 0; i < _this.AnnotationListItem.length; i++) {
         console.log(_this.AnnotationListItem[i].annotation);
       }*/
+      for (let i = 0; i < this.DeleteIDList.length; i++) {
+        await axios
+          .delete(
+            HOST +
+              '/rest/api/1/task/annotation/delete?project_id=' +
+              projectId +
+              '&task_id=' +
+              taskId +
+              '&annotation_id=' +
+              this.DeleteIDList[i],
+          )
+          .then(response => {
+            console.log(response.data);
+          });
+      }
       await axios
         .get(
           HOST +
@@ -2570,77 +2840,130 @@ export default {
             '&task_id=' +
             taskId,
         )
-        .then(response => {
+        .then(async response => {
           //console.log(response.status);
           //console.log(response.data.datas);
-          //기존 annotation 정보 유무 확인? 업데이트할 id 확인 방법?
-          if (response.data.datas.length > 0) {
-            console.log('update');
-            //update
-            /*await axios
-              .post(
+          let cnt = response.data.datas.length;
+          /*update 할 annotation 찾는 방법?
+            1. 서버 데이터 loof - 로컬 데이터 loof 매칭
+            -> 같으면 update
+            -> 로컬 데이터 남을 경우 create 시점? 서버 데이터 끝난 후?
+            -> 매칭 안된 서버 데이터 남을 경우? Delete 시점? 남은 자료 구분 방법?
+            2. 로컬 데이터 loof - 서버 데이터 loof 매칭
+            -> 같으면 update
+            -> 서버 데이터 남을 경우? Delete? 남은 자료 구분 방법?
+            -> 매칭 안된 로컬 데이터 남을 경우? create 시점? 남은 자료 구분 방법?
+            ***3. Delete 별도로
+            -> Save 시, Delete를 1번으로 진행한 후, update 및 create 진행
+           */
+          for (let i = 0; i < this.AnnotationListItem.length; i++) {
+            let data = this.AnnotationListItem[i].annotation;
+            //console.log(data);
+            if (cnt > 0) {
+              //update
+              for (let j = 0; j < response.data.datas.length; j++) {
+                //console.log('update');
+                if (
+                  data.annotation_id === response.data.datas[j].annotation_id
+                ) {
+                  //console.log('match');
+                  await axios
+                    .post(
+                      HOST +
+                        '/rest/api/1/task/annotation/update?project_id=' +
+                        projectId +
+                        '&task_id=' +
+                        taskId,
+                      data,
+                    )
+                    .then(response => {
+                      console.log('update');
+                      console.log(response.data);
+                    });
+                  cnt--;
+                }
+              }
+            } else {
+              console.log('create');
+              let url =
                 HOST +
-                  '/rest/api/1/task/annotation/update?project_id=' +
-                  projectId +
-                  '&task_id=' +
-                  taskId,
-                {
-                  annotation_id: ,
-                  this.AnnotationListItem[i].annotation,
-                },
-              )
-              .then(response => {
-                console.log('save' + response.data);
-              });*/
-          } else {
-            console.log('create');
-            //create
-            /*await axios
-              .post(
-                HOST +
-                  '/rest/api/1/task/annotation/create?project_id=' +
-                  projectId +
-                  '&task_id=' +
-                  taskId,
-                this.AnnotationListItem[i].annotation,
-              )
-              .then(response => {
-                console.log('save' + response.data);
-              });*/
+                '/rest/api/1/task/annotation/create?project_id=' +
+                projectId +
+                '&task_id=' +
+                taskId;
+              //create
+              await axios.post(url, data).then(response => {
+                console.log('create');
+                console.log(response.data);
+              });
+            }
           }
         });
-      /*await axios
-        .post(
-          HOST +
-            '/rest/api/1/task/annotation/create?project_id=' +
-            projectId +
-            '&task_id=' +
-            taskId,
-          {
-            task_status_progress: 2,
-            comment_body: '',
-          },
-        )
-        .then(response => {
-          console.log('save' + response.data);
-        });*/
-      this.DataListItem[
-        this.currentImageIndex
-      ].task_status.task_status_progress = 2;
+      await this.imageStatusWorking();
     },
     openFabImage() {
+      const _this = this;
       this.fCanvas.clear();
       if (this.isHosted) {
+        let item = this.DataListItem[this.currentImageIndex];
         this.imgSrc =
           this.hostUrl +
           '/rest/api/1/task/data?project_id=' +
-          this.DataListItem[this.currentImageIndex].task_project.project_id +
+          item.task_project.project_id +
           '&task_id=' +
-          this.DataListItem[this.currentImageIndex].task_id;
+          item.task_id;
+        axios
+          .get(
+            HOST +
+              '/rest/api/1/task/annotation?project_id=' +
+              item.task_project.project_id +
+              '&task_id=' +
+              item.task_id,
+          )
+          .then(response => {
+            //console.log(response.status);
+            console.log(response.data.datas);
+            for (let j = 0; j < response.data.datas.length; j++) {
+              let item = response.data.datas[j];
+              if (item.annotation_id) {
+                //console.log(item);
+                /*_this.AnnotationListItem.push({
+                  id: _this.objId,
+                  annotation: item,
+                });
+                _this.objId++;*/
+                if (item.annotation_type.annotation_type_id === 1) {
+                  let coord = {
+                    left: item.annotation_data[0],
+                    top: item.annotation_data[1],
+                    width: item.annotation_data[2],
+                    height: item.annotation_data[3],
+                  };
+                  _this.drawBoxing(
+                    'bbox',
+                    coord,
+                    '#00ffcc',
+                    item.annotation_id,
+                  );
+                } else if (
+                  item.annotation_type.annotation_type_id === 2 ||
+                  item.annotation_type.annotation_type_id === 3
+                ) {
+                  _this.drawPolyItem(
+                    item.annotation_type.annotation_type_name,
+                    item.annotation_data,
+                    item.annotation_type.annotation_type_name,
+                    '#00ffcc',
+                    item.annotation_id,
+                    item.annotation_type.annotation_type_id,
+                  );
+                }
+              }
+            }
+          });
       } else {
         this.imgSrc = require(`@/assets/images/studio/${this.selectImg}`);
       }
-      const _this = this;
       fabric.Image.fromURL(
         this.imgSrc,
         function (oImg) {
@@ -2662,6 +2985,13 @@ export default {
           oImg.selectable = false;
           //_this.fCanvas.add(oImg);
           _this.fCanvas.setBackgroundImage(oImg);
+          // Define
+          /*canvas.setBackgroundImage(imageUrl, canvas.renderAll.bind(canvas), {
+            // Optionally add an opacity lvl to the image
+            backgroundImageOpacity: 0.5,
+            // should the image be resized to fit the container?
+            backgroundImageStretch: true
+          });*/
           _this.fCanvas.setWidth(width * _this.imgRatio);
           _this.fCanvas.setHeight(height * _this.imgRatio);
           _this.canvasWidth = width * _this.imgRatio;
@@ -2859,7 +3189,7 @@ export default {
         this.isDown = true;
       } else if (
         this.isToolPolylineOn ||
-        this.isToolPolygonOn ||
+        //this.isToolPolygonOn ||
         this.isToolSegmentOn
       ) {
         this.isDown = true;
@@ -2871,6 +3201,7 @@ export default {
             stroke: 'rgba(0,0,0,0.5)',
             objectCaching: false,
             hoverCursor: 'pointer',
+            hasBorders: false,
           });
           this.tmpLine = new fabric.Line(
             [this.startX, this.startY, this.startX, this.startY],
@@ -2883,6 +3214,28 @@ export default {
           this.fCanvas.add(this.tmpLine);
           this.isEndPolyline = false;
         }
+      } else if (this.isToolPolygonOn) {
+        if (this.drawMode) {
+          if (options.target && options.target.id === this.pointArray[0].id) {
+            // when click on the first point
+            this.generatePolygon(this.pointArray);
+          } else {
+            this.addPoint(options);
+          }
+        } else {
+          this.toggleDrawPolygon();
+        }
+        /*let evt = options.e;
+        if (evt.altKey === true) {
+          this.isDragging = true;
+          this.selection = false;
+          this.lastPosX = evt.clientX;
+          this.lastPosY = evt.clientY;
+        }*/
+      } else if (this.isToolDrawpenOn) {
+        console.log(this.fCanvas.isDrawingMode);
+        let opt = { pointer, e: {} };
+        this.fCanvas.freeDrawingBrush.onMouseDown(pointer, opt);
       } /*else if (this.isToolPolygonOn) {
         if (this.drawMode) {
           if (options.target && options.target.id === this.pointArray[0].id) {
@@ -2902,9 +3255,6 @@ export default {
         }
       } /*else if (this.isToolPointOn) {
       } else if (this.isToolPointOn) {
-      } else if (this.isToolDrawpenOn) {
-        this.fCanvas.isDrawingMode= 1;
-        this.fCanvas.freeDrawingBrush.width = 20;
       } else if (this.isTool3DCubeOn) {
       } else if (this.isToolMagicwandOn) {
       } else if (this.isToolKeypointOn) {
@@ -2944,11 +3294,40 @@ export default {
         this.setDragBox(nowX, nowY);
       } else if (
         (this.isToolPolylineOn ||
-          this.isToolPolygonOn ||
+          //this.isToolPolygonOn ||
           this.isToolSegmentOn) &&
         this.isDown
       ) {
         this.setDragLine(nowX, nowY);
+      } else if (this.isToolPolygonOn) {
+        /*if (this.isDragging) {
+          let e = options.e;
+          this.viewportTransform[4] += e.clientX - this.lastPosX;
+          this.viewportTransform[5] += e.clientY - this.lastPosY;
+          this.requestRenderAll();
+          this.lastPosX = e.clientX;
+          this.lastPosY = e.clientY;
+        }*/
+        if (this.drawMode) {
+          if (this.activeLine && this.activeLine.class === 'line') {
+            //const pointer = this.fCanvas.getPointer(options.e);
+            this.activeLine.set({
+              x2: pointer.x,
+              y2: pointer.y,
+            });
+            const points = this.activeShape.get('points');
+            points[this.pointArray.length] = {
+              x: pointer.x,
+              y: pointer.y,
+            };
+            this.activeShape.set({
+              points,
+            });
+          }
+          this.fCanvas.renderAll();
+        }
+      } else if (this.isToolDrawpenOn) {
+        this.paintPointList.push(new fabric.Point(pointer.x, pointer.y));
       } /*else if (this.isToolPolygonOn) {
         if (this.isDragging) {
           let e = options.e;
@@ -3000,7 +3379,11 @@ export default {
       } else if (this.isToolODOn) {
       } else if (this.isToolISOn) {
       } else if (this.isToolSESOn) {
-      }*/ else if (this.isToolBoxingOn) {
+      }*/ else if (
+        this.isToolBoxingOn &&
+        !this.isObjectSelectOn &&
+        !this.isObjectMoveOn
+      ) {
         if (
           Math.abs(this.endX - this.startX) <= 1 &&
           Math.abs(this.endY - this.startY) <= 1
@@ -3014,24 +3397,33 @@ export default {
         this.isDown = false;
       } else if (
         this.isToolPolylineOn ||
-        this.isToolPolygonOn ||
+        //this.isToolPolygonOn ||
         this.isToolSegmentOn
       ) {
         //this.polylinePoints.push({ x: this.endX, y: this.endY });
         //this.drawPolyline();
         this.setPolyLine();
         //this.drawPoints();
+      } else if (this.isToolPolygonOn) {
+        this.isDragging = false;
+        this.selection = true;
+      } else if (this.isToolDrawpenOn) {
+        //console.log(this.fCanvas.isDrawingMode);
+        //this.drawBrush();
       } /*else if (this.isToolPolygonOn) {
         this.isDragging = false;
         this.selection = true;
-      } /*else if (this.isToolPointOn) {
-      } /*else if (this.isToolDrawpenOn) {
-      } else if (this.isTool3DCubeOn) {
+      }*/ else if (this.isToolPointOn) {
+        this.drawPoints(pointer);
+      } /*else if (this.isTool3DCubeOn) {
       } else if (this.isToolMagicwandOn) {
       } else if (this.isToolKeypointOn) {
       } else if (this.isToolAutopointOn) {
       } else {
       }*/
+    },
+    outCanvas() {
+      this.fCanvas.discardActiveObject();
     },
     createSelection() {},
     updateSelection() {},
@@ -3041,45 +3433,192 @@ export default {
     movingObject(options) {
       //let event = options.e;
       //console.log('moving');
-      this.isMove = true;
-      this.positionX = options.target.left;
-      this.positionY = options.target.top;
-      //options.target.setCoords();
-      //console.log(this.instanceWidth + ', ' + this.instanceHeight);
-      this.setDataImage(options.target);
-      this.fCanvas.renderAll();
-      this.isMove = false;
+      console.log(options.target.type);
+      if (options.target.type === 'rect') {
+        this.isMove = true;
+        this.positionX = options.target.left;
+        this.positionY = options.target.top;
+        for (let i = 0; i < this.TagListItem.length; i++) {
+          let tag = this.TagListItem[i];
+          if (tag.id === options.target.id) {
+            tag.left = options.target.left - tag.height / 2;
+            tag.top = options.target.top - tag.width / 2;
+          }
+        }
+        //options.target.setCoords();
+        //console.log(this.instanceWidth + ', ' + this.instanceHeight);
+        this.setDataImage(options.target);
+        this.fCanvas.renderAll();
+        this.isMove = false;
+      } else if (
+        options.target.type === 'polygon' ||
+        options.target.type === 'segment'
+      ) {
+        this.isMove = true;
+        let polygon = options.target;
+        let matrix = polygon.calcTransformMatrix();
+        let moveX = options.target.left - this.positionX;
+        let moveY = options.target.top - this.positionY;
+        this.positionX = options.target.left;
+        this.positionY = options.target.top;
+        const object = options.target;
+        object._calcDimensions();
+        object.setCoords();
+        options.target.pathOffset = {
+          x: options.target.left + options.target.width / 2,
+          y: options.target.top + options.target.height / 2,
+        };
+        let transformedPoints = polygon
+          .get('points')
+          .map(function (p) {
+            return new fabric.Point(p.x + moveX, p.y + moveY);
+          })
+          .map(function (p) {
+            return fabric.util.transformPoint(p, matrix, true);
+          });
+        let circles = transformedPoints.map(function (p) {
+          return new fabric.Point(p.x, p.y);
+        });
+        polygon.set({
+          points: circles,
+        });
+        for (let i = 0; i < this.TagListItem.length; i++) {
+          let tag = this.TagListItem[i];
+          if (tag.id === options.target.id) {
+            tag.left = options.target.points[0].x - tag.height / 2;
+            tag.top = options.target.points[0].y - tag.width / 2;
+          }
+        }
+        this.setDataImage(options.target);
+        this.fCanvas.renderAll();
+        this.isMove = false;
+      }
     },
     scalingObject(options) {
-      //console.log('scaling');
+      console.log('scaling');
+      if (options.target.type === 'rect') {
+        this.positionX = options.target.left;
+        this.positionY = options.target.top;
+        this.instanceWidth = options.target.width * options.target.scaleX;
+        this.instanceHeight = options.target.height * options.target.scaleY;
+        let coords = {
+          left: options.target.left,
+          top: options.target.top,
+          width: options.target.width * options.target.scaleX,
+          height: options.target.height * options.target.scaleY,
+        };
+        options.target.set({
+          width: options.target.width * options.target.scaleX,
+          height: options.target.height * options.target.scaleY,
+          scaleX: 1,
+          scaleY: 1,
+        });
+        for (let i = 0; i < this.AnnotationListItem.length; i++) {
+          if (this.AnnotationListItem[i].id === options.target.id) {
+            this.AnnotationListItem[i].annotation.annotation_data = [
+              coords.left,
+              coords.top,
+              coords.width,
+              coords.height,
+            ];
+            //console.log(this.AnnotationListItem[i]);
+          }
+        }
+        //console.log(options.target);
+        //options.target.strokeWidth = 2 * (1 / this.imgRatio);
+        this.setDataImage(coords);
+        this.fCanvas.renderAll();
+      }
+    },
+    modifyObject(options) {
+      let polygon = options.target;
+      let matrix = polygon.calcTransformMatrix();
+      let moveX = options.target.left - this.positionX;
+      let moveY = options.target.top - this.positionY;
       this.positionX = options.target.left;
       this.positionY = options.target.top;
-      this.instanceWidth = options.target.width * options.target.scaleX;
-      this.instanceHeight = options.target.height * options.target.scaleY;
-      let coords = {
-        left: options.target.left,
-        top: options.target.top,
-        width: options.target.width * options.target.scaleX,
-        height: options.target.height * options.target.scaleY,
+      const object = options.target;
+      object._calcDimensions();
+      object.setCoords();
+      options.target.pathOffset = {
+        x: options.target.left + options.target.width / 2,
+        y: options.target.top + options.target.height / 2,
       };
-      //options.target.strokeWidth = 2 * (1 / this.imgRatio);
-      options.target.set({
-        width: options.target.width * options.target.scaleX,
-        height: options.target.height * options.target.scaleY,
+      let transformedPoints = polygon
+        .get('points')
+        .map(function (p) {
+          /*return new fabric.Point(
+            p.x - polygon.pathOffset.x,
+            p.y - polygon.pathOffset.y,
+          );*/
+          return new fabric.Point(p.x + moveX, p.y + moveY);
+        })
+        .map(function (p) {
+          return fabric.util.transformPoint(p, matrix, true);
+        });
+      /*let transformedPoints = polygon
+        .get('points')
+        .map(function (p) {
+          return new fabric.Point(
+            (p.x - polygon.pathOffset.x) / polygon.width,
+            (p.y - polygon.pathOffset.y) / polygon.height,
+          );
+        })
+        .map(function (p) {
+          return fabric.util.transformPoint(p, matrix);
+        });*/
+      /*let width = polygon.width;
+      let height = polygon.height;
+      let scaleX = polygon.scaleX;
+      let scaleY = polygon.scaleY;
+
+      polygon.set({
+        width: width * scaleX,
+        height: height * scaleY,
         scaleX: 1,
         scaleY: 1,
+      });*/
+      /*let circles = transformedPoints.map(function (p) {
+        return new fabric.Circle({
+          left: p.x,
+          top: p.y,
+          radius: 3,
+          fill: 'transparent',
+          originX: 'center',
+          originY: 'center',
+          hasControls: false,
+          hasBorders: false,
+          selectable: false,
+        });
+      });*/
+      let circles = transformedPoints.map(function (p) {
+        return new fabric.Point(p.x, p.y);
       });
-      /*console.log(options.target);
-      console.log(aCoords);
-      console.log(coords);*/
-      //console.log(this.instanceWidth + ', ' + this.instanceHeight);
-      this.setDataImage(coords);
+      polygon.set({
+        points: circles,
+      });
+      for (let i = 0; i < this.TagListItem.length; i++) {
+        let tag = this.TagListItem[i];
+        if (tag.id === options.target.id) {
+          for (let j = 0; j < options.target.points.length; j++) {
+            tag.left = options.target.points[0].x - tag.height / 2;
+            tag.top = options.target.points[0].y - tag.width / 2;
+          }
+        }
+      }
       this.fCanvas.renderAll();
+      /*this.fCanvas.remove(options.target);
+      this.fCanvas
+        //.clear()
+        .add(polygon)
+        .add.apply(this.fCanvas, circles)
+        .setActiveObject(polygon)
+        .renderAll();*/
     },
     selectObject(options) {
       //let event = options.e;
-      //console.log('select');
-      //console.log(options.target.type);
+      console.log('select');
+      console.log(options.target.type);
       //console.log(options.target);
       this.isObjectSelectOn = true;
       this.objSelected = options.target;
@@ -3090,12 +3629,34 @@ export default {
       options.target.strokeDashArray = [0, 0];
       let color = options.target.color;
       options.target.stroke = color;
+      if (options.target.type === 'rect') {
+        this.isBbox = true;
+      }
       if (options.target.type === 'polyline') {
         options.target.fill = 'transparent';
       } else {
         //let color = options.target.color;
         //options.target.stroke = color;
         options.target.fill = color + '4D';
+      }
+      if (options.target.type === 'polygon') {
+        //console.log(options.target.edit);
+        console.log(options.target);
+        //this.Edit(options.target);
+        options.target.hasBorders = true;
+        options.target.edit = true;
+        options.target.isMoving = true;
+        this.editPolygon(options.target);
+      }
+      if (options.target.type === 'path') {
+        this.fCanvas.isDrawingMode = false;
+        this.fCanvas.freeDrawingBrush.width = 0;
+        this.fCanvas.freeDrawingBrush.color = 'transparent';
+        this.fCanvas.clipTo = function (ctx) {
+          ctx.save();
+          options.target.render(ctx);
+          ctx.restore();
+        };
       }
       /*if (
         this.isToolBoxingOn ||
@@ -3105,9 +3666,11 @@ export default {
         this.isToolPolygonOn ||
         this.isToolSegmentOn
       ) {*/
-      this.setDataImage(options.target);
+      if (!this.isToolPolygonOn) {
+        this.setDataImage(options.target);
+      }
       //}
-      this.fCanvas.renderAll();
+      //this.fCanvas.renderAll();
       //this.setData();
       console.log('select: ' + options.target.id);
     },
@@ -3118,13 +3681,11 @@ export default {
         let color = options.target.color;
         options.target.stroke = color + '80';
         options.target.fill = 'transparent';
-        console.log(options.target.tool);
-        if (options.target.tool === 'IS' || options.target.tool === 'SES') {
-          options.target.fill = color + '4D';
-        } else if (options.target.type === 'segment') {
+        if (options.target.type === 'segment') {
           options.target.stroke = color;
-          options.target.fill = color;
-        } else if (
+          //options.target.fill = color;
+        }
+        if (
           options.target.type === 'polyline' ||
           options.target.type === 'polygon'
         ) {
@@ -3134,12 +3695,26 @@ export default {
           //options.target.stroke = color;
           options.target.fill = color + '4D';
         }
+        if (options.target.type === 'polygon') {
+          //console.log(options.target.edit);
+          //console.log(options.target);
+          //this.Edit(options.target);
+          options.target.hasBorders = false;
+          options.target.edit = false;
+        }
+        if (options.target.type === 'path') {
+          this.fCanvas.isDrawingMode = true;
+          this.fCanvas.freeDrawingBrush.width = 10;
+          this.fCanvas.freeDrawingBrush.color = '#ffcc00';
+        }
         /*options.target.strokeDashArray = [
           5 * (1 / this.imgRatio),
           5 * (1 / this.imgRatio),
         ];*/
+        this.isBbox = false;
+        this.isObjectSelectOn = false;
         options.target.strokeDashArray = [0, 0];
-        //console.log('deselect: ' + options.target.id);
+        console.log('deselect: ' + options.target.id);
       }
       this.dataCtx.clearRect(
         0,
@@ -3151,7 +3726,7 @@ export default {
       this.objSelected = '';
     },
     setDataImage(dataObject) {
-      //console.log('dataset');
+      console.log('dataset');
       const _this = this;
       let inImg = new Image();
       inImg.src = this.imgSrc;
@@ -3166,38 +3741,47 @@ export default {
         const ctx = canvas.getContext('2d');
         ctx.drawImage(inImg, 0, 0);
         //console.log(dataObject);
-        let data = ctx.getImageData(
-          dataObject.left,
-          dataObject.top,
-          /*dataObject.width,
-          dataObject.height,
-          _this.positionX,
-          _this.positionY,*/
+        if (dataObject.type === 'path') {
+          console.log('path');
+          _this.dataCanvas.clipTo = function (ctx) {
+            ctx.save();
+            dataObject.render(ctx);
+            ctx.restore();
+          };
+        } else {
+          let data = ctx.getImageData(
+            dataObject.left,
+            dataObject.top,
+            dataObject.width,
+            dataObject.height,
+            /*_this.positionX,
+          _this.positionY,
           _this.instanceWidth,
-          _this.instanceHeight,
-        );
-        _this.dataCtx.clearRect(
-          0,
-          0,
-          _this.dataCanvas.width,
-          _this.dataCanvas.height,
-        );
-        //console.log(dataObject);
-        _this
-          .resizeImageData(
-            data,
+          _this.instanceHeight,*/
+          );
+          _this.dataCtx.clearRect(
+            0,
+            0,
             _this.dataCanvas.width,
             _this.dataCanvas.height,
-          )
-          .then(value => {
-            /*_this.dataCtx.clearRect(
+          );
+          //console.log(dataObject);
+          _this
+            .resizeImageData(
+              data,
+              _this.dataCanvas.width,
+              _this.dataCanvas.height,
+            )
+            .then(value => {
+              /*_this.dataCtx.clearRect(
               0,
               0,
               _this.dataCanvas.width,
               _this.dataCanvas.height,
             );*/
-            _this.dataCtx.putImageData(value.data, value.dx, value.dy);
-          });
+              _this.dataCtx.putImageData(value.data, value.dx, value.dy);
+            });
+        }
       };
     },
     setDragBox(nowX, nowY) {
@@ -3258,7 +3842,7 @@ export default {
       };
       this.drawBoxing('bbox', coordinate, '#000000');
     },
-    drawBoxing(tool, coordinate, color) {
+    drawBoxing(tool, coordinate, color, aId) {
       //const _this = this;
       this.fCanvas.remove(this.tempRect);
       let rect = new fabric.Rect({
@@ -3319,8 +3903,21 @@ export default {
       //console.log(rect.controls);
       rect.on('selected', this.selectObject);
       rect.on('deselected', this.deselectObject);
+      let tag = new fabric.Text('human', {
+        id: this.objId,
+        fill: '#ffffff',
+        //textBackgroundColor: 'grey',
+        fontFamily: 'Comic Sans',
+        fontSize: 10 * (1 / this.imgRatio),
+        visible: this.isToolTagOn,
+      });
+
+      tag.set('top', rect.top - tag.width / 2);
+      tag.set('left', rect.left - tag.height / 2);
       this.ObjectListItem.push(rect);
+      this.TagListItem.push(tag);
       this.fCanvas.add(rect);
+      this.fCanvas.add(tag);
       //this.fCanvas.setActiveObject(rect);
       this.InstanceListItem.push({
         id: this.objId, //category id
@@ -3335,6 +3932,7 @@ export default {
       this.AnnotationListItem.push({
         id: this.objId,
         annotation: {
+          annotation_id: aId,
           annotation_type: {
             annotation_type_id: 1,
           },
@@ -3401,13 +3999,21 @@ export default {
         }
       }
     },
-    drawPolyItem(tool, coordinate, type, color) {
+    drawPolyItem(tool, coordinate, type, color, aId, type_id) {
       //console.log(coordinate);
+
       let fill = 'transparent';
       if (tool === 'IS' || tool === 'SES') {
         fill = color + '4D';
       } else if (tool === 'segment') {
         fill = color;
+      }
+      if (!type_id) {
+        if (type === 'polygon') {
+          type_id = 2;
+        } else if (type === 'segment') {
+          type_id = 3;
+        }
       }
       let option = {
         id: this.objId,
@@ -3417,21 +4023,38 @@ export default {
         fill: fill,
         selectable: true,
         strokeWidth: 2 * (1 / this.imgRatio),
+        //strokeLinejoin: 'round',
         //stroke: 'rgba(0,0,0,0.5)',
         stroke: color,
         objectCaching: false,
+        //edit: true,
         hoverCursor: 'pointer',
         hasBorders: false,
-        hasControls: false,
+        //hasControls: false,
       };
       let polyItem = new fabric.Polygon(coordinate, option);
       if (this.isToolPolylineOn) {
         polyItem = new fabric.Polyline(coordinate, option);
       }
+      let tag = new fabric.Text('human', {
+        id: this.objId,
+        fill: '#ffffff',
+        //textBackgroundColor: 'grey',
+        fontFamily: 'Comic Sans',
+        fontSize: 10 * (1 / this.imgRatio),
+        visible: this.isToolTagOn,
+        selectable: false,
+      });
+      //console.log(polyItem);
+      tag.set('top', polyItem.points[0].y - tag.width / 2);
+      tag.set('left', polyItem.points[0].x - tag.height / 2);
       this.fCanvas.add(polyItem);
+      this.fCanvas.add(tag);
       polyItem.on('selected', this.selectObject);
       polyItem.on('deselected', this.deselectObject);
+      //polyItem.on('modified', this.modifyObject);
       this.ObjectListItem.push(polyItem);
+      this.TagListItem.push(tag);
       //this.fCanvas.setActiveObject(polyItem);
       this.InstanceListItem.push({
         id: this.objId, //category id
@@ -3446,8 +4069,10 @@ export default {
       this.AnnotationListItem.push({
         id: this.objId,
         annotation: {
+          annotation_id: aId,
           annotation_type: {
-            annotation_type_id: 1,
+            annotation_type_id: type_id,
+            annotation_type_name: type,
           },
           annotation_category: {
             annotation_category_id: 0,
@@ -3456,6 +4081,9 @@ export default {
           annotation_data: coordinate,
         },
       });
+      if (type === 'polygon' || type === 'segment') {
+        this.editPolygon(polyItem);
+      }
       this.objId++;
       this.isDown = false;
       //return;
@@ -3500,12 +4128,179 @@ export default {
         this.objId++;
       }*/
     },
-    drawPoints() {
+    setDrawingMode() {
+      this.fCanvas.isDrawingMode = !this.fCanvas.isDrawingMode;
+      if (this.fCanvas.isDrawingMode) {
+        this.fCanvas.freeDrawingBrush.width = 10;
+        this.fCanvas.freeDrawingBrush.color = '#ffcc00';
+      } else {
+        this.fCanvas.freeDrawingBrush.width = 0;
+        this.fCanvas.freeDrawingBrush.color = 'transparent';
+      }
+    },
+    createPath(options) {
+      //options.path.set();
+      //this.fCanvas.renderAll();
+      //this.drawOnCanvas(this.fCanvas.toJSON());
+      let path = options.path;
+      path.objectCaching = false;
+      console.log(path);
+      this.fCanvas.isDrawingMode = false;
+      this.fCanvas.freeDrawingBrush.width = 0;
+      this.fCanvas.freeDrawingBrush.color = 'transparent';
+
+      let path2 = options.path.path;
+      let points = [];
+      for (let i = 0; i < path2.length; i++) {
+        let point = {
+          x: Math.round(path2[i][1]),
+          y: Math.round(path2[i][2]),
+        };
+        points.push(point);
+      }
+      console.log(points);
+      this.fCanvas.remove(path);
+      this.drawPolyItem('brush', points, 'polygon', '#ffcc00');
+      /*path.on('selected', this.selectObject);
+      path.on('deselected', this.deselectObject);
+      this.paintPathList.push(path);
+      this.fCanvas.setActiveObject(path);*/
+      /*this.fCanvas.clipTo = function (ctx) {
+        ctx.save();
+        path.render(ctx);
+        ctx.restore();
+      };*/
+      //this.fCanvas.add(imgInstance);
+    },
+    drawBrush() {
+      console.log('brush');
+      let option = {
+        id: this.objId,
+        tool: 'brush',
+        type: 'polygon',
+        color: '#ffffff',
+        //fill: '#ffffff',
+        selectable: true,
+        strokeWidth: 2 * (1 / this.imgRatio),
+        //strokeLinejoin: 'round',
+        //stroke: 'rgba(0,0,0,0.5)',
+        stroke: '#ffffff',
+        objectCaching: false,
+        //edit: true,
+        hoverCursor: 'pointer',
+        hasBorders: false,
+        //hasControls: false,
+      };
+      let paint = new fabric.Polygon(this.paintPointList, option);
+      let tag = new fabric.Text('human', {
+        id: this.objId,
+        fill: '#ffffff',
+        //textBackgroundColor: 'grey',
+        fontFamily: 'Comic Sans',
+        fontSize: 10 * (1 / this.imgRatio),
+        visible: this.isToolTagOn,
+      });
+
+      tag.set('top', paint.top - tag.width / 2);
+      tag.set('left', paint.left - tag.height / 2);
+      this.fCanvas.add(paint);
+      this.fCanvas.add(tag);
+      paint.on('selected', this.selectObject);
+      paint.on('deselected', this.deselectObject);
+      this.ObjectListItem.push(paint);
+      this.TagListItem.push(tag);
+      //this.fCanvas.setActiveObject(polyItem);
+      this.InstanceListItem.push({
+        id: this.objId, //category id
+        tool: 'brush',
+        cId: 0, //AnnotationListItem id
+        className: 'human',
+        gender: '',
+        age: '',
+        attrs: [],
+      });
+      //console.log(this.InstanceListItem);
+      this.AnnotationListItem.push({
+        id: this.objId,
+        annotation: {
+          annotation_type: {
+            annotation_type_id: 1,
+          },
+          annotation_category: {
+            annotation_category_id: 0,
+            annotation_category_attributes: [],
+          },
+          annotation_data: this.paintPointList,
+        },
+      });
+      this.editPolygon(paint);
+      this.objId++;
+      this.isDown = false;
+    },
+    drawOnCanvas(json) {
+      console.log(json);
+      //this.fCanvas.loadFromJSON(json);
+    },
+    drawPoints(point) {
       //polyline
       //polygon
       //autopoint
+      let boxingPoint = new fabric.Circle({
+        id: this.objId,
+        radius: 7,
+        stroke: 'black',
+        strokeWidth: 1,
+        color: '#ff0000',
+        fill: '#ff0000',
+        //startAngle: 0,
+        //endAngle: 2,
+        left: point.x,
+        top: point.y,
+        hasBorders: false,
+        //hasControls: false,
+        cornerSize: 5,
+        originX: 'center',
+        originY: 'center',
+        hoverCursor: 'pointer',
+        selectable: true,
+      });
+      boxingPoint.on('selected', this.selectObject);
+      boxingPoint.on('deselected', this.deselectObject);
+      this.fCanvas.add(boxingPoint);
+      this.ObjectListItem.push(boxingPoint);
+      //this.fCanvas.setActiveObject(polyItem);
+      this.InstanceListItem.push({
+        id: this.objId, //category id
+        tool: 'point',
+        cId: 0, //AnnotationListItem id
+        className: 'human',
+        gender: '',
+        age: '',
+        attrs: [],
+      });
+      //console.log(this.InstanceListItem);
+      this.AnnotationListItem.push({
+        id: this.objId,
+        annotation: {
+          annotation_type: {
+            annotation_type_id: 1,
+          },
+          annotation_category: {
+            annotation_category_id: 0,
+            annotation_category_attributes: [],
+          },
+          annotation_data: point,
+        },
+      });
+      this.objId++;
+      this.isDown = false;
+
+      let imgData = this.fCtx.getImageData(point.x, point.y, 1, 1);
+      let pixelImg = imgData.data;
+      console.log(pixelImg);
       /*for (let i = 0; i < this.boxingPoints.length; i++) {
         let boxingPoint = new fabric.Circle({
+          id: this.objId,
           radius: 3,
           stroke: 'black',
           strokeWidth: 0.5,
@@ -3522,7 +4317,7 @@ export default {
         });
         this.fCanvas.add(boxingPoint);
       }*/
-      if (this.boxingPoints.length === 2) {
+      /*if (this.boxingPoints.length === 2) {
         let ePoint = this.boxingPoints.pop();
         let sPoint = this.boxingPoints.pop();
         this.startX = sPoint.x;
@@ -3530,7 +4325,7 @@ export default {
         this.endX = ePoint.x;
         this.endY = ePoint.y;
         this.setRect();
-      }
+      }*/
     },
     async resizeImageData(imageData, width, height) {
       let resizeWidth = width >> 0;
@@ -3778,33 +4573,46 @@ export default {
       }*/
       let check = /^[0-9]+$/;
       if (key === 'Delete') {
+        for (let i = 0; i < _this.TagListItem.length; i++) {
+          let tag = _this.TagListItem[i];
+          if (tag.id === _this.objSelected.id) {
+            _this.fCanvas.remove(tag);
+            _this.TagListItem.splice(i, 1);
+          }
+        }
         for (let i = 0; i < _this.InstanceListItem.length; i++) {
           if (_this.InstanceListItem[i].id === _this.objSelected.id) {
             _this.InstanceListItem.splice(i, 1);
           }
         }
-        for (let i = 0; i < _this.ObjectListItem.length; i++) {
-          if (_this.ObjectListItem[i].id === _this.objSelected.id) {
-            _this.ObjectListItem.splice(i, 1);
-          }
-        }
         for (let i = 0; i < _this.AnnotationListItem.length; i++) {
           if (_this.AnnotationListItem[i].id === _this.objSelected.id) {
+            if (_this.AnnotationListItem[i].annotation.annotation_id) {
+              _this.DeleteIDList.push(
+                _this.AnnotationListItem[i].annotation.annotation_id,
+              );
+              console.log(_this.AnnotationListItem[i].annotation.annotation_id);
+            } else {
+              console.log('no id');
+            }
             _this.AnnotationListItem.splice(i, 1);
           }
         }
-        _this.fCanvas.remove(_this.objSelected);
-        _this.isLabelingOn = false;
-      } else if (check.test(key)) {
         for (let i = 0; i < _this.ObjectListItem.length; i++) {
-          if (_this.ObjectListItem[i].id === key) {
-            _this.fCanvas.remove(_this.ObjectListItem[i]);
+          if (_this.ObjectListItem[i].id === _this.objSelected.id) {
+            _this.fCanvas.remove(_this.objSelected);
             _this.ObjectListItem.splice(i, 1);
           }
         }
-        for (let i = 0; i < _this.AnnotationListItem.length; i++) {
-          if (_this.AnnotationListItem[i].id === key) {
-            _this.AnnotationListItem.splice(i, 1);
+        _this.isLabelingOn = false;
+        _this.isClassSettingOn = false;
+        _this.isToolClassOn = false;
+      } else if (check.test(key)) {
+        for (let i = 0; i < _this.TagListItem.length; i++) {
+          let tag = _this.TagListItem[i];
+          if (tag.id === key) {
+            _this.fCanvas.remove(tag);
+            _this.TagListItem.splice(i, 1);
           }
         }
         for (let i = 0; i < _this.InstanceListItem.length; i++) {
@@ -3812,11 +4620,459 @@ export default {
             _this.InstanceListItem.splice(i, 1);
           }
         }
+        for (let i = 0; i < _this.AnnotationListItem.length; i++) {
+          if (_this.AnnotationListItem[i].id === key) {
+            if (_this.AnnotationListItem[i].annotation.annotation_id) {
+              _this.DeleteIDList.push(
+                _this.AnnotationListItem[i].annotation.annotation_id,
+              );
+            }
+            _this.AnnotationListItem.splice(i, 1);
+          }
+        }
+        for (let i = 0; i < _this.ObjectListItem.length; i++) {
+          if (_this.ObjectListItem[i].id === key) {
+            _this.fCanvas.remove(_this.ObjectListItem[i]);
+            _this.ObjectListItem.splice(i, 1);
+          }
+        }
         //_this.fCanvas.remove(_this.objSelected);
         _this.isLabelingOn = false;
+        _this.isClassSettingOn = false;
+        _this.isToolClassOn = false;
       }
       _this.fCanvas.renderAll();
     },
+
+    /*onMouseDown(options) {
+      if (this.drawMode) {
+        if (options.target && options.target.id === this.pointArray[0].id) {
+          // when click on the first point
+          this.generatePolygon(this.pointArray);
+        } else {
+          this.addPoint(options);
+        }
+      }
+      let evt = options.e;
+      if (evt.altKey === true) {
+        this.isDragging = true;
+        this.selection = false;
+        this.lastPosX = evt.clientX;
+        this.lastPosY = evt.clientY;
+      }
+    },*/
+    // eslint-disable-next-line no-unused-vars
+    /*onMouseUp(options) {
+      this.isDragging = false;
+      this.selection = true;
+    },*/
+    /*onMouseMove(options) {
+      if (this.isDragging) {
+        let e = options.e;
+        this.viewportTransform[4] += e.clientX - this.lastPosX;
+        this.viewportTransform[5] += e.clientY - this.lastPosY;
+        this.requestRenderAll();
+        this.lastPosX = e.clientX;
+        this.lastPosY = e.clientY;
+      }
+      if (this.drawMode) {
+        if (this.activeLine && this.activeLine.class === 'line') {
+          const pointer = this.fCanvas.getPointer(options.e);
+          this.activeLine.set({
+            x2: pointer.x,
+            y2: pointer.y,
+          });
+          const points = this.activeShape.get('points');
+          points[this.pointArray.length] = {
+            x: pointer.x,
+            y: pointer.y,
+          };
+          this.activeShape.set({
+            points,
+          });
+        }
+        this.fCanvas.renderAll();
+      }
+    },*/
+    onMouseWheel(options) {
+      console.log('wheel');
+      let delta = options.e.deltaY;
+      //let pointer = this.fCanvas.getPointer(options.e);
+      let zoom = this.fCanvas.getZoom();
+      if (delta > 0) {
+        zoom += 0.1;
+      } else {
+        zoom -= 0.1;
+      }
+      if (zoom > 20) zoom = 20;
+      if (zoom < 0.1) zoom = 0.1;
+      this.fCanvas.zoomToPoint(
+        { x: options.e.offsetX, y: options.e.offsetY },
+        zoom,
+      );
+      options.e.preventDefault();
+      options.e.stopPropagation();
+    },
+    /*onObjectMove(option) {
+      const object = option.target;
+      object._calcDimensions();
+      object.setCoords();
+      this.fCanvas.renderAll();
+    },*/
+    // eslint-disable-next-line no-unused-vars
+    toggleDrawPolygon(event) {
+      console.log(event);
+      if (this.drawMode) {
+        // stop draw mode
+        this.activeLine = null;
+        this.activeShape = null;
+        this.lineArray = [];
+        this.pointArray = [];
+        //this.fCanvas.selection = true;
+        //this.drawMode = false;
+      } else {
+        // start draw mode
+        this.fCanvas.selection = false;
+        this.drawMode = true;
+      }
+    },
+    addPoint(options) {
+      let pointer = this.fCanvas.getPointer(options);
+      const pointOption = {
+        id: new Date().getTime(),
+        radius: 5 * (1 / this.imgRatio),
+        fill: '#ffffff',
+        stroke: '#333333',
+        strokeWidth: 0.5,
+        left: pointer.x,
+        top: pointer.y,
+        selectable: false,
+        hasBorders: false,
+        hasControls: false,
+        originX: 'center',
+        originY: 'center',
+        objectCaching: false,
+      };
+      const point = new fabric.Circle(pointOption);
+
+      if (this.pointArray.length === 0) {
+        // fill first point with red color
+        /*point.set({
+          fill: 'red',
+        });*/
+        point.fill = 'red';
+      }
+
+      const linePoints = [pointer.x, pointer.y, pointer.x, pointer.y];
+      const lineOption = {
+        strokeWidth: 2,
+        fill: 'transparent',
+        stroke: '#999999',
+        originX: 'center',
+        originY: 'center',
+        selectable: false,
+        hasBorders: false,
+        hasControls: false,
+        evented: false,
+        objectCaching: false,
+      };
+      const line = new fabric.Line(linePoints, lineOption);
+      line.class = 'line';
+
+      if (this.activeShape) {
+        const pos = this.fCanvas.getPointer(options.e);
+        const points = this.activeShape.get('points');
+        points.push({
+          x: pos.x,
+          y: pos.y,
+        });
+        const polygon = new fabric.Polygon(points, {
+          stroke: '#333333',
+          strokeWidth: 1,
+          fill: '#cccccc',
+          opacity: 0.3,
+          selectable: false,
+          hasBorders: false,
+          hasControls: false,
+          evented: false,
+          objectCaching: false,
+        });
+        this.fCanvas.remove(this.activeShape);
+        this.fCanvas.add(polygon);
+        this.activeShape = polygon;
+        this.fCanvas.renderAll();
+      } else {
+        const polyPoint = [
+          {
+            x: pointer.x,
+            y: pointer.y,
+          },
+        ];
+        const polygon = new fabric.Polygon(polyPoint, {
+          stroke: '#333333',
+          strokeWidth: 1,
+          fill: '#cccccc',
+          opacity: 0.3,
+          selectable: false,
+          hasBorders: false,
+          hasControls: false,
+          evented: false,
+          objectCaching: false,
+        });
+        this.activeShape = polygon;
+        this.fCanvas.add(polygon);
+      }
+
+      this.activeLine = line;
+      this.pointArray.push(point);
+      this.lineArray.push(line);
+
+      this.fCanvas.add(line);
+      this.fCanvas.add(point);
+    },
+    generatePolygon(pointArray) {
+      const points = [];
+      // collect points and remove them from canvas
+      for (const point of pointArray) {
+        points.push({
+          x: point.left,
+          y: point.top,
+        });
+        this.fCanvas.remove(point);
+      }
+
+      // remove lines from canvas
+      for (const line of this.lineArray) {
+        this.fCanvas.remove(line);
+      }
+
+      // remove selected Shape and Line
+      this.fCanvas.remove(this.activeShape).remove(this.activeLine);
+
+      // create polygon from collected points
+      //console.log(points);
+      /*const polygon = new fabric.Polygon(points, {
+        //id: new Date().getTime(),
+        id: this.objId,
+        color: '#0084ff',
+        stroke: '#0084ff',
+        strokeWidth: 2 * (1 / this.imgRatio),
+        fill: false,
+        cornerStyle: 'round',
+        objectCaching: false,
+        moveable: false,
+        hasBorders: false,
+        //selectable: false
+      });
+      let tag = new fabric.Text('human', {
+        id: this.objId,
+        fill: '#ffffff',
+        //textBackgroundColor: 'grey',
+        fontFamily: 'Comic Sans',
+        fontSize: 10 * (1 / this.imgRatio),
+        visible: this.isToolTagOn,
+      });
+
+      tag.set('top', polygon.top - tag.width / 2);
+      tag.set('left', polygon.left - tag.height / 2);
+
+      this.fCanvas.add(polygon);
+      this.fCanvas.add(tag);
+      polygon.on('selected', this.selectObject);
+      polygon.on('deselected', this.deselectObject);
+      this.ObjectListItem.push(polygon);
+      this.TagListItem.push(tag);*/
+
+      this.drawPolyItem('polygon', points, 'polygon', '#0084ff');
+      this.toggleDrawPolygon();
+      //this.editPolygon(polygon);
+      /*
+      let tag = new fabric.Text('human', {
+        id: this.objId,
+        fill: '#ffffff',
+        //textBackgroundColor: 'grey',
+        fontFamily: 'Comic Sans',
+        fontSize: 10 * (1 / this.imgRatio),
+        visible: this.isToolTagOn,
+      });
+
+      tag.set('top', polygon.top - tag.width / 2);
+      tag.set('left', polygon.left - tag.height / 2);
+      this.fCanvas.add(tag);
+      this.TagListItem.push(tag);
+      */
+      /*this.InstanceListItem.push({
+        id: this.objId, //category id
+        //tool: tool,
+        tool: 'polygon',
+        cId: 0, //AnnotationListItem id
+        className: 'human',
+        gender: '',
+        age: '',
+        attrs: [],
+      });
+      //console.log(this.InstanceListItem);
+      this.AnnotationListItem.push({
+        id: this.objId,
+        annotation: {
+          annotation_type: {
+            annotation_type_id: 1,
+          },
+          annotation_category: {
+            annotation_category_id: 0,
+            annotation_category_attributes: [],
+          },
+          annotation_data: points,
+        },
+      });
+      this.objId++;
+      this.isDown = false;*/
+    },
+    /**
+     * define a function that can locate the controls.
+     * this function will be used both for drawing and for interaction.
+     */
+    polygonPositionHandler(dim, finalMatrix, fabricObject) {
+      console.log('|');
+      console.log(fabricObject);
+      let x =
+          fabricObject.points[this.pointIndex].x - fabricObject.pathOffset.x,
+        y = fabricObject.points[this.pointIndex].y - fabricObject.pathOffset.y;
+      return fabric.util.transformPoint(
+        //{ x: x, y: y },
+        new fabric.Point(x, y),
+        fabric.util.multiplyTransformMatrices(
+          fabricObject.canvas.viewportTransform,
+          fabricObject.calcTransformMatrix(),
+          true,
+        ),
+      );
+    },
+    pPositionHandler(pointIndex, fabricObject) {
+      let x = fabricObject.points[pointIndex].x - fabricObject.pathOffset.x,
+        y = fabricObject.points[pointIndex].y - fabricObject.pathOffset.y;
+      return fabric.util.transformPoint(
+        //{ x: x, y: y },
+        new fabric.Point(x, y),
+        fabric.util.multiplyTransformMatrices(
+          fabricObject.canvas.viewportTransform,
+          fabricObject.calcTransformMatrix(),
+          true,
+        ),
+      );
+    },
+    /**
+     * define a function that will define what the control does
+     * this function will be called on every mouse move after a control has been
+     * clicked and is being dragged.
+     * The function receive as argument the mouse event, the current trasnform object
+     * and the current position in canvas coordinate
+     * transform.target is a reference to the current object being transformed,
+     */
+    actionHandler(eventData, transform, x, y) {
+      let polygon = transform.target,
+        currentControl = polygon.controls[polygon.__corner],
+        mouseLocalPosition = polygon.toLocalPoint(
+          new fabric.Point(x, y),
+          'center',
+          'center',
+        ),
+        polygonBaseSize = polygon._getNonTransformedDimensions(),
+        size = polygon._getTransformedDimensions(0, 0);
+      polygon.points[currentControl.pointIndex] = {
+        x:
+          (mouseLocalPosition.x * polygonBaseSize.x) / size.x +
+          polygon.pathOffset.x,
+        y:
+          (mouseLocalPosition.y * polygonBaseSize.y) / size.y +
+          polygon.pathOffset.y,
+      };
+      return true;
+    },
+    /**
+     * define a function that can keep the polygon in the same position when we change its
+     * width/height/top/left.
+     */
+    anchorWrapper(anchorIndex, fn) {
+      return function (eventData, transform, x, y) {
+        let fabricObject = transform.target,
+          absolutePoint = fabric.util.transformPoint(
+            {
+              x: fabricObject.points[anchorIndex].x - fabricObject.pathOffset.x,
+              y: fabricObject.points[anchorIndex].y - fabricObject.pathOffset.y,
+            },
+            fabricObject.calcTransformMatrix(),
+          ),
+          actionPerformed = fn(eventData, transform, x, y),
+          // eslint-disable-next-line no-unused-vars
+          //newDim = fabricObject._setPositionDimensions({}),
+          polygonBaseSize = fabricObject._getNonTransformedDimensions(),
+          newX =
+            (fabricObject.points[anchorIndex].x - fabricObject.pathOffset.x) /
+            polygonBaseSize.x,
+          newY =
+            (fabricObject.points[anchorIndex].y - fabricObject.pathOffset.y) /
+            polygonBaseSize.y;
+        fabricObject.setPositionByOrigin(absolutePoint, newX + 0.5, newY + 0.5);
+        return actionPerformed;
+      };
+    },
+    editPolygon(object) {
+      const _this = this;
+      let activeObject = object;
+      if (object === null || object === undefined) {
+        activeObject = this.fCanvas.getActiveObject();
+      }
+      if (!activeObject) {
+        activeObject = this.fCanvas.getObjects()[0];
+        this.fCanvas.setActiveObject(activeObject);
+      }
+
+      activeObject.edit = true;
+      activeObject.objectCaching = false;
+
+      const lastControl = activeObject.points.length - 1;
+      activeObject.cornerStyle = 'circle';
+      activeObject.controls = activeObject.points.reduce(
+        (acc, point, index) => {
+          acc['p' + index] = new fabric.Control({
+            //positionHandler: _this.polygonPositionHandler,
+            actionHandler: _this.anchorWrapper(
+              index > 0 ? index - 1 : lastControl,
+              _this.actionHandler,
+            ),
+            actionName: 'modifyPolygon',
+            pointIndex: index,
+          });
+          //console.log(index);
+          _this.it = index;
+          return acc;
+        },
+        {},
+      );
+
+      activeObject.hasBorders = false;
+
+      this.fCanvas.requestRenderAll();
+    },
+    /*resizePolygon() {
+      let activeObject = this.fCanvas.getActiveObject();
+      if (!activeObject) {
+        activeObject = this.fCanvas.getObjects()[0];
+        this.fCanvas.setActiveObject(activeObject);
+      }
+
+      activeObject.edit = false;
+      activeObject.objectCaching = false;
+      activeObject.controls = fabric.Object.prototype.controls;
+      activeObject.cornerStyle = 'rect';
+      activeObject.hasBorders = true;
+
+      this.fCanvas.requestRenderAll();
+    },
+    clearPolygon() {
+      this.fCanvas.remove(...this.fCanvas.getObjects());
+    },*/
   },
   computed: {},
 };

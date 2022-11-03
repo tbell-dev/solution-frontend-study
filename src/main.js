@@ -4,6 +4,13 @@ import mitt from 'mitt';
 import router from './router';
 import store from './store';
 import axios from 'axios';
+import { h } from 'vue';
+
+export default {
+  render() {
+    return h(App);
+  },
+};
 
 axios.defaults.baseURL = 'http://localhost:3000';
 
@@ -15,6 +22,7 @@ app.config.globalProperties.emitter = emitter;
 app.config.globalProperties.axios = axios;
 app.use(store).use(router).mount('#app');
 
+// export const HOST = 'https://sslo.ai';
 export const HOST = 'http://sslo.ai:8859';
 // 'http://210.113.122.196:8825';
 
