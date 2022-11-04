@@ -1273,6 +1273,7 @@ import axios from 'axios';
 import { HOST } from '@/main';
 import { fabric } from 'fabric';
 //import { isProxy, toRaw } from 'vue';
+import MagicWand from 'magic-wand-tool';
 import LoadingSpinner from '@/components/work_studio/common/center_area/LoadingSpinner.vue';
 import keyPoint from '@/components/work_studio/common/center_area/toolKeypoint';
 
@@ -1338,6 +1339,7 @@ export default {
       this.fCanvas.discardActiveObject(); //...and deselecting them
       this.fCanvas.requestRenderAll();
     });
+    this.fCanvas.on('mouse:down:before', this.beforeDownCanvas);
     this.fCanvas.on('mouse:down', this.downCanvas);
     this.fCanvas.on('mouse:move', this.moveCanvas);
     this.fCanvas.on('mouse:up', this.upCanvas);
@@ -1359,6 +1361,14 @@ export default {
     fabric.Object.prototype.cornerStyle = 'circle';
     fabric.Object.prototype.cornerColor = 'rgba(0,0,0,0.5)';
     fabric.Object.prototype.cornerSize = 10;*/
+    fabric.Object.prototype.on('mouseover', () => {
+      console.log('over');
+      this.isObjectSelectOn = true;
+    });
+    fabric.Object.prototype.on('mouseout', () => {
+      console.log('out');
+      this.isObjectSelectOn = false;
+    });
     fabric.Object.prototype.setControlsVisibility({
       bl: true,
       br: true,
@@ -1929,6 +1939,22 @@ export default {
       selection: false,
       paintPointList: [],
       paintPathList: [],
+
+      colorThreshold: 15,
+      blurRadius: 5,
+      simplifyTolerant: 0,
+      simplifyCount: 30,
+      hatchLength: 4,
+      hatchOffset: 0,
+
+      imageInfo: null,
+      cacheInd: null,
+      mask: null,
+      oldMask: null,
+      downPoint: null,
+      allowDraw: false,
+      addMode: false,
+      currentThreshold: 15,
     };
   },
   methods: {
@@ -2205,6 +2231,7 @@ export default {
     },
 
     isToolMagicwandOnOff() {
+      const _this = this;
       document.body.style.cursor = 'default';
       this.isToolODOn = false;
       this.isToolISOn = false;
@@ -2219,6 +2246,9 @@ export default {
       this.isToolMagicwandOn = true;
       if (this.isToolMagicwandOn) {
         this.fCanvas.hoverCursor = 'pointer';
+        setInterval(function () {
+          _this.hatchTick();
+        }, 300);
       }
       this.isToolKeypointOn = false;
       this.isToolAutopointOn = false;
@@ -2352,7 +2382,7 @@ export default {
       this.isToolDrawpenOn = true;
       if (this.isToolDrawpenOn) {
         //this.fCanvas.hoverCursor = 'brush';
-        this.fCanvas.freeDrawingCursor = new fabric.Circle({
+        /*this.fCanvas.freeDrawingCursor = new fabric.Circle({
           left: -100,
           top: -100,
           radius: 10,
@@ -2360,7 +2390,9 @@ export default {
           stroke: 'black',
           originX: 'center',
           originY: 'center',
-        });
+        });*/
+        /*this.fCanvas.freeDrawingCursor =
+          'url(' + this.getDrawCursor() + ') 10 10, crosshair';*/
       }
       this.isTool3DCubeOn = false;
       this.isToolMagicwandOn = false;
@@ -2373,7 +2405,26 @@ export default {
         this.fCanvas.isDrawingMode = false;
         this.fCanvas.item(0).selectable = false;
       }*/
-      this.setDrawingMode();
+      //this.setDrawingMode();
+    },
+    getDrawCursor() {
+      const circle = `
+        <svg
+          height="20"
+          fill="#ffcc004D"
+          viewBox="0 0 40 40"
+          width="20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            cx="50%"
+            cy="50%"
+            r="20"
+          />
+        </svg>
+      `;
+
+      return `data:image/svg+xml;base64,${window.btoa(circle)}`;
     },
     isTool3DCubeOnOff() {
       document.body.style.cursor = 'default';
@@ -2402,7 +2453,6 @@ export default {
       this.fCanvas.isDrawingMode = false;
     },
     isToolKeypointOnOff() {
-      const _this = this;
       document.body.style.cursor = 'default';
       this.isToolODOn = false;
       this.isToolISOn = false;
@@ -2427,49 +2477,6 @@ export default {
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
       this.fCanvas.isDrawingMode = false;
-      if (this.isToolKeypointOn) {
-        //동적으로 수정 필요
-        let line = keyPoint.makeLine([250, 125, 250, 175]),
-          line2 = keyPoint.makeLine([250, 175, 250, 250]),
-          line3 = keyPoint.makeLine([250, 250, 300, 350]),
-          line4 = keyPoint.makeLine([250, 250, 200, 350]),
-          line5 = keyPoint.makeLine([250, 175, 175, 225]),
-          line6 = keyPoint.makeLine([250, 175, 325, 225]);
-
-        this.fCanvas.add(line, line2, line3, line4, line5, line6);
-
-        this.fCanvas.add(
-          keyPoint.makeCircle(line.get('x1'), line.get('y1'), null, line),
-          keyPoint.makeCircle(
-            line.get('x2'),
-            line.get('y2'),
-            line,
-            line2,
-            line5,
-            line6,
-          ),
-          keyPoint.makeCircle(
-            line2.get('x2'),
-            line2.get('y2'),
-            line2,
-            line3,
-            line4,
-          ),
-          keyPoint.makeCircle(line3.get('x2'), line3.get('y2'), line3),
-          keyPoint.makeCircle(line4.get('x2'), line4.get('y2'), line4),
-          keyPoint.makeCircle(line5.get('x2'), line5.get('y2'), line5),
-          keyPoint.makeCircle(line6.get('x2'), line6.get('y2'), line6),
-        );
-
-        this.fCanvas.on('object:moving', function (e) {
-          let p = e.target;
-          p.line1 && p.line1.set({ x2: p.left, y2: p.top });
-          p.line2 && p.line2.set({ x1: p.left, y1: p.top });
-          p.line3 && p.line3.set({ x1: p.left, y1: p.top });
-          p.line4 && p.line4.set({ x1: p.left, y1: p.top });
-          _this.fCanvas.renderAll();
-        });
-      }
     },
     isToolSegmentOnOff() {
       document.body.style.cursor = 'default';
@@ -3156,6 +3163,13 @@ export default {
     scrollDown() {
       //select-tool
     },
+    beforeDownCanvas(options) {
+      console.log('before');
+      if (!this.isObjectSelectOn && this.isToolDrawpenOn) {
+        console.log(options);
+        this.setDrawingMode();
+      }
+    },
     downCanvas(options) {
       //console.log('down');
       //console.log(this.isMove);
@@ -3236,6 +3250,18 @@ export default {
         console.log(this.fCanvas.isDrawingMode);
         let opt = { pointer, e: {} };
         this.fCanvas.freeDrawingBrush.onMouseDown(pointer, opt);
+      } else if (this.isToolMagicwandOn) {
+        //console.log(options.e.button);
+        if (options.e.button === 0) {
+          this.allowDraw = true;
+          this.addMode = options.ctrlKey;
+          this.downPoint = pointer;
+          this.drawMask(this.downPoint.x, this.downPoint.y);
+        } else {
+          this.allowDraw = false;
+          this.addMode = false;
+          this.oldMask = null;
+        }
       } /*else if (this.isToolPolygonOn) {
         if (this.drawMode) {
           if (options.target && options.target.id === this.pointArray[0].id) {
@@ -3328,6 +3354,28 @@ export default {
         }
       } else if (this.isToolDrawpenOn) {
         this.paintPointList.push(new fabric.Point(pointer.x, pointer.y));
+      } else if (this.isToolMagicwandOn) {
+        if (this.allowDraw) {
+          let p = pointer; //this.getMousePosition(options);
+          if (p.x !== this.downPoint.x || p.y !== this.downPoint.y) {
+            let dx = p.x - this.downPoint.x,
+              dy = p.y - this.downPoint.y,
+              len = Math.sqrt(dx * dx + dy * dy),
+              adx = Math.abs(dx),
+              ady = Math.abs(dy),
+              sign = adx > ady ? dx / adx : dy / ady;
+            sign = sign < 0 ? sign / 5 : sign / 3;
+            let thres = Math.min(
+              Math.max(this.colorThreshold + Math.floor(sign * len), 1),
+              255,
+            );
+            //var thres = Math.min(colorThreshold + Math.floor(len / 3), 255);
+            if (thres !== this.currentThreshold) {
+              this.currentThreshold = thres;
+              this.drawMask(this.downPoint.x, this.downPoint.y);
+            }
+          }
+        }
       } /*else if (this.isToolPolygonOn) {
         if (this.isDragging) {
           let e = options.e;
@@ -3359,8 +3407,10 @@ export default {
     },
     upCanvas(options) {
       //let event = options.e;
+      console.log('up');
       let pointer = this.fCanvas.getPointer(options);
       if (this.isObjectSelectOn || this.isObjectMoveOn) {
+        this.isObjectMoveOn = false;
         return;
       }
       //console.log(this.isMove);
@@ -3415,9 +3465,15 @@ export default {
         this.selection = true;
       }*/ else if (this.isToolPointOn) {
         this.drawPoints(pointer);
+      } else if (this.isToolKeypointOn) {
+        this.drawKeypoint();
+      } else if (this.isToolMagicwandOn) {
+        this.allowDraw = false;
+        this.addMode = false;
+        this.oldMask = null;
+        this.currentThreshold = this.colorThreshold;
       } /*else if (this.isTool3DCubeOn) {
       } else if (this.isToolMagicwandOn) {
-      } else if (this.isToolKeypointOn) {
       } else if (this.isToolAutopointOn) {
       } else {
       }*/
@@ -3432,10 +3488,11 @@ export default {
     // eslint-disable-next-line no-unused-vars
     movingObject(options) {
       //let event = options.e;
-      //console.log('moving');
-      console.log(options.target.type);
+      console.log('moving');
+      this.isObjectMoveOn = true;
+      this.isMove = true;
+      //console.log(options.target.type);
       if (options.target.type === 'rect') {
-        this.isMove = true;
         this.positionX = options.target.left;
         this.positionY = options.target.top;
         for (let i = 0; i < this.TagListItem.length; i++) {
@@ -3448,13 +3505,10 @@ export default {
         //options.target.setCoords();
         //console.log(this.instanceWidth + ', ' + this.instanceHeight);
         this.setDataImage(options.target);
-        this.fCanvas.renderAll();
-        this.isMove = false;
       } else if (
         options.target.type === 'polygon' ||
         options.target.type === 'segment'
       ) {
-        this.isMove = true;
         let polygon = options.target;
         let matrix = polygon.calcTransformMatrix();
         let moveX = options.target.left - this.positionX;
@@ -3489,10 +3543,15 @@ export default {
             tag.top = options.target.points[0].y - tag.width / 2;
           }
         }
-        this.setDataImage(options.target);
-        this.fCanvas.renderAll();
-        this.isMove = false;
+        //this.setDataImage(options.target);
+      } else if (options.target.tool === 'keypoint') {
+        let p = options.target;
+        p.line1 && p.line1.set({ x2: p.left, y2: p.top });
+        p.line2 && p.line2.set({ x1: p.left, y1: p.top });
+        p.line3 && p.line3.set({ x1: p.left, y1: p.top });
+        p.line4 && p.line4.set({ x1: p.left, y1: p.top });
       }
+      this.fCanvas.renderAll();
     },
     scalingObject(options) {
       console.log('scaling');
@@ -3617,8 +3676,8 @@ export default {
     },
     selectObject(options) {
       //let event = options.e;
-      console.log('select');
-      console.log(options.target.type);
+      //console.log('select');
+      //console.log(options.target.type);
       //console.log(options.target);
       this.isObjectSelectOn = true;
       this.objSelected = options.target;
@@ -3641,17 +3700,17 @@ export default {
       }
       if (options.target.type === 'polygon') {
         //console.log(options.target.edit);
-        console.log(options.target);
+        //console.log(options.target);
         //this.Edit(options.target);
         options.target.hasBorders = true;
         options.target.edit = true;
         options.target.isMoving = true;
         this.editPolygon(options.target);
       }
-      if (options.target.type === 'path') {
-        this.fCanvas.isDrawingMode = false;
+      if (options.target.tool === 'brush') {
+        /*this.fCanvas.isDrawingMode = false;
         this.fCanvas.freeDrawingBrush.width = 0;
-        this.fCanvas.freeDrawingBrush.color = 'transparent';
+        this.fCanvas.freeDrawingBrush.color = 'transparent';*/
         this.fCanvas.clipTo = function (ctx) {
           ctx.save();
           options.target.render(ctx);
@@ -3666,7 +3725,7 @@ export default {
         this.isToolPolygonOn ||
         this.isToolSegmentOn
       ) {*/
-      if (!this.isToolPolygonOn) {
+      if (this.isToolBoxingOn) {
         this.setDataImage(options.target);
       }
       //}
@@ -3702,17 +3761,16 @@ export default {
           options.target.hasBorders = false;
           options.target.edit = false;
         }
-        if (options.target.type === 'path') {
-          this.fCanvas.isDrawingMode = true;
+        if (options.target.tool === 'brush') {
+          /*this.fCanvas.isDrawingMode = true;
           this.fCanvas.freeDrawingBrush.width = 10;
-          this.fCanvas.freeDrawingBrush.color = '#ffcc00';
+          this.fCanvas.freeDrawingBrush.color = '#ffcc00';*/
         }
         /*options.target.strokeDashArray = [
           5 * (1 / this.imgRatio),
           5 * (1 / this.imgRatio),
         ];*/
         this.isBbox = false;
-        this.isObjectSelectOn = false;
         options.target.strokeDashArray = [0, 0];
         console.log('deselect: ' + options.target.id);
       }
@@ -4130,9 +4188,12 @@ export default {
     },
     setDrawingMode() {
       this.fCanvas.isDrawingMode = !this.fCanvas.isDrawingMode;
+      console.log(this.fCanvas.isDrawingMode);
       if (this.fCanvas.isDrawingMode) {
         this.fCanvas.freeDrawingBrush.width = 10;
         this.fCanvas.freeDrawingBrush.color = '#ffcc00';
+        /*this.fCanvas.hoverCursor =
+          'url(' + this.getDrawCursor() + ') 10 10, crosshair';*/
       } else {
         this.fCanvas.freeDrawingBrush.width = 0;
         this.fCanvas.freeDrawingBrush.color = 'transparent';
@@ -4144,10 +4205,11 @@ export default {
       //this.drawOnCanvas(this.fCanvas.toJSON());
       let path = options.path;
       path.objectCaching = false;
-      console.log(path);
-      this.fCanvas.isDrawingMode = false;
+      //console.log(path);
+      /*this.fCanvas.isDrawingMode = false;
       this.fCanvas.freeDrawingBrush.width = 0;
-      this.fCanvas.freeDrawingBrush.color = 'transparent';
+      this.fCanvas.freeDrawingBrush.color = 'transparent';*/
+      this.setDrawingMode();
 
       let path2 = options.path.path;
       let points = [];
@@ -4158,7 +4220,7 @@ export default {
         };
         points.push(point);
       }
-      console.log(points);
+      //console.log(points);
       this.fCanvas.remove(path);
       this.drawPolyItem('brush', points, 'polygon', '#ffcc00');
       /*path.on('selected', this.selectObject);
@@ -4172,71 +4234,6 @@ export default {
       };*/
       //this.fCanvas.add(imgInstance);
     },
-    drawBrush() {
-      console.log('brush');
-      let option = {
-        id: this.objId,
-        tool: 'brush',
-        type: 'polygon',
-        color: '#ffffff',
-        //fill: '#ffffff',
-        selectable: true,
-        strokeWidth: 2 * (1 / this.imgRatio),
-        //strokeLinejoin: 'round',
-        //stroke: 'rgba(0,0,0,0.5)',
-        stroke: '#ffffff',
-        objectCaching: false,
-        //edit: true,
-        hoverCursor: 'pointer',
-        hasBorders: false,
-        //hasControls: false,
-      };
-      let paint = new fabric.Polygon(this.paintPointList, option);
-      let tag = new fabric.Text('human', {
-        id: this.objId,
-        fill: '#ffffff',
-        //textBackgroundColor: 'grey',
-        fontFamily: 'Comic Sans',
-        fontSize: 10 * (1 / this.imgRatio),
-        visible: this.isToolTagOn,
-      });
-
-      tag.set('top', paint.top - tag.width / 2);
-      tag.set('left', paint.left - tag.height / 2);
-      this.fCanvas.add(paint);
-      this.fCanvas.add(tag);
-      paint.on('selected', this.selectObject);
-      paint.on('deselected', this.deselectObject);
-      this.ObjectListItem.push(paint);
-      this.TagListItem.push(tag);
-      //this.fCanvas.setActiveObject(polyItem);
-      this.InstanceListItem.push({
-        id: this.objId, //category id
-        tool: 'brush',
-        cId: 0, //AnnotationListItem id
-        className: 'human',
-        gender: '',
-        age: '',
-        attrs: [],
-      });
-      //console.log(this.InstanceListItem);
-      this.AnnotationListItem.push({
-        id: this.objId,
-        annotation: {
-          annotation_type: {
-            annotation_type_id: 1,
-          },
-          annotation_category: {
-            annotation_category_id: 0,
-            annotation_category_attributes: [],
-          },
-          annotation_data: this.paintPointList,
-        },
-      });
-      this.editPolygon(paint);
-      this.objId++;
-      this.isDown = false;
-    },
     drawOnCanvas(json) {
       console.log(json);
       //this.fCanvas.loadFromJSON(json);
@@ -4247,7 +4244,7 @@ export default {
       //autopoint
       let boxingPoint = new fabric.Circle({
         id: this.objId,
-        radius: 7,
+        radius: 4,
         stroke: 'black',
         strokeWidth: 1,
         color: '#ff0000',
@@ -4326,6 +4323,43 @@ export default {
         this.endY = ePoint.y;
         this.setRect();
       }*/
+    },
+    drawKeypoint() {
+      if (this.isToolKeypointOn) {
+        // 부위별로 컨트롤 필요
+        let hcline = keyPoint.makeLine([250, 125, 250, 175]),
+          //ncline = keyPoint.makeLine([250, 155, 250, 175]),
+          chline = keyPoint.makeLine([250, 175, 250, 250]),
+          rhaline = keyPoint.makeLine([250, 250, 300, 350]),
+          lhaline = keyPoint.makeLine([250, 250, 200, 350]),
+          nlwline = keyPoint.makeLine([250, 175, 175, 225]),
+          nrwline = keyPoint.makeLine([250, 175, 325, 225]);
+
+        this.fCanvas.add(hcline, chline, rhaline, lhaline, nlwline, nrwline);
+
+        this.fCanvas.add(
+          keyPoint.makeCircle(hcline.get('x1'), hcline.get('y1'), null, hcline),
+          keyPoint.makeCircle(
+            hcline.get('x2'),
+            hcline.get('y2'),
+            hcline,
+            chline,
+            nlwline,
+            nrwline,
+          ),
+          keyPoint.makeCircle(
+            chline.get('x2'),
+            chline.get('y2'),
+            chline,
+            rhaline,
+            lhaline,
+          ),
+          keyPoint.makeCircle(rhaline.get('x2'), rhaline.get('y2'), rhaline),
+          keyPoint.makeCircle(lhaline.get('x2'), lhaline.get('y2'), lhaline),
+          keyPoint.makeCircle(nlwline.get('x2'), nlwline.get('y2'), nlwline),
+          keyPoint.makeCircle(nrwline.get('x2'), nrwline.get('y2'), nrwline),
+        );
+      }
     },
     async resizeImageData(imageData, width, height) {
       let resizeWidth = width >> 0;
@@ -5005,7 +5039,7 @@ export default {
           ),
           actionPerformed = fn(eventData, transform, x, y),
           // eslint-disable-next-line no-unused-vars
-          //newDim = fabricObject._setPositionDimensions({}),
+          newDim = fabricObject._setPositionDimensions({}),
           polygonBaseSize = fabricObject._getNonTransformedDimensions(),
           newX =
             (fabricObject.points[anchorIndex].x - fabricObject.pathOffset.x) /
@@ -5073,6 +5107,230 @@ export default {
     clearPolygon() {
       this.fCanvas.remove(...this.fCanvas.getObjects());
     },*/
+    drawMask(x, y) {
+      //if (!this.imageInfo) return;
+      this.imageInfo = {
+        width: this.canvasWidth,
+        height: this.canvasHeight,
+        context: this.fCtx,
+        data: this.fCtx.getImageData(0, 0, this.canvasWidth, this.canvasHeight),
+      };
+      console.log(this.imageInfo);
+      let image = {
+        data: this.imageInfo.data.data,
+        width: this.imageInfo.width,
+        height: this.imageInfo.height,
+        bytes: 4,
+      };
+      console.log(image);
+      if (this.addMode && !this.oldMask) {
+        this.oldMask = this.mask;
+      }
+
+      let old = this.oldMask ? this.oldMask.data : null;
+
+      this.mask = MagicWand.floodFill(
+        image,
+        x,
+        y,
+        this.currentThreshold,
+        old,
+        true,
+      );
+      console.log(this.mask);
+      if (this.mask)
+        this.mask = MagicWand.gaussBlurOnlyBorder(
+          this.mask,
+          this.blurRadius,
+          old,
+        );
+
+      if (this.addMode && this.oldMask) {
+        this.mask = this.mask
+          ? this.concatMasks(this.mask, this.oldMask)
+          : this.oldMask;
+      }
+      console.log('mmmmm');
+      this.drawBorder();
+    },
+    hatchTick() {
+      this.hatchOffset = (this.hatchOffset + 1) % (this.hatchLength * 2);
+      this.drawBorder(true);
+    },
+    drawBorder(noBorder) {
+      if (!this.mask) return;
+
+      let x,
+        y,
+        i,
+        j,
+        k,
+        w = this.imageInfo.width,
+        h = this.imageInfo.height,
+        ctx = this.imageInfo.context,
+        imgData = ctx.createImageData(w, h),
+        res = imgData.data;
+
+      if (!noBorder) this.cacheInd = MagicWand.getBorderIndices(this.mask);
+
+      ctx.clearRect(0, 0, w, h);
+
+      let len = this.cacheInd.length;
+      for (j = 0; j < len; j++) {
+        i = this.cacheInd[j];
+        x = i % w; // calc x by index
+        y = (i - x) / w; // calc y by index
+        k = (y * w + x) * 4;
+        if (
+          (x + y + this.hatchOffset) % (this.hatchLength * 2) <
+          this.hatchLength
+        ) {
+          // detect hatch color
+          res[k + 3] = 255; // black, change only alpha
+        } else {
+          res[k] = 255; // white
+          res[k + 1] = 255;
+          res[k + 2] = 255;
+          res[k + 3] = 255;
+        }
+      }
+
+      ctx.putImageData(imgData, 0, 0);
+    },
+    trace() {
+      let cs = MagicWand.traceContours(this.mask);
+      cs = MagicWand.simplifyContours(
+        cs,
+        this.simplifyTolerant,
+        this.simplifyCount,
+      );
+
+      this.mask = null;
+
+      // draw contours
+      let ctx = this.imageInfo.context;
+      ctx.clearRect(0, 0, this.imageInfo.width, this.imageInfo.height);
+      //inner
+      ctx.beginPath();
+      for (let i = 0; i < cs.length; i++) {
+        if (!cs[i].inner) continue;
+        let ps = cs[i].points;
+        ctx.moveTo(ps[0].x, ps[0].y);
+        for (let j = 1; j < ps.length; j++) {
+          ctx.lineTo(ps[j].x, ps[j].y);
+        }
+      }
+      ctx.strokeStyle = 'red';
+      ctx.stroke();
+      //outer
+      ctx.beginPath();
+      for (let i = 0; i < cs.length; i++) {
+        if (cs[i].inner) continue;
+        let ps = cs[i].points;
+        ctx.moveTo(ps[0].x, ps[0].y);
+        for (let j = 1; j < ps.length; j++) {
+          ctx.lineTo(ps[j].x, ps[j].y);
+        }
+      }
+      ctx.strokeStyle = 'blue';
+      ctx.stroke();
+    },
+    paint(color, alpha) {
+      if (!this.mask) return;
+
+      let rgba = this.hexToRgb(color, alpha);
+
+      let x,
+        y,
+        data = this.mask.data,
+        bounds = this.mask.bounds,
+        maskW = this.mask.width,
+        w = this.imageInfo.width,
+        h = this.imageInfo.height,
+        ctx = this.imageInfo.context,
+        imgData = ctx.createImageData(w, h),
+        res = imgData.data;
+
+      for (y = bounds.minY; y <= bounds.maxY; y++) {
+        for (x = bounds.minX; x <= bounds.maxX; x++) {
+          if (data[y * maskW + x] === 0) continue;
+          let k = (y * w + x) * 4;
+          res[k] = rgba[0];
+          res[k + 1] = rgba[1];
+          res[k + 2] = rgba[2];
+          res[k + 3] = rgba[3];
+        }
+      }
+
+      this.mask = null;
+
+      ctx.putImageData(imgData, 0, 0);
+    },
+    hexToRgb(hex, alpha) {
+      let int = parseInt(hex, 16);
+      let r = (int >> 16) & 255;
+      let g = (int >> 8) & 255;
+      let b = int & 255;
+
+      return [r, g, b, Math.round(alpha * 255)];
+    },
+    concatMasks(mask, old) {
+      let data1 = old.data,
+        data2 = mask.data,
+        w1 = old.width,
+        w2 = mask.width,
+        b1 = old.bounds,
+        b2 = mask.bounds,
+        b = {
+          // bounds for new mask
+          minX: Math.min(b1.minX, b2.minX),
+          minY: Math.min(b1.minY, b2.minY),
+          maxX: Math.max(b1.maxX, b2.maxX),
+          maxY: Math.max(b1.maxY, b2.maxY),
+        },
+        w = old.width, // size for new mask
+        h = old.height,
+        i,
+        j,
+        k,
+        k1,
+        k2,
+        len;
+
+      let result = new Uint8Array(w * h);
+
+      // copy all old mask
+      len = b1.maxX - b1.minX + 1;
+      i = b1.minY * w + b1.minX;
+      k1 = b1.minY * w1 + b1.minX;
+      k2 = b1.maxY * w1 + b1.minX + 1;
+      // walk through rows (Y)
+      for (k = k1; k < k2; k += w1) {
+        result.set(data1.subarray(k, k + len), i); // copy row
+        i += w;
+      }
+
+      // copy new mask (only "black" pixels)
+      len = b2.maxX - b2.minX + 1;
+      i = b2.minY * w + b2.minX;
+      k1 = b2.minY * w2 + b2.minX;
+      k2 = b2.maxY * w2 + b2.minX + 1;
+      // walk through rows (Y)
+      for (k = k1; k < k2; k += w2) {
+        // walk through cols (X)
+        for (j = 0; j < len; j++) {
+          if (data2[k + j] === 1) result[i + j] = 1;
+        }
+        i += w;
+      }
+
+      return {
+        data: result,
+        width: w,
+        height: h,
+        bounds: b,
+      };
+    },
   },
   computed: {},
 };
