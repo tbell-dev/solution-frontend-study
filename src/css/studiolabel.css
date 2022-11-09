@@ -595,6 +595,7 @@ body { scroll: no; overflow: hidden; }
 }
 #studio-wrap .studio-center .out-canvas {
     /*position: absolute;*/
+    overflow: auto;
 }
 
 .loading-container {

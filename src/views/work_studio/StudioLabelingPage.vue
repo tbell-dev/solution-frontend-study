@@ -174,12 +174,12 @@
               <button>
                 <img
                   v-show="!isToolMoveOn"
-                  src="../../assets/images/studio/icon/icon-move01.svg"
+                  src="../../assets/images/studio/icon/icon-move-dark.svg"
                   alt="이동"
                 />
                 <img
                   v-show="isToolMoveOn"
-                  src="../../assets/images/studio/icon/icon-move02.svg"
+                  src="../../assets/images/studio/icon/icon-move-selected.svg"
                   alt="이동"
                 />
                 <span class="tooltip">이동</span>
@@ -196,12 +196,12 @@
               <button>
                 <img
                   v-show="!isToolTagOn"
-                  src="../../assets/images/studio/icon/icon-tag01.svg"
+                  src="../../assets/images/studio/icon/icon-tag-dark.svg"
                   alt="태그"
                 />
                 <img
                   v-show="isToolTagOn"
-                  src="../../assets/images/studio/icon/icon-tag02.svg"
+                  src="../../assets/images/studio/icon/icon-tag-selected.svg"
                   alt="태그"
                 />
                 <span class="tooltip">태그</span>
@@ -240,12 +240,12 @@
               <button>
                 <img
                   v-show="!isToolResetOn"
-                  src="../../assets/images/studio/icon/icon-reset01.svg"
+                  src="../../assets/images/studio/icon/icon-reset-dark.svg"
                   alt="리셋"
                 />
                 <img
                   v-show="isToolResetOn"
-                  src="../../assets/images/studio/icon/icon-reset02.svg"
+                  src="../../assets/images/studio/icon/icon-reset-selected.svg"
                   alt="리셋"
                 />
                 <span class="tooltip">리셋</span>
@@ -275,12 +275,12 @@
               <button>
                 <img
                   v-show="!isToolODOn"
-                  src="../../assets/images/studio/icon/icon-OD.svg"
+                  src="../../assets/images/studio/icon/icon-OD-dark.svg"
                   alt="OD"
                 />
                 <img
                   v-show="isToolODOn"
-                  src="../../assets/images/studio/icon/icon-OD.svg"
+                  src="../../assets/images/studio/icon/icon-OD-selected.svg"
                   alt="OD"
                 />
                 <span class="tooltip">OD</span>
@@ -297,12 +297,12 @@
               <button>
                 <img
                   v-show="!isToolISOn"
-                  src="../../assets/images/studio/icon/icon-IS.svg"
+                  src="../../assets/images/studio/icon/icon-IS-dark.svg"
                   alt="IS"
                 />
                 <img
                   v-show="isToolISOn"
-                  src="../../assets/images/studio/icon/icon-IS.svg"
+                  src="../../assets/images/studio/icon/icon-IS-selected.svg"
                   alt="IS"
                 />
                 <span class="tooltip">IS</span>
@@ -319,12 +319,12 @@
               <button>
                 <img
                   v-show="!isToolSESOn"
-                  src="../../assets/images/studio/icon/icon-SES.svg"
+                  src="../../assets/images/studio/icon/icon-SES-dark.svg"
                   alt="SES"
                 />
                 <img
                   v-show="isToolSESOn"
-                  src="../../assets/images/studio/icon/icon-SES.svg"
+                  src="../../assets/images/studio/icon/icon-SES-selected.svg"
                   alt="SES"
                 />
                 <span class="tooltip">SES</span>
@@ -341,12 +341,12 @@
               <button>
                 <img
                   v-show="!isToolMagicwandOn"
-                  src="../../assets/images/studio/icon/icon-magicwand01.svg"
+                  src="../../assets/images/studio/icon/icon-smartpen-dark.svg"
                   alt="매직완드"
                 />
                 <img
                   v-show="isToolMagicwandOn"
-                  src="../../assets/images/studio/icon/icon-magicwand02.svg"
+                  src="../../assets/images/studio/icon/icon-smartpen-selected.svg"
                   alt="매직완드"
                 />
                 <span class="tooltip">매직완드</span>
@@ -363,12 +363,12 @@
               <button>
                 <img
                   v-show="!isToolAutopointOn"
-                  src="../../assets/images/studio/icon/icon-autopoint01.svg"
+                  src="../../assets/images/studio/icon/icon-autopoint-dark.svg"
                   alt="오토포인트"
                 />
                 <img
                   v-show="isToolAutopointOn"
-                  src="../../assets/images/studio/icon/icon-autopoint02.svg"
+                  src="../../assets/images/studio/icon/icon-autopoint-selected.svg"
                   alt="오토포인트"
                 />
                 <span class="tooltip">오토포인트</span>
@@ -388,12 +388,12 @@
               <button>
                 <img
                   v-show="!isToolBoxingOn"
-                  src="../../assets/images/studio/icon/icon-boxing01.svg"
+                  src="../../assets/images/studio/icon/icon-boxing-dark.svg"
                   alt="박싱"
                 />
                 <img
                   v-show="isToolBoxingOn"
-                  src="../../assets/images/studio/icon/icon-boxing02.svg"
+                  src="../../assets/images/studio/icon/icon-boxing-selected.svg"
                   alt="박싱"
                 />
                 <span class="tooltip">박싱</span>
@@ -410,12 +410,12 @@
               <button>
                 <img
                   v-show="!isToolPolylineOn"
-                  src="../../assets/images/studio/icon/icon-polyline01.svg"
+                  src="../../assets/images/studio/icon/icon-polyline-dark.svg"
                   alt="폴리라인"
                 />
                 <img
                   v-show="isToolPolylineOn"
-                  src="../../assets/images/studio/icon/icon-polyline02.svg"
+                  src="../../assets/images/studio/icon/icon-polyline-selected.svg"
                   alt="폴리라인"
                 />
                 <span class="tooltip">폴리라인</span>
@@ -432,12 +432,12 @@
               <button>
                 <img
                   v-show="!isToolPolygonOn"
-                  src="../../assets/images/studio/icon/icon-polygon01.svg"
+                  src="../../assets/images/studio/icon/icon-polygon-dark.svg"
                   alt="폴리곤"
                 />
                 <img
                   v-show="isToolPolygonOn"
-                  src="../../assets/images/studio/icon/icon-polygon02.svg"
+                  src="../../assets/images/studio/icon/icon-polygon-selected.svg"
                   alt="폴리곤"
                 />
                 <span class="tooltip">폴리곤</span>
@@ -454,12 +454,12 @@
               <button>
                 <img
                   v-show="!isToolPointOn"
-                  src="../../assets/images/studio/icon/icon-point01.svg"
+                  src="../../assets/images/studio/icon/icon-point-dark.svg"
                   alt="포인트"
                 />
                 <img
                   v-show="isToolPointOn"
-                  src="../../assets/images/studio/icon/icon-point02.svg"
+                  src="../../assets/images/studio/icon/icon-point-selected.svg"
                   alt="포인트"
                 />
                 <span class="tooltip">포인트</span>
@@ -476,12 +476,12 @@
               <button>
                 <img
                   v-show="!isToolDrawpenOn"
-                  src="../../assets/images/studio/icon/icon-brush01.svg"
+                  src="../../assets/images/studio/icon/icon-brush-group-dark.svg"
                   alt="브러쉬"
                 />
                 <img
                   v-show="isToolDrawpenOn"
-                  src="../../assets/images/studio/icon/icon-brush02.svg"
+                  src="../../assets/images/studio/icon/icon-brush-group-selected.svg"
                   alt="브러쉬"
                 />
                 <span class="tooltip">브러쉬</span>
@@ -498,12 +498,12 @@
               <button>
                 <img
                   v-show="!isTool3DCubeOn"
-                  src="../../assets/images/studio/icon/icon-3dcube01.svg"
+                  src="../../assets/images/studio/icon/icon-3dcube-dark.svg"
                   alt="3D 큐브"
                 />
                 <img
                   v-show="isTool3DCubeOn"
-                  src="../../assets/images/studio/icon/icon-3dcube02.svg"
+                  src="../../assets/images/studio/icon/icon-3dcube-selected.svg"
                   alt="3D 큐브"
                 />
                 <span class="tooltip">3D 큐브</span>
@@ -520,12 +520,12 @@
               <button>
                 <img
                   v-show="!isToolSegmentOn"
-                  src="../../assets/images/studio/icon/icon-segment01.svg"
+                  src="../../assets/images/studio/icon/icon-segment-dark.svg"
                   alt="세그먼트"
                 />
                 <img
                   v-show="isToolSegmentOn"
-                  src="../../assets/images/studio/icon/icon-segment02.svg"
+                  src="../../assets/images/studio/icon/icon-segment-selected.svg"
                   alt="세그먼트"
                 />
                 <span class="tooltip">세그먼트</span>
@@ -542,13 +542,13 @@
               <button>
                 <img
                   v-show="!isToolKeypointOn"
-                  src="../../assets/images/studio/icon/icon-keypoint01.svg"
+                  src="../../assets/images/studio/icon/icon-keypoint-dark.svg"
                   alt="키포인트"
                   title="키포인트"
                 />
                 <img
                   v-show="isToolKeypointOn"
-                  src="../../assets/images/studio/icon/icon-keypoint02.svg"
+                  src="../../assets/images/studio/icon/icon-keypoint-selected.svg"
                   alt="키포인트"
                   title="키포인트"
                 />
@@ -1040,7 +1040,10 @@
                       v-show="isLabelingOn && isObjectSelectOn"-->
                     <canvas id="dataCanvas" class="data-canvas"></canvas>
                   </div>
-                  <table class="instance-table1" v-show="isObjectSelectOn">
+                  <table
+                    class="instance-table1"
+                    v-show="isObjectSelectOn && (isToolBoxingOn || isOD)"
+                  >
                     <tr>
                       <th><b>클래스</b></th>
                       <td>
@@ -1128,29 +1131,36 @@
                     v-for="(item, index) in InstanceListItem"
                     :key="index"
                   >
-                    <button
-                      :id="'instance' + index"
-                      class="instance-detail"
-                      @click="isClassSettingOnOff(index)"
-                    >
-                      <div class="left-wrap">
+                    <button :id="'instance' + index" class="instance-detail">
+                      <div
+                        class="left-wrap"
+                        @click="isClassSettingOnOff(index)"
+                      >
                         <div class="img-wrap">
                           <img
                             src="../../assets/images/studio/icon/icon-boxing02.svg"
                             alt=""
                           />
                         </div>
-                        <b>({{ item.tool }}) {{ item.className }}</b>
+                        <b>({{ item.id }}) {{ item.className }}</b>
                       </div>
                       <div class="right-wrap">
                         <div class="icon-lock">
-                          <button class="lock">
+                          <button
+                            :id="'lockBtn' + index"
+                            class="lock"
+                            @click="isLock(item.id, index)"
+                          >
                             <img
                               src="../../assets/images/studio/icon/icon-lock01.svg"
                               alt=""
                             />
                           </button>
-                          <button class="visibility">
+                          <button
+                            :id="'visibleBtn' + index"
+                            class="visibility"
+                            @click="isVisible(item.id, index)"
+                          >
                             <img
                               src="../../assets/images/studio/icon/icon-visibility01.svg"
                               alt=""
@@ -1273,9 +1283,8 @@ import axios from 'axios';
 import { HOST } from '@/main';
 import { fabric } from 'fabric';
 //import { isProxy, toRaw } from 'vue';
-import MagicWand from 'magic-wand-tool';
 import LoadingSpinner from '@/components/work_studio/common/center_area/LoadingSpinner.vue';
-import keyPoint from '@/components/work_studio/common/center_area/toolKeypoint';
+//import keyPoint from '@/components/work_studio/common/center_area/toolKeypoint';
 
 export default {
   components: {
@@ -1285,19 +1294,28 @@ export default {
     const _this = this;
     console.log(location.href); // 전체 url
     console.log(location.pathname); // 파라미터 값
-    const urlParams = new URLSearchParams(location.search);
+    /*const urlParams = new URLSearchParams(location.search);
     const para = document.location.pathname.split('/');
+    console.log(para);
     for (let p = 0; p < para.length; p++) {
       if (para[p] === 'project') {
         this.prjId = para[p + 1];
       }
+    }*/
+    this.prjId = this.$route.params.pId;
+    this.taskId = this.$route.query.selectedTask;
+    if (this.prjId === null || this.prjId === undefined) {
+      this.prjId = 5;
+    }
+    if (this.taskId === null || this.taskId === undefined) {
+      this.taskId = 1;
     }
     /*if (urlParams.has('project_id')) {
       this.prjId = urlParams.get('project_id');
     }*/
-    if (urlParams.has('searchTaskId')) {
+    /*if (urlParams.has('selectedTask')) {
       this.taskId = urlParams.get('task_id');
-    }
+    }*/
     this.hostUrl = HOST;
     //this.dataCanvas = document.getElementById('dataCanvas');
     this.dataCanvas = new fabric.Canvas('dataCanvas', {
@@ -1350,7 +1368,7 @@ export default {
     this.fCanvas.on('selection:updated', this.updateSelection);
     this.fCanvas.on('before:selection:cleared', this.beforeClearSelection);
     this.fCanvas.on('selection:cleared', this.clearSelection);
-    this.fCanvas.on('event:mousewheel', this.onMouseWheel);
+    this.fCanvas.on('mouse:wheel', this.onMouseWheel);
     this.fCanvas.on('path:created', this.createPath);
     this.fCtx = this.fCanvas.getContext();
     /*fabric.Object.prototype.lockRotation = true;
@@ -1361,14 +1379,14 @@ export default {
     fabric.Object.prototype.cornerStyle = 'circle';
     fabric.Object.prototype.cornerColor = 'rgba(0,0,0,0.5)';
     fabric.Object.prototype.cornerSize = 10;*/
-    fabric.Object.prototype.on('mouseover', () => {
+    /*fabric.Object.prototype.on('mouseover', () => {
       console.log('over');
       this.isObjectSelectOn = true;
-    });
-    fabric.Object.prototype.on('mouseout', () => {
+    });*/
+    /*fabric.Object.prototype.on('mouseout', () => {
       console.log('out');
       this.isObjectSelectOn = false;
-    });
+    });*/
     fabric.Object.prototype.setControlsVisibility({
       bl: true,
       br: true,
@@ -1391,6 +1409,7 @@ export default {
       .then(response => {
         if (response.data.datas.length > 0) {
           this.isHosted = true;
+          this.isOpen = true;
           this.DataListItem = response.data.datas;
         } else {
           this.isHosted = false;
@@ -1464,6 +1483,7 @@ export default {
       positionX: 0,
       positionY: 0,
       isLoading: false,
+      isOpen: false,
 
       //우측
       isLabelingAssigneeOn: false,
@@ -1850,6 +1870,7 @@ export default {
       TagListItem: [],
       ObjectListItem: [],
       DragRectListItem: [],
+      autoPointList: [],
       ODListItem: [],
       DeleteIDList: [],
       isToolMoveOn: false,
@@ -2030,9 +2051,14 @@ export default {
       } else {
         this.instanceIndex = index;
       }
+      //let isSelectable = true;
       for (let i = 0; i < this.ObjectListItem.length; i++) {
         if (this.InstanceListItem[index].id === this.ObjectListItem[i].id) {
-          this.fCanvas.setActiveObject(this.ObjectListItem[i]);
+          if (this.ObjectListItem[i].selectable) {
+            this.fCanvas.setActiveObject(this.ObjectListItem[i]);
+          } else {
+            //isSelectable = false;
+          }
         }
       }
 
@@ -2042,9 +2068,13 @@ export default {
         for (let i = 0; i < elseBtn.length; i++) {
           elseBtn.item(i).classList.remove('active');
         }
-        thisBtn.classList.add('active');
+        if (thisBtn) {
+          thisBtn.classList.add('active');
+        }
       } else {
-        thisBtn.classList.remove('active');
+        if (thisBtn) {
+          thisBtn.classList.remove('active');
+        }
       }
 
       if (prevIndex === index) {
@@ -2070,10 +2100,36 @@ export default {
       }
     },
     isToolMoveOnOff() {
-      document.body.style.cursor = 'Move';
       this.isToolMoveOn = !this.isToolMoveOn;
+      this.isToolODOn = false;
+      this.isToolISOn = false;
+      this.isToolSESOn = false;
+      this.isToolBoxingOn = false;
+      this.isToolPolylineOn = false;
+      this.isToolPolygonOn = false;
+      this.isToolPointOn = false;
+      this.isToolDrawpenOn = false;
+      this.isTool3DCubeOn = false;
+      this.isToolMagicwandOn = false;
+      this.isToolKeypointOn = false;
+      this.isToolAutopointOn = false;
+      this.isToolSegmentOn = false;
       if (this.isToolMoveOn) {
+        //this.fCanvas.hoverCursor = 'crosshair';
+        if (confirm('준비중입니다.')) {
+          this.isToolMoveOn = false;
+        } else {
+          this.isToolMoveOn = false;
+        }
+      }
+      if (this.isToolMoveOn) {
+        document.body.style.cursor = 'Move';
+        this.fCanvas.defaultCursor = 'move';
         this.fCanvas.hoverCursor = 'move';
+      } else {
+        document.body.style.cursor = 'default';
+        this.fCanvas.defaultCursor = 'default';
+        this.fCanvas.hoverCursor = 'default';
       }
       this.fCanvas.isDrawingMode = false;
     },
@@ -2110,6 +2166,8 @@ export default {
       this.isToolSegmentOn = false;
       this.fCanvas.isDrawingMode = false;
       if (confirm('작업 내용이 초기화 됩니다. 초기화 하시겠습니까?')) {
+        document.body.style.cursor = 'default';
+        this.fCanvas.hoverCursor = 'default';
         this.isToolResetOn = false;
         // clear instance, annotation
         this.clearDatas();
@@ -2117,6 +2175,8 @@ export default {
         this.resetTools();
         this.fCanvas.clear();
         this.openFabImage();
+      } else {
+        this.isToolResetOn = false;
       }
     },
 
@@ -2142,42 +2202,48 @@ export default {
       this.fCanvas.isDrawingMode = false;
       if (this.isToolODOn && !this.isOD) {
         this.getOD();
-      } /*else if (this.isToolODOn) {
-        for (let i = 0; i < _this.TagListItem.length; i++) {
-        let tag = _this.TagListItem[i];
-        if (tag.id === _this.objSelected.id) {
-          _this.fCanvas.remove(tag);
-          _this.TagListItem.splice(i, 1);
-        }
-      }
-      for (let i = 0; i < _this.InstanceListItem.length; i++) {
-        if (_this.InstanceListItem[i].id === _this.objSelected.id) {
-          _this.InstanceListItem.splice(i, 1);
-        }
-      }
-      for (let i = 0; i < _this.AnnotationListItem.length; i++) {
-        if (_this.AnnotationListItem[i].id === _this.objSelected.id) {
-          if (_this.AnnotationListItem[i].annotation.annotation_id) {
-            _this.DeleteIDList.push(
-              _this.AnnotationListItem[i].annotation.annotation_id,
-            );
-            console.log(_this.AnnotationListItem[i].annotation.annotation_id);
-          } else {
-            console.log('no id');
+      } else if (!this.isToolODOn) {
+        for (let i = 0; i < this.ObjectListItem.length; i++) {
+          if (this.ObjectListItem[i].tool === 'OD') {
+            let id = this.ObjectListItem[i].id;
+
+            for (let j = 0; j < this.TagListItem.length; j++) {
+              let tag = this.TagListItem[j];
+              if (tag.id === id) {
+                this.fCanvas.remove(tag);
+                this.TagListItem.splice(j, 1);
+              }
+            }
+            for (let k = 0; k < this.InstanceListItem.length; k++) {
+              if (this.InstanceListItem[k].id === id) {
+                this.InstanceListItem.splice(k, 1);
+              }
+            }
+            for (let l = 0; l < this.AnnotationListItem.length; l++) {
+              if (this.AnnotationListItem[l].id === id) {
+                if (this.AnnotationListItem[l].annotation.annotation_id) {
+                  this.DeleteIDList.push(
+                    this.AnnotationListItem[l].annotation.annotation_id,
+                  );
+                  console.log(
+                    this.AnnotationListItem[l].annotation.annotation_id,
+                  );
+                } else {
+                  console.log('no id');
+                }
+                this.AnnotationListItem.splice(l, 1);
+              }
+            }
+
+            this.fCanvas.remove(this.ObjectListItem[i]);
+            this.ObjectListItem.splice(i, 1);
           }
-          _this.AnnotationListItem.splice(i, 1);
         }
+        this.isOD = false;
+        this.isLabelingOn = false;
+        this.isClassSettingOn = false;
+        this.isToolClassOn = false;
       }
-      for (let i = 0; i < _this.ObjectListItem.length; i++) {
-        if (_this.ObjectListItem[i].id === _this.objSelected.id) {
-          _this.fCanvas.remove(_this.objSelected);
-          _this.ObjectListItem.splice(i, 1);
-        }
-      }
-      _this.isLabelingOn = false;
-      _this.isClassSettingOn = false;
-      _this.isToolClassOn = false;
-      }*/
     },
     isToolISOnOff() {
       if (!this.isHosted) {
@@ -2202,7 +2268,46 @@ export default {
       if (this.isToolISOn && !this.isIS) {
         this.getIS();
       } else if (!this.isToolISOn) {
-        //
+        for (let i = 0; i < this.ObjectListItem.length; i++) {
+          if (this.ObjectListItem[i].tool === 'IS') {
+            let id = this.ObjectListItem[i].id;
+
+            for (let j = 0; j < this.TagListItem.length; j++) {
+              let tag = this.TagListItem[j];
+              if (tag.id === id) {
+                this.fCanvas.remove(tag);
+                this.TagListItem.splice(j, 1);
+              }
+            }
+            for (let k = 0; k < this.InstanceListItem.length; k++) {
+              if (this.InstanceListItem[k].id === id) {
+                this.InstanceListItem.splice(k, 1);
+              }
+            }
+            for (let l = 0; l < this.AnnotationListItem.length; l++) {
+              if (this.AnnotationListItem[l].id === id) {
+                if (this.AnnotationListItem[l].annotation.annotation_id) {
+                  this.DeleteIDList.push(
+                    this.AnnotationListItem[l].annotation.annotation_id,
+                  );
+                  console.log(
+                    this.AnnotationListItem[l].annotation.annotation_id,
+                  );
+                } else {
+                  console.log('no id');
+                }
+                this.AnnotationListItem.splice(l, 1);
+              }
+            }
+
+            this.fCanvas.remove(this.ObjectListItem[i]);
+            this.ObjectListItem.splice(i, 1);
+          }
+        }
+        this.isIS = false;
+        this.isLabelingOn = false;
+        this.isClassSettingOn = false;
+        this.isToolClassOn = false;
       }
     },
     isToolSESOnOff() {
@@ -2227,12 +2332,54 @@ export default {
       this.fCanvas.isDrawingMode = false;
       if (this.isToolSESOn && !this.isSES) {
         this.getSES();
+      } else if (!this.isToolSESOn) {
+        for (let i = 0; i < this.ObjectListItem.length; i++) {
+          if (this.ObjectListItem[i].tool === 'SES') {
+            let id = this.ObjectListItem[i].id;
+
+            for (let j = 0; j < this.TagListItem.length; j++) {
+              let tag = this.TagListItem[j];
+              if (tag.id === id) {
+                this.fCanvas.remove(tag);
+                this.TagListItem.splice(j, 1);
+              }
+            }
+            for (let k = 0; k < this.InstanceListItem.length; k++) {
+              if (this.InstanceListItem[k].id === id) {
+                this.InstanceListItem.splice(k, 1);
+              }
+            }
+            for (let l = 0; l < this.AnnotationListItem.length; l++) {
+              if (this.AnnotationListItem[l].id === id) {
+                if (this.AnnotationListItem[l].annotation.annotation_id) {
+                  this.DeleteIDList.push(
+                    this.AnnotationListItem[l].annotation.annotation_id,
+                  );
+                  console.log(
+                    this.AnnotationListItem[l].annotation.annotation_id,
+                  );
+                } else {
+                  console.log('no id');
+                }
+                this.AnnotationListItem.splice(l, 1);
+              }
+            }
+
+            this.fCanvas.remove(this.ObjectListItem[i]);
+            this.ObjectListItem.splice(i, 1);
+          }
+        }
+        this.isSES = false;
+        this.isLabelingOn = false;
+        this.isClassSettingOn = false;
+        this.isToolClassOn = false;
       }
     },
 
     isToolMagicwandOnOff() {
-      const _this = this;
+      //const _this = this;
       document.body.style.cursor = 'default';
+      this.isToolMoveOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2242,13 +2389,25 @@ export default {
       this.isToolPointOn = false;
       this.isToolDrawpenOn = false;
       this.isTool3DCubeOn = false;
-      //this.isToolMagicwandOn = !this.isToolMagicwandOn;
-      this.isToolMagicwandOn = true;
+      this.isToolMagicwandOn = !this.isToolMagicwandOn;
+      /*this.isToolMagicwandOn = true;
       if (this.isToolMagicwandOn) {
+        this.fCanvas.defaultCursor = 'pointer';
         this.fCanvas.hoverCursor = 'pointer';
         setInterval(function () {
           _this.hatchTick();
         }, 300);
+      } else {
+        this.fCanvas.defaultCursor = 'default';
+        this.fCanvas.hoverCursor = 'default';
+      }*/
+      if (this.isToolMagicwandOn) {
+        //this.fCanvas.hoverCursor = 'crosshair';
+        if (confirm('준비중입니다.')) {
+          this.isToolMagicwandOn = false;
+        } else {
+          this.isToolMagicwandOn = false;
+        }
       }
       this.isToolKeypointOn = false;
       this.isToolAutopointOn = false;
@@ -2257,6 +2416,7 @@ export default {
     },
     isToolAutopointOnOff() {
       document.body.style.cursor = 'default';
+      this.isToolMoveOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2270,26 +2430,35 @@ export default {
       this.isToolKeypointOn = false;
       //this.isToolAutopointOn = !this.isToolAutopointOn;
       this.isToolAutopointOn = true;
-      if (this.isToolAutopointOn) {
-        //this.fCanvas.hoverCursor = 'pointer';
+      /*if (this.isToolAutopointOn) {
+        //this.fCanvas.defaultCursor = 'crosshair';
+        //this.fCanvas.hoverCursor = 'crosshair';
         if (confirm('준비중입니다.')) {
           this.isToolAutopointOn = false;
         } else {
           this.isToolAutopointOn = false;
         }
-      }
+      } else {
+        this.fCanvas.defaultCursor = 'default';
+        this.fCanvas.hoverCursor = 'default';
+      }*/
       this.isToolSegmentOn = false;
       this.fCanvas.isDrawingMode = false;
     },
     isToolBoxingOnOff() {
       //document.body.style.cursor = 'Crosshair';
+      this.isToolMoveOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
       //this.isToolBoxingOn = !this.isToolBoxingOn;
       this.isToolBoxingOn = true;
       if (this.isToolBoxingOn) {
+        this.fCanvas.defaultCursor = 'crosshair';
         this.fCanvas.hoverCursor = 'crosshair';
+      } else {
+        this.fCanvas.defaultCursor = 'default';
+        this.fCanvas.hoverCursor = 'default';
       }
       this.isToolPolylineOn = false;
       this.isToolPolygonOn = false;
@@ -2303,7 +2472,8 @@ export default {
       this.fCanvas.isDrawingMode = false;
     },
     isToolPolylineOnOff() {
-      document.body.style.cursor = 'Crosshair';
+      //document.body.style.cursor = 'Crosshair';
+      this.isToolMoveOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2311,7 +2481,11 @@ export default {
       //this.isToolPolylineOn = !this.isToolPolylineOn;
       this.isToolPolylineOn = true;
       if (this.isToolPolylineOn) {
+        this.fCanvas.defaultCursor = 'crosshair';
         this.fCanvas.hoverCursor = 'crosshair';
+      } else {
+        this.fCanvas.defaultCursor = 'default';
+        this.fCanvas.hoverCursor = 'default';
       }
       this.isToolPolygonOn = false;
       this.isToolPointOn = false;
@@ -2324,7 +2498,8 @@ export default {
       this.fCanvas.isDrawingMode = false;
     },
     isToolPolygonOnOff() {
-      document.body.style.cursor = 'Crosshair';
+      //document.body.style.cursor = 'Crosshair';
+      this.isToolMoveOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2333,7 +2508,11 @@ export default {
       //this.isToolPolygonOn = !this.isToolPolygonOn;
       this.isToolPolygonOn = true;
       if (this.isToolPolygonOn) {
+        this.fCanvas.defaultCursor = 'crosshair';
         this.fCanvas.hoverCursor = 'crosshair';
+      } else {
+        this.fCanvas.defaultCursor = 'default';
+        this.fCanvas.hoverCursor = 'default';
       }
       this.isToolPointOn = false;
       this.isToolDrawpenOn = false;
@@ -2349,7 +2528,8 @@ export default {
       }
     },
     isToolPointOnOff() {
-      document.body.style.cursor = 'Crosshair';
+      //document.body.style.cursor = 'Crosshair';
+      this.isToolMoveOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2359,7 +2539,11 @@ export default {
       //this.isToolPointOn = !this.isToolPointOn;
       this.isToolPointOn = true;
       if (this.isToolPointOn) {
+        this.fCanvas.defaultCursor = 'crosshair';
         this.fCanvas.hoverCursor = 'crosshair';
+      } else {
+        this.fCanvas.defaultCursor = 'default';
+        this.fCanvas.hoverCursor = 'default';
       }
       this.isToolDrawpenOn = false;
       this.isTool3DCubeOn = false;
@@ -2370,7 +2554,8 @@ export default {
       this.fCanvas.isDrawingMode = false;
     },
     isToolDrawpenOnOff() {
-      document.body.style.cursor = 'default';
+      //document.body.style.cursor = 'default';
+      this.isToolMoveOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2393,6 +2578,12 @@ export default {
         });*/
         /*this.fCanvas.freeDrawingCursor =
           'url(' + this.getDrawCursor() + ') 10 10, crosshair';*/
+        //this.fCanvas.hoverCursor = 'crosshair';
+        if (confirm('준비중입니다.')) {
+          this.isToolDrawpenOn = false;
+        } else {
+          this.isToolDrawpenOn = false;
+        }
       }
       this.isTool3DCubeOn = false;
       this.isToolMagicwandOn = false;
@@ -2428,6 +2619,7 @@ export default {
     },
     isTool3DCubeOnOff() {
       document.body.style.cursor = 'default';
+      this.isToolMoveOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2454,6 +2646,7 @@ export default {
     },
     isToolKeypointOnOff() {
       document.body.style.cursor = 'default';
+      this.isToolMoveOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2466,20 +2659,21 @@ export default {
       this.isToolMagicwandOn = false;
       //this.isToolKeypointOn = !this.isToolKeypointOn;
       this.isToolKeypointOn = true;
-      /*if (this.isToolKeypointOn) {
+      if (this.isToolKeypointOn) {
         //this.fCanvas.hoverCursor = 'crosshair';
         if (confirm('준비중입니다.')) {
           this.isToolKeypointOn = false;
         } else {
           this.isToolKeypointOn = false;
         }
-      }*/
+      }
       this.isToolAutopointOn = false;
       this.isToolSegmentOn = false;
       this.fCanvas.isDrawingMode = false;
     },
     isToolSegmentOnOff() {
       document.body.style.cursor = 'default';
+      this.isToolMoveOn = false;
       this.isToolODOn = false;
       this.isToolISOn = false;
       this.isToolSESOn = false;
@@ -2495,7 +2689,11 @@ export default {
       //this.isToolSegmentOn = !this.isToolSegmentOn;
       this.isToolSegmentOn = true;
       if (this.isToolSegmentOn) {
+        this.fCanvas.defaultCursor = 'crosshair';
         this.fCanvas.hoverCursor = 'crosshair';
+      } else {
+        this.fCanvas.defaultCursor = 'default';
+        this.fCanvas.hoverCursor = 'default';
       }
       this.fCanvas.isDrawingMode = false;
     },
@@ -2530,6 +2728,7 @@ export default {
       this.isOD = false;
       this.isIS = false;
       this.isSES = false;
+      this.isClassSettingOn = false;
     },
     selectImgFunction(index) {
       // save status
@@ -2769,7 +2968,9 @@ export default {
     },
     zoomAdjustment() {
       let zoom = document.getElementById('zoom-range').value;
+      console.log('zoom' + zoom + ', ');
       zoom *= this.imgRatio;
+      console.log(zoom / 100);
       let width = this.inWidth * (zoom / 100);
       let height = this.inHeight * (zoom / 100);
       this.fCanvas.setWidth(width);
@@ -2913,23 +3114,29 @@ export default {
       this.fCanvas.clear();
       if (this.isHosted) {
         let item = this.DataListItem[this.currentImageIndex];
+        let task_id = item.task_id;
+        if (this.isOpen) {
+          task_id = this.taskId;
+          this.isOpen = false;
+        }
         this.imgSrc =
           this.hostUrl +
           '/rest/api/1/task/data?project_id=' +
           item.task_project.project_id +
           '&task_id=' +
-          item.task_id;
+          task_id;
         axios
           .get(
             HOST +
               '/rest/api/1/task/annotation?project_id=' +
               item.task_project.project_id +
               '&task_id=' +
-              item.task_id,
+              task_id +
+              '&maxResults=500',
           )
           .then(response => {
             //console.log(response.status);
-            console.log(response.data.datas);
+            console.log('openImage');
             for (let j = 0; j < response.data.datas.length; j++) {
               let item = response.data.datas[j];
               if (item.annotation_id) {
@@ -2956,9 +3163,15 @@ export default {
                   item.annotation_type.annotation_type_id === 2 ||
                   item.annotation_type.annotation_type_id === 3
                 ) {
+                  let items = item.annotation_data;
+                  let coordinates = [];
+                  for (let l = 0; l < items.length; l++) {
+                    coordinates.push(new fabric.Point(items[l++], items[l]));
+                  }
+                  console.log(coordinates);
                   _this.drawPolyItem(
                     item.annotation_type.annotation_type_name,
-                    item.annotation_data,
+                    coordinates,
                     item.annotation_type.annotation_type_name,
                     '#00ffcc',
                     item.annotation_id,
@@ -3290,21 +3503,9 @@ export default {
     },
     // eslint-disable-next-line no-unused-vars
     moveCanvas(options) {
-      let event = options.e;
+      //let event = options.e;
       if (this.isObjectSelectOn || this.isObjectMoveOn || this.isMove) {
         return;
-      }
-      if (this.isToolMoveOn && this.isDown) {
-        let moveX = event.clientX;
-        let moveY = event.clientY;
-        let orgX = this.fCanvas.offset().left;
-        let orgY = this.fCanvas.offset().top;
-        console.log(moveX + ', ' + moveY);
-        console.log(orgX + ', ' + orgY);
-        /*this.fCanvas.absolutePan({
-          x: orgX + (moveX - orgX),
-          y: orgY + (moveY - orgY),
-        });*/
       }
       let pointer = this.fCanvas.getPointer(options);
       let nowX = pointer.x;
@@ -3316,7 +3517,16 @@ export default {
       /*this.line.set({ x2: event.screenX, y2: event.screenY });
       this.fCanvas.renderAll();*/
       //const _this = this;
-      if (this.isToolBoxingOn && this.isDown) {
+      if (this.isToolMoveOn && this.isDown) {
+        /*let centerX = this.fCanvas.getCenter().left;
+        let centerY = this.fCanvas.getCenter().top;
+        console.log(centerX + centerY);
+        console.log(this.fCanvas.getCenter());*/
+        /*this.fCanvas.absolutePan({
+          x: centerX + (nowX - this.startX),
+          y: centerY + (nowY - this.startY),
+        });*/
+      } else if (this.isToolBoxingOn && this.isDown) {
         this.setDragBox(nowX, nowY);
       } else if (
         (this.isToolPolylineOn ||
@@ -3372,7 +3582,7 @@ export default {
             //var thres = Math.min(colorThreshold + Math.floor(len / 3), 255);
             if (thres !== this.currentThreshold) {
               this.currentThreshold = thres;
-              this.drawMask(this.downPoint.x, this.downPoint.y);
+              //this.drawMask(this.downPoint.x, this.downPoint.y);
             }
           }
         }
@@ -3472,9 +3682,11 @@ export default {
         this.addMode = false;
         this.oldMask = null;
         this.currentThreshold = this.colorThreshold;
+      } else if (this.isToolAutopointOn) {
+        //this.autoPointList.push({ x: this.endX, y: this.endY });
+        this.drawPoints(pointer);
       } /*else if (this.isTool3DCubeOn) {
       } else if (this.isToolMagicwandOn) {
-      } else if (this.isToolAutopointOn) {
       } else {
       }*/
     },
@@ -3498,8 +3710,12 @@ export default {
         for (let i = 0; i < this.TagListItem.length; i++) {
           let tag = this.TagListItem[i];
           if (tag.id === options.target.id) {
-            tag.left = options.target.left - tag.height / 2;
-            tag.top = options.target.top - tag.width / 2;
+            //tag.left = options.target.left - tag.height / 2;
+            //tag.top = options.target.top - tag.width / 2;
+            tag.left =
+              options.target.left + options.target.width / 2 - tag.width / 2;
+            tag.top =
+              options.target.top + options.target.height / 2 - tag.height / 2;
           }
         }
         //options.target.setCoords();
@@ -3539,8 +3755,12 @@ export default {
         for (let i = 0; i < this.TagListItem.length; i++) {
           let tag = this.TagListItem[i];
           if (tag.id === options.target.id) {
-            tag.left = options.target.points[0].x - tag.height / 2;
-            tag.top = options.target.points[0].y - tag.width / 2;
+            //tag.left = options.target.points[0].x - tag.height / 2;
+            //tag.top = options.target.points[0].y - tag.width / 2;
+            tag.left =
+              options.target.left + options.target.width / 2 - tag.width / 2;
+            tag.top =
+              options.target.top + options.target.height / 2 - tag.height / 2;
           }
         }
         //this.setDataImage(options.target);
@@ -3660,8 +3880,12 @@ export default {
         let tag = this.TagListItem[i];
         if (tag.id === options.target.id) {
           for (let j = 0; j < options.target.points.length; j++) {
-            tag.left = options.target.points[0].x - tag.height / 2;
-            tag.top = options.target.points[0].y - tag.width / 2;
+            //tag.left = options.target.points[0].x - tag.height / 2;
+            //tag.top = options.target.points[0].y - tag.width / 2;
+            tag.left =
+              options.target.left + options.target.width / 2 - tag.width / 2;
+            tag.top =
+              options.target.top + options.target.height / 2 - tag.height / 2;
           }
         }
       }
@@ -3725,12 +3949,34 @@ export default {
         this.isToolPolygonOn ||
         this.isToolSegmentOn
       ) {*/
-      if (this.isToolBoxingOn) {
+      if (options.target.type === 'rect') {
         this.setDataImage(options.target);
       }
       //}
       //this.fCanvas.renderAll();
       //this.setData();
+
+      let index = 0;
+      for (let i = 0; i < this.InstanceListItem.length; i++) {
+        if (this.InstanceListItem[i].id === options.target.id) {
+          index = i;
+        }
+      }
+      let thisBtn = document.getElementById('instance' + index);
+      let elseBtn = document.getElementsByClassName('instance-detail');
+      if (!this.isClassSettingOn || !this.isToolClassOn) {
+        for (let i = 0; i < elseBtn.length; i++) {
+          elseBtn.item(i).classList.remove('active');
+        }
+        if (thisBtn) {
+          thisBtn.classList.add('active');
+        }
+      } else {
+        if (thisBtn) {
+          thisBtn.classList.remove('active');
+        }
+      }
+
       console.log('select: ' + options.target.id);
     },
     deselectObject(options) {
@@ -3898,6 +4144,7 @@ export default {
         width: rRight - rLeft,
         height: rBottom - rTop,
       };
+      console.log(coordinate);
       this.drawBoxing('bbox', coordinate, '#000000');
     },
     drawBoxing(tool, coordinate, color, aId) {
@@ -3961,7 +4208,7 @@ export default {
       //console.log(rect.controls);
       rect.on('selected', this.selectObject);
       rect.on('deselected', this.deselectObject);
-      let tag = new fabric.Text('human', {
+      let tag = new fabric.Text('human ' + this.objId, {
         id: this.objId,
         fill: '#ffffff',
         //textBackgroundColor: 'grey',
@@ -3970,8 +4217,10 @@ export default {
         visible: this.isToolTagOn,
       });
 
-      tag.set('top', rect.top - tag.width / 2);
-      tag.set('left', rect.left - tag.height / 2);
+      //tag.set('top', rect.top - tag.width / 2);
+      //tag.set('left', rect.left - tag.height / 2);
+      tag.set('top', rect.top + rect.height / 2 - tag.height / 2);
+      tag.set('left', rect.left + rect.width / 2 - tag.width / 2);
       this.ObjectListItem.push(rect);
       this.TagListItem.push(tag);
       this.fCanvas.add(rect);
@@ -4094,7 +4343,23 @@ export default {
       if (this.isToolPolylineOn) {
         polyItem = new fabric.Polyline(coordinate, option);
       }
-      let tag = new fabric.Text('human', {
+      /*const _this = this;
+      coordinate.forEach(function (point, index) {
+        let circle = new fabric.Circle({
+          radius: 5,
+          fill: 'green',
+          left: point.x,
+          top: point.y,
+          originX: 'center',
+          originY: 'center',
+          hasBorders: false,
+          hasControls: false,
+          name: index,
+        });
+        _this.fCanvas.add(circle);
+      });*/
+
+      let tag = new fabric.Text('human ' + this.objId, {
         id: this.objId,
         fill: '#ffffff',
         //textBackgroundColor: 'grey',
@@ -4104,8 +4369,10 @@ export default {
         selectable: false,
       });
       //console.log(polyItem);
-      tag.set('top', polyItem.points[0].y - tag.width / 2);
-      tag.set('left', polyItem.points[0].x - tag.height / 2);
+      //tag.set('top', polyItem.points[0].y - tag.width / 2);
+      //tag.set('left', polyItem.points[0].x - tag.height / 2);
+      tag.set('top', polyItem.top + polyItem.height / 2 - tag.height / 2);
+      tag.set('left', polyItem.left + polyItem.width / 2 - tag.width / 2);
       this.fCanvas.add(polyItem);
       this.fCanvas.add(tag);
       polyItem.on('selected', this.selectObject);
@@ -4124,6 +4391,13 @@ export default {
         attrs: [],
       });
       //console.log(this.InstanceListItem);
+      console.log(coordinate);
+      let cData = [];
+      for (let i = 0; i < coordinate.length; i++) {
+        cData.push(coordinate[i].x);
+        cData.push(coordinate[i].y);
+      }
+      console.log(cData);
       this.AnnotationListItem.push({
         id: this.objId,
         annotation: {
@@ -4136,7 +4410,7 @@ export default {
             annotation_category_id: 0,
             annotation_category_attributes: [],
           },
-          annotation_data: coordinate,
+          annotation_data: cData,
         },
       });
       if (type === 'polygon' || type === 'segment') {
@@ -4239,63 +4513,62 @@ export default {
       //this.fCanvas.loadFromJSON(json);
     },
     drawPoints(point) {
-      //polyline
-      //polygon
-      //autopoint
-      let boxingPoint = new fabric.Circle({
-        id: this.objId,
-        radius: 4,
-        stroke: 'black',
-        strokeWidth: 1,
-        color: '#ff0000',
-        fill: '#ff0000',
-        //startAngle: 0,
-        //endAngle: 2,
-        left: point.x,
-        top: point.y,
-        hasBorders: false,
-        //hasControls: false,
-        cornerSize: 5,
-        originX: 'center',
-        originY: 'center',
-        hoverCursor: 'pointer',
-        selectable: true,
-      });
-      boxingPoint.on('selected', this.selectObject);
-      boxingPoint.on('deselected', this.deselectObject);
-      this.fCanvas.add(boxingPoint);
-      this.ObjectListItem.push(boxingPoint);
-      //this.fCanvas.setActiveObject(polyItem);
-      this.InstanceListItem.push({
-        id: this.objId, //category id
-        tool: 'point',
-        cId: 0, //AnnotationListItem id
-        className: 'human',
-        gender: '',
-        age: '',
-        attrs: [],
-      });
-      //console.log(this.InstanceListItem);
-      this.AnnotationListItem.push({
-        id: this.objId,
-        annotation: {
-          annotation_type: {
-            annotation_type_id: 1,
+      const _this = this;
+      if (this.isToolPointOn) {
+        let boxingPoint = new fabric.Circle({
+          id: this.objId,
+          radius: 4 * _this.imgRatio,
+          stroke: 'black',
+          strokeWidth: 1 * _this.imgRatio,
+          color: '#ff0000',
+          fill: '#ff0000',
+          //startAngle: 0,
+          //endAngle: 2,
+          left: point.x,
+          top: point.y,
+          hasBorders: false,
+          //hasControls: false,
+          cornerSize: 5 * _this.imgRatio,
+          originX: 'center',
+          originY: 'center',
+          hoverCursor: 'pointer',
+          selectable: true,
+        });
+        boxingPoint.on('selected', this.selectObject);
+        boxingPoint.on('deselected', this.deselectObject);
+        this.fCanvas.add(boxingPoint);
+        this.ObjectListItem.push(boxingPoint);
+        //this.fCanvas.setActiveObject(polyItem);
+        this.InstanceListItem.push({
+          id: this.objId, //category id
+          tool: 'point',
+          cId: 0, //AnnotationListItem id
+          className: 'human',
+          gender: '',
+          age: '',
+          attrs: [],
+        });
+        //console.log(this.InstanceListItem);
+        this.AnnotationListItem.push({
+          id: this.objId,
+          annotation: {
+            annotation_type: {
+              annotation_type_id: 9,
+            },
+            annotation_category: {
+              annotation_category_id: 0,
+              annotation_category_attributes: [],
+            },
+            annotation_data: [point.x, point.y],
           },
-          annotation_category: {
-            annotation_category_id: 0,
-            annotation_category_attributes: [],
-          },
-          annotation_data: point,
-        },
-      });
-      this.objId++;
-      this.isDown = false;
+        });
+        this.objId++;
+        this.isDown = false;
 
-      let imgData = this.fCtx.getImageData(point.x, point.y, 1, 1);
-      let pixelImg = imgData.data;
-      console.log(pixelImg);
-      /*for (let i = 0; i < this.boxingPoints.length; i++) {
+        /*let imgData = this.fCtx.getImageData(point.x, point.y, 1, 1);
+        let pixelImg = imgData.data;
+        console.log(pixelImg);*/
+        /*for (let i = 0; i < this.boxingPoints.length; i++) {
         let boxingPoint = new fabric.Circle({
           id: this.objId,
           radius: 3,
@@ -4314,32 +4587,96 @@ export default {
         });
         this.fCanvas.add(boxingPoint);
       }*/
-      /*if (this.boxingPoints.length === 2) {
-        let ePoint = this.boxingPoints.pop();
-        let sPoint = this.boxingPoints.pop();
-        this.startX = sPoint.x;
-        this.startY = sPoint.y;
-        this.endX = ePoint.x;
-        this.endY = ePoint.y;
-        this.setRect();
-      }*/
+      } else if (this.isToolAutopointOn) {
+        let autoPoint = new fabric.Circle({
+          id: this.objId,
+          radius: 7 * _this.imgRatio,
+          stroke: 'black',
+          strokeWidth: 1 * _this.imgRatio,
+          color: '#999999',
+          fill: '#ffcc00',
+          //startAngle: 0,
+          //endAngle: 2,
+          left: point.x,
+          top: point.y,
+          hasBorders: false,
+          hasControls: false,
+          cornerSize: 5 * _this.imgRatio,
+          originX: 'center',
+          originY: 'center',
+          hoverCursor: 'pointer',
+          selectable: true,
+        });
+        this.autoPointList.push(autoPoint);
+        this.fCanvas.add(autoPoint);
+        if (this.autoPointList.length === 2) {
+          let ePoint = this.autoPointList.pop();
+          let sPoint = this.autoPointList.pop();
+          this.startX = sPoint.left;
+          this.startY = sPoint.top;
+          this.endX = ePoint.left;
+          this.endY = ePoint.top;
+          //console.log(ePoint);
+          //console.log(sPoint);
+          this.fCanvas.remove(ePoint);
+          this.fCanvas.remove(sPoint);
+          this.setRect();
+        }
+      }
     },
     drawKeypoint() {
       if (this.isToolKeypointOn) {
         // 부위별로 컨트롤 필요
-        let hcline = keyPoint.makeLine([250, 125, 250, 175]),
+        /*let hcline = keyPoint.makeLine([250, 125, 250, 175]),
           //ncline = keyPoint.makeLine([250, 155, 250, 175]),
           chline = keyPoint.makeLine([250, 175, 250, 250]),
           rhaline = keyPoint.makeLine([250, 250, 300, 350]),
           lhaline = keyPoint.makeLine([250, 250, 200, 350]),
           nlwline = keyPoint.makeLine([250, 175, 175, 225]),
-          nrwline = keyPoint.makeLine([250, 175, 325, 225]);
-
-        this.fCanvas.add(hcline, chline, rhaline, lhaline, nlwline, nrwline);
+          nrwline = keyPoint.makeLine([250, 175, 325, 225]);*/
+        /*let hnLine = keyPoint.makeLine([250, 125, 250, 155]),
+          ncLine = keyPoint.makeLine([250, 155, 250, 175]),
+          clsLine = keyPoint.makeLine([250, 175, 150, 155]),
+          crsLine = keyPoint.makeLine([250, 175, 350, 155]),
+          sleLine = keyPoint.makeLine([150, 155, 135, 180]),
+          sreLine = keyPoint.makeLine([150, 155, 365, 180]),
+          elwLine = keyPoint.makeLine([135, 180, 150, 200]),
+          erwLine = keyPoint.makeLine([365, 180, 350, 200]),
+          clhLine = keyPoint.makeLine([250, 175, 200, 250]),
+          crhLine = keyPoint.makeLine([250, 175, 300, 250]),
+          hlkLine = keyPoint.makeLine([200, 250, 200, 275]),
+          hrkLine = keyPoint.makeLine([300, 250, 300, 275]),
+          klaLine = keyPoint.makeLine([200, 275, 200, 300]),
+          kraLine = keyPoint.makeLine([300, 275, 300, 300]),
+          altLine = keyPoint.makeLine([200, 300, 190, 300]),
+          artLine = keyPoint.makeLine([300, 300, 310, 300]);
 
         this.fCanvas.add(
-          keyPoint.makeCircle(hcline.get('x1'), hcline.get('y1'), null, hcline),
-          keyPoint.makeCircle(
+          hnLine,
+          ncLine,
+          clsLine,
+          crsLine,
+          sleLine,
+          sreLine,
+          elwLine,
+          erwLine,
+          clhLine,
+          crhLine,
+          hlkLine,
+          hrkLine,
+          klaLine,
+          kraLine,
+          altLine,
+          artLine,
+        );
+
+        let headPoint = keyPoint.makeCircle(
+            hnline.get('x1'),
+            hnline.get('y1'),
+            null,
+            hnline,
+          ),
+          chestPoint = keyPoint.makeCircle(
             hcline.get('x2'),
             hcline.get('y2'),
             hcline,
@@ -4347,18 +4684,43 @@ export default {
             nlwline,
             nrwline,
           ),
-          keyPoint.makeCircle(
+          hipPoint = keyPoint.makeCircle(
             chline.get('x2'),
             chline.get('y2'),
             chline,
             rhaline,
             lhaline,
           ),
-          keyPoint.makeCircle(rhaline.get('x2'), rhaline.get('y2'), rhaline),
-          keyPoint.makeCircle(lhaline.get('x2'), lhaline.get('y2'), lhaline),
-          keyPoint.makeCircle(nlwline.get('x2'), nlwline.get('y2'), nlwline),
-          keyPoint.makeCircle(nrwline.get('x2'), nrwline.get('y2'), nrwline),
-        );
+          lwPoint = keyPoint.makeCircle(
+            nlwline.get('x2'),
+            nlwline.get('y2'),
+            nlwline,
+          ),
+          rwPoint = keyPoint.makeCircle(
+            nrwline.get('x2'),
+            nrwline.get('y2'),
+            nrwline,
+          ),
+          laPoint = keyPoint.makeCircle(
+            rhaline.get('x2'),
+            rhaline.get('y2'),
+            rhaline,
+          ),
+          raPoint = keyPoint.makeCircle(
+            lhaline.get('x2'),
+            lhaline.get('y2'),
+            lhaline,
+          );
+
+        this.fCanvas.add(
+          headPoint,
+          chestPoint,
+          hipPoint,
+          lwPoint,
+          rwPoint,
+          laPoint,
+          raPoint,
+        );*/
       }
     },
     async resizeImageData(imageData, width, height) {
@@ -4454,6 +4816,7 @@ export default {
           //this.openAssignee(this.currentImageIndex);
         })
         .catch(error => {
+          this.isLoading = false;
           console.log(error);
         });
     },
@@ -4501,6 +4864,7 @@ export default {
           //this.openAssignee(this.currentImageIndex);
         })
         .catch(error => {
+          this.isLoading = false;
           console.log(error);
         });
     },
@@ -4543,6 +4907,7 @@ export default {
           //this.openAssignee(this.currentImageIndex);
         })
         .catch(error => {
+          this.isLoading = false;
           console.log(error);
         });
     },
@@ -4572,6 +4937,40 @@ export default {
       }
       this.isDownload = false;
       this.downloads = '';
+    },
+    isLock(item, index) {
+      for (let i = 0; i < this.ObjectListItem.length; i++) {
+        if (this.ObjectListItem[i].id === item) {
+          this.ObjectListItem[i].selectable =
+            !this.ObjectListItem[i].selectable;
+          if (!this.ObjectListItem[i].selectable) {
+            document.getElementById('lockBtn' + index).classList.add('active');
+          } else {
+            document
+              .getElementById('lockBtn' + index)
+              .classList.remove('active');
+          }
+          this.fCanvas.discardActiveObject();
+          this.fCanvas.renderAll();
+        }
+      }
+    },
+    isVisible(item, index) {
+      for (let i = 0; i < this.ObjectListItem.length; i++) {
+        if (this.ObjectListItem[i].id === item) {
+          this.ObjectListItem[i].visible = !this.ObjectListItem[i].visible;
+          if (!this.ObjectListItem[i].visible) {
+            document
+              .getElementById('visibleBtn' + index)
+              .classList.add('active');
+          } else {
+            document
+              .getElementById('visibleBtn' + index)
+              .classList.remove('active');
+          }
+          this.fCanvas.renderAll();
+        }
+      }
     },
     isDelete(item) {
       if (confirm('Instance를 삭제하시겠습니까?')) {
@@ -4729,21 +5128,31 @@ export default {
       }
     },*/
     onMouseWheel(options) {
-      console.log('wheel');
+      //console.log('wheel');
       let delta = options.e.deltaY;
       //let pointer = this.fCanvas.getPointer(options.e);
       let zoom = this.fCanvas.getZoom();
-      if (delta > 0) {
+      zoom *= 0.999 ** delta;
+      //zoom *= this.imgRatio;
+      if (delta < 0) {
         zoom += 0.1;
       } else {
         zoom -= 0.1;
       }
-      if (zoom > 20) zoom = 20;
-      if (zoom < 0.1) zoom = 0.1;
-      this.fCanvas.zoomToPoint(
+      if (zoom > 2 * this.imgRatio) zoom = 2 * this.imgRatio;
+      if (zoom < 0.1 * this.imgRatio) zoom = 0.1 * this.imgRatio;
+      //zoom *= this.imgRatio;
+      let width = this.inWidth * zoom;
+      let height = this.inHeight * zoom;
+      this.fCanvas.setWidth(width);
+      this.fCanvas.setHeight(height);
+      /*this.fCanvas.zoomToPoint(
         { x: options.e.offsetX, y: options.e.offsetY },
         zoom,
-      );
+      );*/
+      this.fCanvas.setZoom(zoom);
+      let range = document.getElementById('zoom-range');
+      range.value = (zoom * 100) / this.imgRatio;
       options.e.preventDefault();
       options.e.stopPropagation();
     },
@@ -5107,7 +5516,7 @@ export default {
     clearPolygon() {
       this.fCanvas.remove(...this.fCanvas.getObjects());
     },*/
-    drawMask(x, y) {
+    /*drawMask(x, y) {
       //if (!this.imageInfo) return;
       this.imageInfo = {
         width: this.canvasWidth,
@@ -5330,7 +5739,7 @@ export default {
         height: h,
         bounds: b,
       };
-    },
+    },*/
   },
   computed: {},
 };

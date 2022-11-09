@@ -581,10 +581,11 @@ const routes = [
     meta: { auth: false },
   },
   {
-    path: '/labelingstudio',
+    path: '/studio/labeling/:pId',
     name: 'labelingstudio',
     component: () => import('../views/work_studio/StudioLabelingPage.vue'),
     meta: { auth: false },
+    //alias: '/labelingstudio',
   },
 ];
 
