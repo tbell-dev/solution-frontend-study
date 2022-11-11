@@ -22,8 +22,8 @@ app.config.globalProperties.emitter = emitter;
 app.config.globalProperties.axios = axios;
 app.use(store).use(router).mount('#app');
 
-// export const HOST = 'https://sslo.ai';
-export const HOST = 'http://sslo.ai:8859';
+export const HOST = 'http://sslo.ai:8829';
+//export const HOST = 'http://sslo.ai:8859';
 // 'http://210.113.122.196:8825';
 
 // createApp(App).use(store).use(router).mount('#app');
