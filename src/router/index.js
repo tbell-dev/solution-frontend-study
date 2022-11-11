@@ -555,14 +555,21 @@ const routes = [
   },
   // 스튜디오
   {
-    path: '/collectinspectionstudio',
+    path: '/studio/collect/:pId',
     name: 'collectinspectionstudio',
     component: () =>
       import('../views/work_studio/StudioCollectInspectionPage.vue'),
     meta: { auth: false },
   },
   {
-    path: '/cleaningframestudio',
+    path: '/studio/labeling/:pId',
+    name: 'labelingstudio',
+    component: () => import('../views/work_studio/StudioLabelingPage.vue'),
+    meta: { auth: false },
+    //alias: '/labelingstudio',
+  },
+  {
+    path: '/studio/cleaning/:pId',
     name: 'cleaningframestudio',
     component: () => import('../views/work_studio/StudioCleaningFramePage.vue'),
     meta: { auth: false },

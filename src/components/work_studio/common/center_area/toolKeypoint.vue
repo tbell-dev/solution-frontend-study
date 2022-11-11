@@ -4,7 +4,7 @@ import { fabric } from 'fabric';
 export default {
   name: 'keyPoint',
 
-  makeCircle(left, top, line1, line2, line3, line4) {
+  makeCircle(left, top, line1, line2, line3, line4, line5) {
     let c = new fabric.Circle({
       tool: 'keypoint',
       left: left,
@@ -21,6 +21,8 @@ export default {
     c.line2 = line2;
     c.line3 = line3;
     c.line4 = line4;
+    c.line5 = line5;
+    c.line6 = line5;
     return c;
   },
   makeLine(coords) {

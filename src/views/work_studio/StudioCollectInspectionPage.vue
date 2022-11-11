@@ -142,7 +142,7 @@
             <input
               type="range"
               min="10"
-              max="300"
+              max="200"
               value="100"
               name="zRange"
               id="zoom-range"
@@ -159,7 +159,7 @@
     </header>
     <main id="main">
       <div class="studio-center">
-        <div class="studio-pic">
+        <!--<div class="studio-pic">
           <img
             v-if="isHosted"
             id="main-img"
@@ -180,6 +180,9 @@
             :src="require(`@/assets/images/studio/${selectImg}`)"
             alt=""
           />
+        </div>-->
+        <div class="studio-pic-label">
+          <canvas id="fabCanvas" class="out-canvas"></canvas>
         </div>
         <footer class="footer">
           <ul class="studio-file-list-type3">
@@ -220,7 +223,7 @@
               class="studio-contents file-list-contents-type3"
               v-if="isFileListOn"
             >
-              <div class="file-pre">
+              <!--<div class="file-pre">
                 <div class="img-wrap3">
                   <img
                     v-if="isHosted"
@@ -253,7 +256,7 @@
                   </b>
                 </div>
               </div>
-              <span class="file-bar"></span>
+              <span class="file-bar"></span>-->
               <!-- select-file-list -->
               <template v-for="(item, index) in DataListItem" :key="index">
                 <li
@@ -541,6 +544,7 @@
 //import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import { HOST } from '@/main';
+import { fabric } from 'fabric';
 //let idList = new Array();
 //let DataListItem = new Array();
 
@@ -567,7 +571,7 @@ export default {
       await axios.post(HOST, {});
     };
   },*/
-  mounted: function () {
+  /*mounted: function () {
     axios
       .get(
         HOST +
@@ -593,6 +597,74 @@ export default {
         this.isWorkers = false;
       }
     });
+  },*/
+  mounted: async function () {
+    this.prjId = this.$route.params.pId;
+    this.taskId = this.$route.query.selectedTask;
+    if (this.prjId === null || this.prjId === undefined) {
+      this.prjId = 5;
+    }
+    if (this.taskId === null || this.taskId === undefined) {
+      this.taskId = 1;
+    }
+    this.hostUrl = HOST;
+    this.fCanvas = window._canvas = new fabric.Canvas('fabCanvas', {
+      //selection: false,
+    });
+    this.fCanvas.discardActiveObject();
+    const helperObj = new fabric.Object({}); //abstract invisible object
+    helperObj.set('selectable', false); //so the user is not able to select and modify it manually
+    this.fCanvas.add(helperObj);
+
+    this.fCanvas.on('object:added', () => {
+      //workaround - selecting all objects to enable object controls
+      //console.log('set');
+      let objects = this.fCanvas.getObjects();
+      let selection = new fabric.ActiveSelection(objects, {
+        canvas: this.fCanvas,
+      });
+      this.fCanvas.setActiveObject(selection); //selecting all objects...
+      this.fCanvas.discardActiveObject(); //...and deselecting them
+      this.fCanvas.requestRenderAll();
+    });
+    this.fCanvas.on('mouse:wheel', this.onMouseWheel);
+    this.fCtx = this.fCanvas.getContext();
+    await axios
+      .get(
+        this.hostUrl +
+          '/rest/api/1/task/search?project_id=' +
+          this.prjId +
+          '&maxResults=500',
+      )
+      .then(response => {
+        if (response.data.datas.length > 0) {
+          this.isHosted = true;
+          this.isOpen = true;
+          this.DataListItem = response.data.datas;
+        } else {
+          this.isHosted = false;
+        }
+        //this.openFabImage();
+        //this.openAssignee(this.currentImageIndex);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    await axios
+      .get(this.hostUrl + '/rest/api/1/auth/user/search')
+      .then(response => {
+        if (response.data.datas.length > 0) {
+          //this.isWorkers = true;
+          //this.DataListAssignee = response.data.datas;
+        } else {
+          this.isWorkers = false;
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    this.openFabImage();
+    this.openAssignee(this.currentImageIndex);
   },
   data: function () {
     return {
@@ -620,6 +692,25 @@ export default {
 
       currentImageIndex: 0,
       filters: '0',
+
+      //캔버스
+      outCtx: '',
+      drawCtx: '',
+      inFile: '',
+      fCanvas: '',
+      fCtx: '',
+      imgSrc: '',
+      inImg: '',
+
+      inWidth: '',
+      outWidth: '',
+      inHeight: '',
+      outHeight: '',
+      maxWidth: 800,
+      maxHeight: 500,
+      canvasWidth: 810,
+      canvasHeight: 540,
+      imgRatio: 1,
 
       DataListItem: [
         {
@@ -1026,7 +1117,7 @@ export default {
         this.currentImageIndex
       ].task_status.task_status_progress = 4;
     },
-    selectImgFunction(index) {
+    /*selectImgFunction(index) {
       let idCnt = 0;
       if (this.filters === '0') {
         if (index < 0) {
@@ -1100,6 +1191,90 @@ export default {
       this.currentImageIndex = index;
       this.openImage();
       this.openAssignee(this.currentImageIndex);
+    },*/
+    selectImgFunction(index) {
+      // save status
+      //this.workStateSave();
+      // clear instance, annotation
+      console.log(index);
+      let idCnt = 0;
+      if (this.filters === '0') {
+        if (index < 0) {
+          index = this.DataListItem.length - 1;
+        } else if (index >= this.DataListItem.length) {
+          index = 0;
+        }
+        idCnt++;
+      } else {
+        if (this.currentImageIndex > index) {
+          if (index >= 0) {
+            for (let i = index; i >= 0; i--) {
+              if (
+                this.DataListItem[
+                  i
+                ].task_status.task_status_progress.toString() === this.filters
+              ) {
+                index = i;
+                idCnt++;
+                break;
+              }
+            }
+          } else {
+            for (let j = this.DataListItem.length - 1; j > index; j--) {
+              if (
+                this.DataListItem[
+                  j
+                ].task_status.task_status_progress.toString() === this.filters
+              ) {
+                index = j;
+                idCnt++;
+                break;
+              }
+            }
+          }
+        } else {
+          if (index < this.DataListItem.length) {
+            for (let k = index; k < this.DataListItem.length; k++) {
+              if (
+                this.DataListItem[
+                  k
+                ].task_status.task_status_progress.toString() === this.filters
+              ) {
+                index = k;
+                idCnt++;
+                break;
+              }
+            }
+          } else {
+            for (let l = 0; l < index; l++) {
+              if (
+                this.DataListItem[
+                  l
+                ].task_status.task_status_progress.toString() === this.filters
+              ) {
+                index = l;
+                idCnt++;
+                break;
+              }
+            }
+          }
+        }
+      }
+      if (idCnt === 0) {
+        return;
+      }
+      this.selectImg = this.DataListItem[index].task_detail.image_name;
+      this.selectImgName = this.DataListItem[index].task_name;
+      this.selectImgStatus =
+        this.DataListItem[index].task_status.task_status_progress;
+      this.currentImageIndex = index;
+      this.imgOriginWidth = this.DataListItem[index].task_detail.image_width;
+      this.imgOriginHeight = this.DataListItem[index].task_detail.image_height;
+      //this.openImage();
+      this.openFabImage();
+      this.openAssignee(this.currentImageIndex);
+      this.setZoomCenter();
+      //console.log(this.DataListItem[this.currentImageIndex].task_id);
     },
     imageStatusComplete() {
       let item = this.DataListItem[this.currentImageIndex];
@@ -1176,7 +1351,7 @@ export default {
         this.isInspectAssigneeOn = !this.isInspectAssigneeOn;
       }
     },
-    openImage() {
+    /*openImage() {
       let img = document.getElementById('main-img');
       let width =
         this.DataListItem[this.currentImageIndex].task_detail.image_width;
@@ -1206,8 +1381,84 @@ export default {
       this.imgOriginHeight = height;
       img.width = this.imgOriginWidth;
       img.height = this.imgOriginHeight;
+    },*/
+    openFabImage() {
+      const _this = this;
+      this.fCanvas.clear();
+      if (this.isHosted) {
+        let item = this.DataListItem[this.currentImageIndex];
+        let task_id = item.task_id;
+        if (this.isOpen) {
+          task_id = this.taskId;
+          this.isOpen = false;
+        }
+        this.imgSrc =
+          this.hostUrl +
+          '/rest/api/1/task/data?project_id=' +
+          item.task_project.project_id +
+          '&task_id=' +
+          task_id;
+      } else {
+        this.imgSrc = require(`@/assets/images/studio/${this.selectImg}`);
+      }
+      fabric.Image.fromURL(
+        this.imgSrc,
+        function (oImg) {
+          let width = oImg.width;
+          let height = oImg.height;
+          if (width > height) {
+            _this.imgRatio = 810 / width;
+            if (height * _this.imgRatio > 540) {
+              _this.imgRatio = 540 / height;
+            }
+          } else {
+            _this.imgRatio = 540 / height;
+            if (width * _this.imgRatio > 810) {
+              _this.imgRatio = 810 / width;
+            }
+          }
+          _this.inWidth = width;
+          _this.inHeight = height;
+          oImg.selectable = false;
+          //_this.fCanvas.add(oImg);
+          _this.fCanvas.setBackgroundImage(oImg);
+          // Define
+          /*canvas.setBackgroundImage(imageUrl, canvas.renderAll.bind(canvas), {
+            // Optionally add an opacity lvl to the image
+            backgroundImageOpacity: 0.5,
+            // should the image be resized to fit the container?
+            backgroundImageStretch: true
+          });*/
+          _this.fCanvas.setWidth(width * _this.imgRatio);
+          _this.fCanvas.setHeight(height * _this.imgRatio);
+          _this.canvasWidth = width * _this.imgRatio;
+          _this.canvasHeight = height * _this.imgRatio;
+          _this.fCanvas.setZoom(_this.imgRatio);
+        },
+        { crossOrigin: 'anonymous' },
+      );
     },
     openAssignee(index) {
+      if (
+        this.DataListItem[index].task_worker != null &&
+        this.DataListItem[index].task_worker.user_display_name != null
+      ) {
+        this.selectLabelingAssignee =
+          this.DataListItem[index].task_worker.user_display_name;
+      } else {
+        this.selectLabelingAssignee = '없음';
+      }
+      if (
+        this.DataListItem[index].task_validator != null &&
+        this.DataListItem[index].task_validator.user_display_name != null
+      ) {
+        this.selectInspectAssignee =
+          this.DataListItem[index].task_validator.user_display_name;
+      } else {
+        this.selectInspectAssignee = '없음';
+      }
+    },
+    /*openAssignee(index) {
       if (
         this.DataListItem[index].task_worker != null &&
         this.DataListItem[index].task_worker.user_display_name != null
@@ -1226,7 +1477,7 @@ export default {
       } else {
         this.selectInspectAssignee = '없음';
       }
-    },
+    },*/
     itemLength() {
       let cnt = 0;
       for (let i = 0; i < this.DataListItem.length; i++) {
@@ -1262,7 +1513,7 @@ export default {
     imgSize(size) {
       return size + 'KB';
     },
-    zoomAdjustment() {
+    /*zoomAdjustment() {
       let zoom = document.getElementById('zoom-range').value;
       let img = document.getElementById('main-img');
       let width = img.clientWidth;
@@ -1279,6 +1530,23 @@ export default {
       let img = document.getElementById('main-img');
       img.width = this.imgOriginWidth;
       img.height = this.imgOriginHeight;
+    },*/
+    zoomAdjustment() {
+      let zoom = document.getElementById('zoom-range').value;
+      zoom *= this.imgRatio;
+      console.log(this.inWidth + ', ' + this.inHeight);
+      console.log(zoom + ', ' + this.imgRatio);
+      let width = this.inWidth * (zoom / 100);
+      let height = this.inHeight * (zoom / 100);
+      this.fCanvas.setWidth(width);
+      this.fCanvas.setHeight(height);
+      this.fCanvas.setZoom(zoom / 100);
+    },
+    setZoomCenter() {
+      document.getElementById('zoom-range').value = 100;
+      this.fCanvas.setWidth(this.inWidth * this.imgRatio);
+      this.fCanvas.setHeight(this.inHeight * this.imgRatio);
+      this.fCanvas.setZoom(this.imgRatio);
     },
   },
   computed: {},
@@ -1287,5 +1555,5 @@ export default {
 
 <style>
 @import '../../css/reset.css';
-@import '../../css/common.css';
+@import '../../css/studiolabel.css';
 </style>

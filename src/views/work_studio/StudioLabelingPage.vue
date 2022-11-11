@@ -717,7 +717,7 @@
               class="studio-contents file-list-contents-type3"
               v-if="isFileListOn"
             >
-              <div class="file-pre">
+              <!--<div class="file-pre">
                 <div class="img-wrap3">
                   <img
                     v-if="isHosted"
@@ -752,7 +752,7 @@
                   </b>
                 </div>
               </div>
-              <span class="file-bar"></span>
+              <span class="file-bar"></span>-->
               <!-- select-file-list -->
               <template v-for="(item, index) in DataListItem" :key="index">
                 <li
@@ -826,16 +826,27 @@
                   <div class="file-list-detail3">
                     <div class="left-wrap3">
                       <div class="img-wrap3">
-                        <img
+                        <!--<img
                           v-if="isHosted"
                           class="img-list"
                           :src="
                             hostUrl +
                             '/rest/api/1/task/data?project_id=' +
-                            DataListItem[currentImageIndex].task_project
+                            DataListItem[index].task_project
                               .project_id +
                             '&task_id=' +
-                            DataListItem[currentImageIndex].task_id
+                            DataListItem[index].task_id
+                          "
+                          alt=""
+                        />-->
+                        <img
+                          v-if="isHosted"
+                          class="img-list"
+                          :src="
+                            'data:image/' +
+                            DataListItem[index].task_detail.image_format +
+                            ';base64,' +
+                            DataListItem[index].task_detail.image_thumbnail
                           "
                           alt=""
                         />
@@ -1035,19 +1046,16 @@
             <li class="studio-contents" v-if="isInstanceOn">
               <div class="top-wrap" v-show="isObjectSelectOn">
                 <div class="top">
-                  <div class="instance-pic">
+                  <div class="instance-pic" v-show="isObjectSelectOn && isBbox">
                     <!--<canvas
                       v-show="isLabelingOn && isObjectSelectOn"-->
                     <canvas id="dataCanvas" class="data-canvas"></canvas>
                   </div>
-                  <table
-                    class="instance-table1"
-                    v-show="isObjectSelectOn && (isToolBoxingOn || isOD)"
-                  >
+                  <table class="instance-table1" v-show="isObjectSelectOn">
                     <tr>
                       <th><b>클래스</b></th>
                       <td>
-                        <span class="instance-ball"></span>
+                        <span id="classBall" class="instance-ball"></span>
                         <p>{{ instanceClass }}</p>
                       </td>
                     </tr>
@@ -1067,7 +1075,7 @@
                 </div>
               </div>
               <div class="bottom-wrap">
-                <div class="top" v-show="isToolBoxingOn || isToolODOn">
+                <div class="top" v-show="isObjectSelectOn && isBbox">
                   <table class="instance-table2">
                     <tr>
                       <th><b>높이</b></th>
@@ -1284,7 +1292,7 @@ import { HOST } from '@/main';
 import { fabric } from 'fabric';
 //import { isProxy, toRaw } from 'vue';
 import LoadingSpinner from '@/components/work_studio/common/center_area/LoadingSpinner.vue';
-//import keyPoint from '@/components/work_studio/common/center_area/toolKeypoint';
+import keyPoint from '@/components/work_studio/common/center_area/toolKeypoint';
 
 export default {
   components: {
@@ -1292,8 +1300,8 @@ export default {
   },
   mounted: async function () {
     const _this = this;
-    console.log(location.href); // 전체 url
-    console.log(location.pathname); // 파라미터 값
+    //console.log(location.href); // 전체 url
+    //console.log(location.pathname); // 파라미터 값
     /*const urlParams = new URLSearchParams(location.search);
     const para = document.location.pathname.split('/');
     console.log(para);
@@ -1407,6 +1415,7 @@ export default {
           '&maxResults=500',
       )
       .then(response => {
+        console.log(response.data.datas);
         if (response.data.datas.length > 0) {
           this.isHosted = true;
           this.isOpen = true;
@@ -1444,11 +1453,11 @@ export default {
       }
     };
     this.openFabImage();
-    for (let i = 0; i < this.DataListItem.length; i++) {
+    /*for (let i = 0; i < this.DataListItem.length; i++) {
       if (this.taskId === this.DataListItem[i].task_id) {
         this.selectImgFunction(i);
       }
-    }
+    }*/
     this.openAssignee(this.currentImageIndex);
   },
   data: function () {
@@ -1505,6 +1514,9 @@ export default {
       isBbox: false,
 
       isClassSettingOn: false,
+      isDataImage: false,
+      isDataInfo: false,
+      isDataClass: false,
 
       currentImageIndex: 0,
       filters: '0',
@@ -2045,6 +2057,14 @@ export default {
       this.fCanvas.renderAll();
     },
     isClassSettingOnOff(index) {
+      if (this.InstanceListItem.length === 0) {
+        this.isObjectSelectOn = false;
+        this.isDataImage = false;
+        this.isDataInfo = false;
+        this.isDataClass = false;
+        this.isClassSettingOn = !this.isClassSettingOn;
+        return;
+      }
       let prevIndex = this.instanceIndex;
       if (index === null || index === undefined) {
         index = this.instanceIndex;
@@ -2052,15 +2072,29 @@ export default {
         this.instanceIndex = index;
       }
       //let isSelectable = true;
+      let color = '#ffffff';
+      let type = '';
       for (let i = 0; i < this.ObjectListItem.length; i++) {
         if (this.InstanceListItem[index].id === this.ObjectListItem[i].id) {
           if (this.ObjectListItem[i].selectable) {
+            color = this.ObjectListItem[i].color;
+            type = this.ObjectListItem[i].type;
             this.fCanvas.setActiveObject(this.ObjectListItem[i]);
           } else {
             //isSelectable = false;
           }
         }
       }
+      console.log(type);
+      if (type === 'rect') {
+        this.isDataImage = true;
+        this.isDataInfo = true;
+      } else {
+        this.isDataImage = false;
+        this.isDataInfo = false;
+      }
+      this.isDataClass = true;
+      document.getElementById('classBall').style.background = color;
 
       let thisBtn = document.getElementById('instance' + index);
       let elseBtn = document.getElementsByClassName('instance-detail');
@@ -2704,6 +2738,7 @@ export default {
       this.instanceClass = '';
       this.instanceGender = '';
       this.instanceAge = '';
+      this.objId = 0;
     },
     resetTools() {
       document.body.style.cursor = 'default';
@@ -2968,9 +3003,7 @@ export default {
     },
     zoomAdjustment() {
       let zoom = document.getElementById('zoom-range').value;
-      console.log('zoom' + zoom + ', ');
       zoom *= this.imgRatio;
-      console.log(zoom / 100);
       let width = this.inWidth * (zoom / 100);
       let height = this.inHeight * (zoom / 100);
       this.fCanvas.setWidth(width);
@@ -3018,6 +3051,7 @@ export default {
     },
     async workStateSave() {
       //console.log(JSON.stringify(this.fCanvas));
+      this.isLoading = true;
       let item = this.DataListItem[this.currentImageIndex];
       let projectId = item.task_project.project_id;
       let taskId = item.task_id;
@@ -3040,19 +3074,20 @@ export default {
             console.log(response.data);
           });
       }
-      await axios
+      /*await axios
         .get(
           HOST +
             '/rest/api/1/task/annotation?project_id=' +
             projectId +
             '&task_id=' +
-            taskId,
+            taskId +
+            '&maxResults=500',
         )
         .then(async response => {
           //console.log(response.status);
-          //console.log(response.data.datas);
+          console.log(response.data.datas);
           let cnt = response.data.datas.length;
-          /*update 할 annotation 찾는 방법?
+          update 할 annotation 찾는 방법?
             1. 서버 데이터 loof - 로컬 데이터 loof 매칭
             -> 같으면 update
             -> 로컬 데이터 남을 경우 create 시점? 서버 데이터 끝난 후?
@@ -3063,18 +3098,18 @@ export default {
             -> 매칭 안된 로컬 데이터 남을 경우? create 시점? 남은 자료 구분 방법?
             ***3. Delete 별도로
             -> Save 시, Delete를 1번으로 진행한 후, update 및 create 진행
-           */
+           
           for (let i = 0; i < this.AnnotationListItem.length; i++) {
             let data = this.AnnotationListItem[i].annotation;
-            //console.log(data);
+            console.log(data);
             if (cnt > 0) {
               //update
               for (let j = 0; j < response.data.datas.length; j++) {
-                //console.log('update');
+                console.log(cnt);
                 if (
                   data.annotation_id === response.data.datas[j].annotation_id
                 ) {
-                  //console.log('match');
+                  console.log('match' + j);
                   await axios
                     .post(
                       HOST +
@@ -3092,7 +3127,6 @@ export default {
                 }
               }
             } else {
-              console.log('create');
               let url =
                 HOST +
                 '/rest/api/1/task/annotation/create?project_id=' +
@@ -3106,8 +3140,39 @@ export default {
               });
             }
           }
-        });
+        });*/
+      for (let i = 0; i < this.AnnotationListItem.length; i++) {
+        let data = this.AnnotationListItem[i].annotation;
+        if (data.annotation_id) {
+          await axios
+            .post(
+              HOST +
+                '/rest/api/1/task/annotation/update?project_id=' +
+                projectId +
+                '&task_id=' +
+                taskId,
+              data,
+            )
+            .then(response => {
+              console.log('update');
+              console.log(response.data);
+            });
+        } else {
+          let url =
+            HOST +
+            '/rest/api/1/task/annotation/create?project_id=' +
+            projectId +
+            '&task_id=' +
+            taskId;
+          //create
+          await axios.post(url, data).then(response => {
+            console.log('create');
+            console.log(response.data);
+          });
+        }
+      }
       await this.imageStatusWorking();
+      this.isLoading = false;
     },
     openFabImage() {
       const _this = this;
@@ -3117,6 +3182,13 @@ export default {
         let task_id = item.task_id;
         if (this.isOpen) {
           task_id = this.taskId;
+          for (let i = 0; i < this.DataListItem.length; i++) {
+            //console.log('check' + task_id + ',' + this.DataListItem[i].task_id);
+            if (this.DataListItem[i].task_id == task_id) {
+              //console.log(i);
+              this.currentImageIndex = i;
+            }
+          }
           this.isOpen = false;
         }
         this.imgSrc =
@@ -3135,8 +3207,8 @@ export default {
               '&maxResults=500',
           )
           .then(response => {
-            //console.log(response.status);
-            console.log('openImage');
+            console.log(response.data.datas);
+            //console.log('openImage');
             for (let j = 0; j < response.data.datas.length; j++) {
               let item = response.data.datas[j];
               if (item.annotation_id) {
@@ -3168,7 +3240,7 @@ export default {
                   for (let l = 0; l < items.length; l++) {
                     coordinates.push(new fabric.Point(items[l++], items[l]));
                   }
-                  console.log(coordinates);
+                  //console.log(coordinates);
                   _this.drawPolyItem(
                     item.annotation_type.annotation_type_name,
                     coordinates,
@@ -3252,23 +3324,25 @@ export default {
       let cId = 0;
       //console.log(className);
       //console.log('class: ' + className);
-      this.InstanceListItem[this.instanceIndex].className = className;
-      let setName;
-      switch (className) {
-        case 'human':
-          setName = '인간';
-          cId = 0;
-          break;
-        default:
-          setName = '인간';
-          cId = 0;
-          break;
+      if (this.InstanceListItem.length > 0) {
+        this.InstanceListItem[this.instanceIndex].className = className;
+        let setName;
+        switch (className) {
+          case 'human':
+            setName = '인간';
+            cId = 0;
+            break;
+          default:
+            setName = '인간';
+            cId = 0;
+            break;
+        }
+        this.InstanceListItem[this.instanceIndex].cId = cId;
+        this.AnnotationListItem[
+          this.instanceIndex
+        ].annotation.annotation_category.annotation_category_id = cId;
+        this.instanceClass = setName;
       }
-      this.InstanceListItem[this.instanceIndex].cId = cId;
-      this.AnnotationListItem[
-        this.instanceIndex
-      ].annotation.annotation_category.annotation_category_id = cId;
-      this.instanceClass = setName;
     },
     setGender(event) {
       let thisBtn = document.getElementById(event.target.id);
@@ -3279,28 +3353,30 @@ export default {
       thisBtn.classList.add('active');
       let gender = event.target.id;
       //console.log(gender);
-      this.InstanceListItem[this.instanceIndex].gender = gender;
-      let setGender;
-      switch (gender) {
-        case 'female':
-          setGender = '여자';
-          break;
-        case 'male':
-          setGender = '남자';
-          break;
-        case 'unknown':
-          setGender = '알 수 없음';
-          break;
-        default:
-          setGender = '알 수 없음';
-          break;
+      if (this.InstanceListItem.length > 0) {
+        this.InstanceListItem[this.instanceIndex].gender = gender;
+        let setGender;
+        switch (gender) {
+          case 'female':
+            setGender = '여자';
+            break;
+          case 'male':
+            setGender = '남자';
+            break;
+          case 'unknown':
+            setGender = '알 수 없음';
+            break;
+          default:
+            setGender = '알 수 없음';
+            break;
+        }
+        this.InstanceListItem[this.instanceIndex].attrs.push({
+          attr_id: 1,
+          attr_type: 1,
+          attr_val: gender,
+        });
+        this.instanceGender = setGender;
       }
-      this.InstanceListItem[this.instanceIndex].attrs.push({
-        attr_id: 1,
-        attr_type: 1,
-        attr_val: gender,
-      });
-      this.instanceGender = setGender;
     },
     setAge(event) {
       let thisBtn = document.getElementById(event.target.id);
@@ -3312,40 +3388,42 @@ export default {
       let age = event.target.id;
       //console.log(age);
       //console.log('age: ' + age);
-      this.InstanceListItem[this.instanceIndex].age = age;
-      let setAge;
-      switch (age) {
-        case 'baby':
-          setAge = '아기';
-          break;
-        case 'children':
-          setAge = '어린이';
-          break;
-        case 'teenager':
-          setAge = '청소년';
-          break;
-        case 'youth':
-          setAge = '청년';
-          break;
-        case 'middle':
-          setAge = '중년';
-          break;
-        case 'old':
-          setAge = '노년';
-          break;
-        case 'unknown':
-          setAge = '알 수 없음';
-          break;
-        default:
-          setAge = '알 수 없음';
-          break;
+      if (this.InstanceListItem.length > 0) {
+        this.InstanceListItem[this.instanceIndex].age = age;
+        let setAge;
+        switch (age) {
+          case 'baby':
+            setAge = '아기';
+            break;
+          case 'children':
+            setAge = '어린이';
+            break;
+          case 'teenager':
+            setAge = '청소년';
+            break;
+          case 'youth':
+            setAge = '청년';
+            break;
+          case 'middle':
+            setAge = '중년';
+            break;
+          case 'old':
+            setAge = '노년';
+            break;
+          case 'unknown':
+            setAge = '알 수 없음';
+            break;
+          default:
+            setAge = '알 수 없음';
+            break;
+        }
+        this.InstanceListItem[this.instanceIndex].attrs.push({
+          attr_id: 2,
+          attr_type: 1,
+          attr_val: age,
+        });
+        this.instanceAge = setAge;
       }
-      this.InstanceListItem[this.instanceIndex].attrs.push({
-        attr_id: 2,
-        attr_type: 1,
-        attr_val: age,
-      });
-      this.instanceAge = setAge;
     },
     setAnnotation() {
       for (let i = 0; i < this.AnnotationListItem.length; i++) {
@@ -3377,7 +3455,7 @@ export default {
       //select-tool
     },
     beforeDownCanvas(options) {
-      console.log('before');
+      //console.log('before');
       if (!this.isObjectSelectOn && this.isToolDrawpenOn) {
         console.log(options);
         this.setDrawingMode();
@@ -3617,7 +3695,7 @@ export default {
     },
     upCanvas(options) {
       //let event = options.e;
-      console.log('up');
+      //console.log('up');
       let pointer = this.fCanvas.getPointer(options);
       if (this.isObjectSelectOn || this.isObjectMoveOn) {
         this.isObjectMoveOn = false;
@@ -3718,14 +3796,25 @@ export default {
               options.target.top + options.target.height / 2 - tag.height / 2;
           }
         }
+        for (let j = 0; j < this.AnnotationListItem.length; j++) {
+          if (this.AnnotationListItem[j].id === options.target.id) {
+            this.AnnotationListItem[j].annotation.annotation_data = [
+              options.target.left,
+              options.target.top,
+              options.target.width,
+              options.target.height,
+            ];
+          }
+        }
         //options.target.setCoords();
-        //console.log(this.instanceWidth + ', ' + this.instanceHeight);
+        //console.log(options.target.left + ', ' + options.target.top);
         this.setDataImage(options.target);
       } else if (
         options.target.type === 'polygon' ||
         options.target.type === 'segment'
       ) {
         let polygon = options.target;
+        console.log(polygon);
         let matrix = polygon.calcTransformMatrix();
         let moveX = options.target.left - this.positionX;
         let moveY = options.target.top - this.positionY;
@@ -3761,6 +3850,18 @@ export default {
               options.target.left + options.target.width / 2 - tag.width / 2;
             tag.top =
               options.target.top + options.target.height / 2 - tag.height / 2;
+          }
+        }
+        for (let l = 0; l < this.AnnotationListItem.length; l++) {
+          if (this.AnnotationListItem[l].id === options.target.id) {
+            let cData = [];
+            for (let k = 0; k < options.target.points.length; k++) {
+              cData.push(options.target.points[k].x);
+              cData.push(options.target.points[k].y);
+            }
+            console.log(this.AnnotationListItem[l].annotation.annotation_id);
+            console.log(cData);
+            this.AnnotationListItem[l].annotation.annotation_data = cData;
           }
         }
         //this.setDataImage(options.target);
@@ -3914,7 +4015,14 @@ export default {
       options.target.stroke = color;
       if (options.target.type === 'rect') {
         this.isBbox = true;
+        this.isDataImage = true;
+        this.isDataInfo = true;
+      } else {
+        this.isDataImage = false;
+        this.isDataInfo = false;
       }
+      this.isDataClass = true;
+      document.getElementById('classBall').style.background = color;
       if (options.target.type === 'polyline') {
         options.target.fill = 'transparent';
       } else {
@@ -3976,8 +4084,7 @@ export default {
           thisBtn.classList.remove('active');
         }
       }
-
-      console.log('select: ' + options.target.id);
+      //console.log('select: ' + options.target.id);
     },
     deselectObject(options) {
       if (options.target != null) {
@@ -4018,7 +4125,17 @@ export default {
         ];*/
         this.isBbox = false;
         options.target.strokeDashArray = [0, 0];
-        console.log('deselect: ' + options.target.id);
+        //console.log('deselect: ' + options.target.id);
+        let index = 0;
+        for (let i = 0; i < this.InstanceListItem.length; i++) {
+          if (this.InstanceListItem[i].id === options.target.id) {
+            index = i;
+          }
+        }
+        let thisBtn = document.getElementById('instance' + index);
+        if (thisBtn) {
+          thisBtn.classList.remove('active');
+        }
       }
       this.dataCtx.clearRect(
         0,
@@ -4027,10 +4144,11 @@ export default {
         this.dataCanvas.height,
       );
       this.isObjectSelectOn = false;
+      this.isClassSettingOn = false;
       this.objSelected = '';
     },
     setDataImage(dataObject) {
-      console.log('dataset');
+      //console.log('dataset');
       const _this = this;
       let inImg = new Image();
       inImg.src = this.imgSrc;
@@ -4320,6 +4438,8 @@ export default {
           type_id = 2;
         } else if (type === 'segment') {
           type_id = 3;
+        } else if (type === 'polyline') {
+          type_id = 4;
         }
       }
       let option = {
@@ -4391,13 +4511,13 @@ export default {
         attrs: [],
       });
       //console.log(this.InstanceListItem);
-      console.log(coordinate);
+      //console.log(coordinate);
       let cData = [];
       for (let i = 0; i < coordinate.length; i++) {
         cData.push(coordinate[i].x);
         cData.push(coordinate[i].y);
       }
-      console.log(cData);
+      //console.log(cData);
       this.AnnotationListItem.push({
         id: this.objId,
         annotation: {
@@ -4553,7 +4673,7 @@ export default {
           id: this.objId,
           annotation: {
             annotation_type: {
-              annotation_type_id: 9,
+              annotation_type_id: 5,
             },
             annotation_category: {
               annotation_category_id: 0,
@@ -4634,18 +4754,18 @@ export default {
           lhaline = keyPoint.makeLine([250, 250, 200, 350]),
           nlwline = keyPoint.makeLine([250, 175, 175, 225]),
           nrwline = keyPoint.makeLine([250, 175, 325, 225]);*/
-        /*let hnLine = keyPoint.makeLine([250, 125, 250, 155]),
+        let hnLine = keyPoint.makeLine([250, 125, 250, 155]),
           ncLine = keyPoint.makeLine([250, 155, 250, 175]),
-          clsLine = keyPoint.makeLine([250, 175, 150, 155]),
-          crsLine = keyPoint.makeLine([250, 175, 350, 155]),
-          sleLine = keyPoint.makeLine([150, 155, 135, 180]),
-          sreLine = keyPoint.makeLine([150, 155, 365, 180]),
-          elwLine = keyPoint.makeLine([135, 180, 150, 200]),
-          erwLine = keyPoint.makeLine([365, 180, 350, 200]),
-          clhLine = keyPoint.makeLine([250, 175, 200, 250]),
-          crhLine = keyPoint.makeLine([250, 175, 300, 250]),
-          hlkLine = keyPoint.makeLine([200, 250, 200, 275]),
-          hrkLine = keyPoint.makeLine([300, 250, 300, 275]),
+          clsLine = keyPoint.makeLine([250, 175, 200, 155]),
+          crsLine = keyPoint.makeLine([250, 175, 300, 155]),
+          sleLine = keyPoint.makeLine([200, 155, 185, 180]),
+          sreLine = keyPoint.makeLine([300, 155, 315, 180]),
+          elwLine = keyPoint.makeLine([185, 180, 190, 200]),
+          erwLine = keyPoint.makeLine([315, 180, 310, 200]),
+          clhLine = keyPoint.makeLine([250, 175, 230, 200]),
+          crhLine = keyPoint.makeLine([250, 175, 270, 200]),
+          hlkLine = keyPoint.makeLine([230, 200, 200, 275]),
+          hrkLine = keyPoint.makeLine([270, 200, 300, 275]),
           klaLine = keyPoint.makeLine([200, 275, 200, 300]),
           kraLine = keyPoint.makeLine([300, 275, 300, 300]),
           altLine = keyPoint.makeLine([200, 300, 190, 300]),
@@ -4671,56 +4791,126 @@ export default {
         );
 
         let headPoint = keyPoint.makeCircle(
-            hnline.get('x1'),
-            hnline.get('y1'),
+            hnLine.get('x1'),
+            hnLine.get('y1'),
             null,
-            hnline,
+            hnLine,
+          ),
+          neckPoint = keyPoint.makeCircle(
+            hnLine.get('x2'),
+            hnLine.get('y2'),
+            hnLine,
+            ncLine,
           ),
           chestPoint = keyPoint.makeCircle(
-            hcline.get('x2'),
-            hcline.get('y2'),
-            hcline,
-            chline,
-            nlwline,
-            nrwline,
+            ncLine.get('x2'),
+            ncLine.get('y2'),
+            ncLine,
+            clsLine,
+            crsLine,
+            clhLine,
+            crhLine,
           ),
-          hipPoint = keyPoint.makeCircle(
-            chline.get('x2'),
-            chline.get('y2'),
-            chline,
-            rhaline,
-            lhaline,
+          lshoulderPoint = keyPoint.makeCircle(
+            clsLine.get('x2'),
+            clsLine.get('y2'),
+            clsLine,
+            sleLine,
           ),
-          lwPoint = keyPoint.makeCircle(
-            nlwline.get('x2'),
-            nlwline.get('y2'),
-            nlwline,
+          rshoulderPoint = keyPoint.makeCircle(
+            crsLine.get('x2'),
+            crsLine.get('y2'),
+            crsLine,
+            sreLine,
           ),
-          rwPoint = keyPoint.makeCircle(
-            nrwline.get('x2'),
-            nrwline.get('y2'),
-            nrwline,
+          lelbowPoint = keyPoint.makeCircle(
+            sleLine.get('x2'),
+            sleLine.get('y2'),
+            sleLine,
+            elwLine,
           ),
-          laPoint = keyPoint.makeCircle(
-            rhaline.get('x2'),
-            rhaline.get('y2'),
-            rhaline,
+          relbowPoint = keyPoint.makeCircle(
+            sreLine.get('x2'),
+            sreLine.get('y2'),
+            sreLine,
+            erwLine,
           ),
-          raPoint = keyPoint.makeCircle(
-            lhaline.get('x2'),
-            lhaline.get('y2'),
-            lhaline,
+          lwrinklePoint = keyPoint.makeCircle(
+            elwLine.get('x2'),
+            elwLine.get('y2'),
+            elwLine,
+          ),
+          rwrinklePoint = keyPoint.makeCircle(
+            erwLine.get('x2'),
+            erwLine.get('y2'),
+            erwLine,
+          ),
+          lhipPoint = keyPoint.makeCircle(
+            clhLine.get('x2'),
+            clhLine.get('y2'),
+            clhLine,
+            hlkLine,
+          ),
+          rhipPoint = keyPoint.makeCircle(
+            crhLine.get('x2'),
+            crhLine.get('y2'),
+            crhLine,
+            hrkLine,
+          ),
+          lkneePoint = keyPoint.makeCircle(
+            hlkLine.get('x2'),
+            hlkLine.get('y2'),
+            hlkLine,
+            klaLine,
+          ),
+          rkneePoint = keyPoint.makeCircle(
+            hrkLine.get('x2'),
+            hrkLine.get('y2'),
+            hrkLine,
+            kraLine,
+          ),
+          lanklePoint = keyPoint.makeCircle(
+            klaLine.get('x2'),
+            klaLine.get('y2'),
+            klaLine,
+            altLine,
+          ),
+          ranklePoint = keyPoint.makeCircle(
+            kraLine.get('x2'),
+            kraLine.get('y2'),
+            kraLine,
+            artLine,
+          ),
+          ltoePoint = keyPoint.makeCircle(
+            altLine.get('x2'),
+            altLine.get('y2'),
+            altLine,
+          ),
+          rtoePoint = keyPoint.makeCircle(
+            artLine.get('x2'),
+            artLine.get('y2'),
+            artLine,
           );
 
         this.fCanvas.add(
           headPoint,
+          neckPoint,
           chestPoint,
-          hipPoint,
-          lwPoint,
-          rwPoint,
-          laPoint,
-          raPoint,
-        );*/
+          lshoulderPoint,
+          rshoulderPoint,
+          lelbowPoint,
+          relbowPoint,
+          lwrinklePoint,
+          rwrinklePoint,
+          lhipPoint,
+          rhipPoint,
+          lkneePoint,
+          rkneePoint,
+          lanklePoint,
+          ranklePoint,
+          ltoePoint,
+          rtoePoint,
+        );
       }
     },
     async resizeImageData(imageData, width, height) {
@@ -4808,10 +4998,10 @@ export default {
               this.drawBoxing('OD', coordinate, color);
             }
             this.isOD = true;
-            this.isLoading = false;
           } else {
             //???
           }
+          this.isLoading = false;
           //this.openFabImage();
           //this.openAssignee(this.currentImageIndex);
         })
@@ -4856,10 +5046,10 @@ export default {
               this.drawPolyItem('IS', coordinates, 'polygon', color);
             }
             this.isIS = true;
-            this.isLoading = false;
           } else {
             //???
           }
+          this.isLoading = false;
           //this.openFabImage();
           //this.openAssignee(this.currentImageIndex);
         })
@@ -4899,10 +5089,10 @@ export default {
               this.drawPolyItem('SES', coordinates, 'segment', color);
             }
             this.isSES = true;
-            this.isLoading = false;
           } else {
             //???
           }
+          this.isLoading = false;
           //this.openFabImage();
           //this.openAssignee(this.currentImageIndex);
         })
